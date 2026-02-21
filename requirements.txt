@@ -1,0 +1,5 @@
+# Core
+flask>=2.0
+
+# Excel import (optional; install for /api/import-excel)
+openpyxl>=3.0

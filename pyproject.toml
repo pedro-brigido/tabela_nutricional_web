@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tabela-nutricional"
+version = "0.1.0"
+description = "ANVISA-compliant nutritional table calculator (RDC 429/2020, IN 75/2020)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Terracota" }]
+keywords = ["anvisa", "nutritional-labeling", "rdc-429", "in-75"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "flask>=2.0",
+    "openpyxl>=3.0; extra == 'excel'",
+]
+
+[project.optional-dependencies]
+excel = ["openpyxl>=3.0"]
+dev = ["pytest>=7.0", "openpyxl>=3.0"]
+
+[project.scripts]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
