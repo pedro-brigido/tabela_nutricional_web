@@ -1,0 +1,22 @@
+services:
+  # Flask web application
+  web:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: tabela_nutricional_web
+    restart: unless-stopped
+    networks:
+      - terracota_network
+    expose:
+      - "5000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  terracota_network:
+    external: true

@@ -132,6 +132,12 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/health")
+def health():
+    """Health check endpoint for Docker."""
+    return jsonify({"status": "ok"}), 200
+
+
 @app.route("/api/calculate", methods=["POST"])
 def api_calculate():
     """Calculate nutritional table from product and ingredients."""
