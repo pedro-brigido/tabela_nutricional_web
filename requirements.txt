@@ -1,6 +1,0 @@
-# Core
-flask>=2.0
-gunicorn>=21.0
-
-# Excel import (optional; install for /api/import-excel)
-openpyxl>=3.0

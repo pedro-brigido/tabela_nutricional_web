@@ -344,6 +344,10 @@ async function calculateResult() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
+        if (res.status === 401) {
+            window.location.href = '/login';
+            return;
+        }
         const data = await res.json();
 
         if (!res.ok) {
@@ -486,6 +490,10 @@ async function handleExcelUpload(file) {
             method: 'POST',
             body: formData
         });
+        if (res.status === 401) {
+            window.location.href = '/login';
+            return;
+        }
         const data = await res.json();
 
         if (!res.ok) {

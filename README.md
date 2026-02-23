@@ -1,69 +1,84 @@
 # Terracota | Calculadora Nutricional
 
-Calculadora nutricional em conformidade com a **RDC 429/2020** e **IN 75/2020** (ANVISA). Projeto Python com pacote instalável e aplicação Flask.
+Calculadora nutricional em conformidade com a **RDC 429/2020** e **IN 75/2020** (ANVISA). Projeto Python com aplicação Flask. Gerenciado com [uv](https://docs.astral.sh/uv/).
 
 ## Requisitos
 
 - Python 3.10+
+- [uv](https://docs.astral.sh/uv/installation/) (gerenciador de pacotes)
 
 ## Instalação
 
 ```bash
-pip install -r requirements.txt
-# Opcional: instalar o pacote em modo editável para desenvolvimento
-pip install -e .
+# Instalar uv (se ainda não tiver)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Clonar/cd no projeto
+cd tabela_nutricional_web
+
+# Criar venv e instalar dependências
+uv sync
 ```
 
 ## Como executar
 
 ```bash
-python app.py
+# Opção 1: uv run (recomendado, usa o ambiente gerenciado pelo uv)
+uv run python app.py
+
+# Opção 2: Script auxiliar
+./run.sh
+
+# Opção 3: Python do venv diretamente
+.venv/bin/python app.py
 ```
 
-Acesse [http://localhost:5000](http://localhost:5000) no navegador.
+Acesse [http://127.0.0.1:5000](http://127.0.0.1:5000) no navegador.
+
+### Variáveis de ambiente opcionais
+
+- `SECRET_KEY` — Chave para sessões Flask (gere com `python -c "import secrets; print(secrets.token_hex(32))"`)
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — Para login com Google (opcional)
+- `USE_RELOADER=1` — Habilita reload automático ao editar código
+- `FLASK_RUN_HOST` / `FLASK_RUN_PORT` — Host e porta (padrão: 127.0.0.1:5000)
 
 ## Estrutura do projeto
 
 ```
 .
-├── app.py                 # Aplicação Flask (rotas, API, import Excel)
-├── pyproject.toml         # Configuração do pacote Python
-├── requirements.txt
+├── app.py                 # Aplicação Flask (rotas, API, auth)
+├── auth.py                # Blueprint de autenticação (login, registro, OAuth)
+├── models.py              # Modelo User (SQLAlchemy)
+├── pyproject.toml         # Dependências e config (uv)
+├── uv.lock                # Lock file para instalação reproduzível
 ├── src/
-│   └── tabela_nutricional/   # Pacote principal
-│       ├── __init__.py
-│       └── calculator.py    # Cálculo ANVISA (RDC 429/2020, IN 75/2020)
-├── tests/
-│   └── test_calculator.py
+│   └── tabela_nutricional/   # Pacote de cálculo ANVISA
 ├── static/
-│   ├── app.js             # Frontend (wizard, chamadas à API)
-│   └── styles.css
 ├── templates/
-│   └── index.html
-└── legacy/                # Implementação antiga em JavaScript (referência)
-    ├── README.md
-    ├── anvisaCalculator.js
-    ├── script.js
-    ├── index.html
-    └── styles.css
+├── tests/
+├── deploy/                # Docker e scripts de deploy
+└── legacy/                # Implementação antiga em JavaScript
 ```
 
 ## API
 
-- **POST /api/calculate** — Recebe `{ product, ingredients }` e retorna dados nutricionais calculados.
-- **POST /api/import-excel** — Recebe arquivo `.xlsx` e retorna lista de ingredientes extraídos.
-
-## Importação de Excel
-
-O arquivo Excel deve conter colunas identificáveis por nomes como: Nome/Ingrediente, Quantidade/Qtd, Kcal, Carboidratos, Proteínas, Gorduras, Fibra, Sódio, etc. O formato `.xlsx` é suportado (requer `openpyxl`).
+- **POST /api/calculate** — Recebe `{ product, ingredients }` e retorna dados nutricionais (requer login).
+- **POST /api/import-excel** — Recebe arquivo `.xlsx` e retorna lista de ingredientes (requer login).
+- **POST /api/subscribe** — Cadastro de e-mail para newsletter.
 
 ## Testes
 
 ```bash
-pip install -e ".[dev]"
-pytest
+uv sync --group dev
+uv run pytest
 ```
 
-## Legado
+## Deploy com Docker
 
-A pasta `legacy/` contém a versão original em JavaScript (calculadora e app standalone). A aplicação atual usa o backend Python e o frontend em `static/app.js` (API).
+```bash
+cd deploy
+docker compose build
+docker compose up -d
+```
+
+Consulte `deploy/HOSTINGER_DNS_SETUP.md` para configurar DNS no Hostinger.

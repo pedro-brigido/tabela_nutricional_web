@@ -16,8 +16,16 @@ _root = Path(__file__).resolve().parent
 if str(_root / "src") not in sys.path:
     sys.path.insert(0, str(_root / "src"))
 
-from flask import Flask, jsonify, render_template, request
+# Load .env from project root if present (for SECRET_KEY, GOOGLE_* etc.)
+if (_root / ".env").exists():
+    from dotenv import load_dotenv
+    load_dotenv(_root / ".env")
 
+from flask import Flask, redirect, jsonify, render_template, request, url_for
+from flask_login import LoginManager, login_required
+
+from auth import auth_bp, init_oauth
+from models import User, db
 from tabela_nutricional import calculate_legacy as anvisa_calculate
 
 try:
@@ -34,11 +42,44 @@ app = Flask(
 )
 
 # ---------------------------------------------------------------------------
-# SQLite helpers for email subscriptions
+# Config
 # ---------------------------------------------------------------------------
 DATA_DIR = Path(os.environ.get("DATA_DIR", Path(__file__).resolve().parent / "data"))
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 DB_PATH = DATA_DIR / "subscribers.db"
+
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "change-me-in-production")
+app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DATA_DIR / 'app.db'}"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["GOOGLE_CLIENT_ID"] = os.environ.get("GOOGLE_CLIENT_ID", "")
+app.config["GOOGLE_CLIENT_SECRET"] = os.environ.get("GOOGLE_CLIENT_SECRET", "")
+
+db.init_app(app)
+with app.app_context():
+    db.create_all()
+
+login_manager = LoginManager(app)
+login_manager.login_view = "auth.login"
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return db.session.get(User, int(user_id))
+
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    if request.is_json or request.accept_mimetypes.best == "application/json":
+        return jsonify({"error": "Não autorizado. Faça login."}), 401
+    return redirect(url_for("auth.login", next=request.url))
+
+
+init_oauth(app)
+app.register_blueprint(auth_bp)
+
+# ---------------------------------------------------------------------------
+# SQLite helpers for email subscriptions
+# ---------------------------------------------------------------------------
 
 
 def _get_db() -> sqlite3.Connection:
@@ -163,6 +204,7 @@ def health():
 
 
 @app.route("/api/calculate", methods=["POST"])
+@login_required
 def api_calculate():
     """Calculate nutritional table from product and ingredients."""
     data = request.get_json()
@@ -190,6 +232,7 @@ def api_calculate():
 
 
 @app.route("/api/import-excel", methods=["POST"])
+@login_required
 def api_import_excel():
     """Parse Excel file and return ingredients list."""
     if not HAS_OPENPYXL:
@@ -243,15 +286,17 @@ def api_subscribe():
 def main():
     import os
     import sys
-    
-    # Fix for corrupted Python executable path in Flask's debug reloader
-    # If sys.executable points to a non-existent file, disable the reloader
-    use_reloader = True
-    if not os.path.exists(sys.executable):
-        # Disable reloader to avoid FileNotFoundError on restart
+
+    # Reloader is off by default so the server runs in the main process (avoids
+    # FileNotFoundError when sys.executable is wrong in the reloader subprocess).
+    # Set USE_RELOADER=1 to enable auto-reload on code changes.
+    use_reloader = os.environ.get("USE_RELOADER", "").lower() in ("1", "true", "yes")
+    if use_reloader and not os.path.exists(sys.executable):
         use_reloader = False
-    
-    app.run(debug=True, port=5000, use_reloader=use_reloader)
+
+    host = os.environ.get("FLASK_RUN_HOST", "127.0.0.1")
+    port = int(os.environ.get("FLASK_RUN_PORT", "5000"))
+    app.run(debug=True, host=host, port=port, use_reloader=use_reloader)
 
 
 if __name__ == "__main__":

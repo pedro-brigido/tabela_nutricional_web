@@ -38,6 +38,21 @@ test_venv/
 instance/
 .webassets-cache
 
+# Data and databases (local / runtime)
+data/
+*.db
+*.sqlite
+*.sqlite3
+subscribers_*.csv
+
+# Environment and secrets (keep .env.example)
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
 # IDE
 .vscode/
 .idea/
@@ -49,12 +64,12 @@ instance/
 .DS_Store
 Thumbs.db
 
-# Environment variables
-.env
-.env.local
+# Testing / coverage
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.mypy_cache/
 
-# Logs
-*.log
-
-#Subscribers
-subscribers_*.csv
+# uv
+.uv/
