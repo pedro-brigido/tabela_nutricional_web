@@ -4,8 +4,11 @@ Flask web application - Python translation of the original JS codebase.
 """
 
 import io
+import os
 import re
+import sqlite3
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 # Allow importing tabela_nutricional from repo root without installing the package
@@ -29,6 +32,27 @@ app = Flask(
     static_folder="static",
     static_url_path="/static",
 )
+
+# ---------------------------------------------------------------------------
+# SQLite helpers for email subscriptions
+# ---------------------------------------------------------------------------
+DATA_DIR = Path(os.environ.get("DATA_DIR", Path(__file__).resolve().parent / "data"))
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+DB_PATH = DATA_DIR / "subscribers.db"
+
+
+def _get_db() -> sqlite3.Connection:
+    conn = sqlite3.connect(str(DB_PATH))
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS subscribers ("
+        "  id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "  email TEXT UNIQUE NOT NULL,"
+        "  subscribed_at TEXT NOT NULL,"
+        "  ip TEXT"
+        ")"
+    )
+    conn.commit()
+    return conn
 
 
 def _find_column(headers: list, terms: list) -> int:
@@ -191,6 +215,29 @@ def api_import_excel():
         return jsonify({"error": "Nenhum ingrediente válido encontrado."}), 400
 
     return jsonify({"ingredients": ingredients})
+
+
+@app.route("/api/subscribe", methods=["POST"])
+def api_subscribe():
+    """Save newsletter email to SQLite."""
+    data = request.get_json(silent=True) or {}
+    email = (data.get("email") or "").strip().lower()
+
+    if not email or not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
+        return jsonify({"error": "E-mail inválido."}), 400
+
+    try:
+        conn = _get_db()
+        conn.execute(
+            "INSERT OR IGNORE INTO subscribers (email, subscribed_at, ip) VALUES (?, ?, ?)",
+            (email, datetime.now(timezone.utc).isoformat(), request.remote_addr),
+        )
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        return jsonify({"error": f"Erro ao salvar: {e}"}), 500
+
+    return jsonify({"ok": True, "message": "E-mail cadastrado com sucesso!"})
 
 
 def main():

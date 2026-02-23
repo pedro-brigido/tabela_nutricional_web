@@ -1,3 +1,5 @@
+name: tabela-nutricional
+
 services:
   # Flask web application
   web:
@@ -10,6 +12,10 @@ services:
       - terracota_network
     expose:
       - "5000"
+    environment:
+      - DATA_DIR=/app/data
+    volumes:
+      - tabela_data:/app/data
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
       interval: 30s
@@ -20,3 +26,6 @@ services:
 networks:
   terracota_network:
     external: true
+
+volumes:
+  tabela_data:

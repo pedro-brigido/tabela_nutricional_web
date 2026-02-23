@@ -23,8 +23,10 @@ COPY src/ /app/src/
 COPY static/ /app/static/
 COPY templates/ /app/templates/
 
-# Create non-root user for security
-RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
+# Create non-root user for security and data directory
+RUN useradd -m -u 1000 appuser && \
+    mkdir -p /app/data && \
+    chown -R appuser:appuser /app
 USER appuser
 
 # Expose port

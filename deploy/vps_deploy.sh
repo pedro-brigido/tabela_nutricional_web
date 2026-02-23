@@ -21,14 +21,14 @@ echo -e "${BLUE}======================================${NC}"
 echo ""
 
 # Verificar se está rodando como root ou com sudo
-if [ "$EUID" -ne 0 ]; then
+if [ "$(id -u)" -ne 0 ]; then
     echo -e "${RED}Este script precisa ser executado como root ou com sudo${NC}"
     echo "Execute: sudo $0"
     exit 1
 fi
 
 # Detectar diretório do script
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"
 
 # =============================================================================

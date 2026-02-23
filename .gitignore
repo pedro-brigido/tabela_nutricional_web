@@ -55,3 +55,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+#Subscribers
+subscribers_*.csv

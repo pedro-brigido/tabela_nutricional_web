@@ -296,13 +296,48 @@
                     Receba atualizações semanais e alertas imediatos sobre mudanças normativas (RDCs, ANVISA, MAPA) que impactam o seu setor específico.
                 </p>
                 
-                <form class="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto" onsubmit="event.preventDefault(); alert('Em breve!');">
-                    <input type="email" placeholder="Seu e-mail corporativo" required class="flex-grow bg-terracota-surfaceHighlight border border-white/10 rounded-xl px-6 py-4 text-white focus:outline-none focus:border-terracota-cyan/50 focus:ring-1 focus:ring-terracota-cyan/50 transition-all font-sans placeholder:text-terracota-textMuted/50">
-                    <button type="submit" class="px-8 py-4 bg-terracota-purple hover:bg-terracota-purple/80 text-white font-semibold rounded-xl transition-colors whitespace-nowrap shadow-[0_0_20px_-5px_#7B2CBF]">
+                <form id="radar-form" class="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
+                    <input id="radar-email" type="email" placeholder="Seu e-mail corporativo" required class="flex-grow bg-terracota-surfaceHighlight border border-white/10 rounded-xl px-6 py-4 text-white focus:outline-none focus:border-terracota-cyan/50 focus:ring-1 focus:ring-terracota-cyan/50 transition-all font-sans placeholder:text-terracota-textMuted/50">
+                    <button id="radar-btn" type="submit" class="px-8 py-4 bg-terracota-purple hover:bg-terracota-purple/80 text-white font-semibold rounded-xl transition-colors whitespace-nowrap shadow-[0_0_20px_-5px_#7B2CBF]">
                         Ativar Radar
                     </button>
                 </form>
-                <p class="text-xs text-terracota-textMuted/50 mt-4">Ative seu radar de mercado diário. Sem compromisso.</p>
+                <p id="radar-msg" class="text-xs text-terracota-textMuted/50 mt-4">Ative seu radar de mercado diário. Sem compromisso.</p>
+                <script>
+                document.getElementById('radar-form').addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const email = document.getElementById('radar-email').value.trim();
+                    const btn = document.getElementById('radar-btn');
+                    const msg = document.getElementById('radar-msg');
+                    if (!email) return;
+                    btn.disabled = true;
+                    btn.textContent = 'Enviando...';
+                    try {
+                        const res = await fetch('/api/subscribe', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({email})
+                        });
+                        const data = await res.json();
+                        if (res.ok) {
+                            msg.textContent = '✓ ' + data.message;
+                            msg.classList.remove('text-terracota-textMuted/50');
+                            msg.classList.add('text-green-400');
+                            document.getElementById('radar-email').value = '';
+                        } else {
+                            msg.textContent = '✗ ' + (data.error || 'Erro ao cadastrar.');
+                            msg.classList.remove('text-terracota-textMuted/50');
+                            msg.classList.add('text-red-400');
+                        }
+                    } catch {
+                        msg.textContent = '✗ Erro de conexão. Tente novamente.';
+                        msg.classList.add('text-red-400');
+                    } finally {
+                        btn.disabled = false;
+                        btn.textContent = 'Ativar Radar';
+                    }
+                });
+                </script>
             </div>
         </section>
 
