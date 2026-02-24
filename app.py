@@ -23,6 +23,7 @@ if (_root / ".env").exists():
 
 from flask import Flask, redirect, jsonify, render_template, request, url_for
 from flask_login import LoginManager, login_required
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from auth import auth_bp, init_oauth
 from models import User, db
@@ -40,6 +41,7 @@ app = Flask(
     static_folder="static",
     static_url_path="/static",
 )
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 # ---------------------------------------------------------------------------
 # Config

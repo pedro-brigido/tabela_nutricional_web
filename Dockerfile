@@ -9,8 +9,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock ./
-RUN uv pip install --system --no-cache -e .
+COPY requirements.txt ./
+RUN uv pip install --system --no-cache -r requirements.txt
 
 # Stage final - imagem de produção
 FROM python:3.11-slim
