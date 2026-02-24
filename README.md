@@ -39,6 +39,8 @@ Acesse [http://127.0.0.1:5000](http://127.0.0.1:5000) no navegador.
 
 - `SECRET_KEY` — Chave para sessões Flask (gere com `python -c "import secrets; print(secrets.token_hex(32))"`)
 - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — Para login com Google (opcional)
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_USE_TLS`, `EMAIL_FROM` — SMTP para envio de e-mails
+- `NEWSLETTER_NOTIFY_EMAIL` — E-mail que recebe aviso a cada submissão de newsletter (padrão: `comercial@terracotabpo.com`)
 - `USE_RELOADER=1` — Habilita reload automático ao editar código
 - `FLASK_RUN_HOST` / `FLASK_RUN_PORT` — Host e porta (padrão: 127.0.0.1:5000)
 

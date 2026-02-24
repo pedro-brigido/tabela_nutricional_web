@@ -26,6 +26,7 @@ from flask_login import LoginManager, login_required
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from auth import auth_bp, init_oauth
+from email_service import send_newsletter_notification
 from models import User, db
 from tabela_nutricional import calculate_legacy as anvisa_calculate
 
@@ -55,6 +56,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DATA_DIR / 'app.db'}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["GOOGLE_CLIENT_ID"] = os.environ.get("GOOGLE_CLIENT_ID", "")
 app.config["GOOGLE_CLIENT_SECRET"] = os.environ.get("GOOGLE_CLIENT_SECRET", "")
+app.config["NEWSLETTER_NOTIFY_EMAIL"] = os.environ.get("NEWSLETTER_NOTIFY_EMAIL", "comercial@terracotabpo.com")
 
 db.init_app(app)
 with app.app_context():
@@ -279,6 +281,11 @@ def api_subscribe():
         )
         conn.commit()
         conn.close()
+
+        send_newsletter_notification(
+            subscriber_email=email,
+            notify_email=app.config["NEWSLETTER_NOTIFY_EMAIL"],
+        )
     except Exception as e:
         return jsonify({"error": f"Erro ao salvar: {e}"}), 500
 

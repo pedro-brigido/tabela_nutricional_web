@@ -7,6 +7,7 @@ from email_validator import EmailNotValidError, validate_email
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
+from email_service import send_welcome_email
 from models import User, db
 
 auth_bp = Blueprint("auth", __name__, url_prefix="")
@@ -108,6 +109,7 @@ def register():
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
+        send_welcome_email(user_name=user.name, user_email=user.email)
         login_user(user)
         return redirect(url_for("index"))
     return render_template("register.html")
@@ -168,5 +170,6 @@ def google_callback():
     )
     db.session.add(user)
     db.session.commit()
+    send_welcome_email(user_name=user.name, user_email=user.email)
     login_user(user)
     return redirect(url_for("index"))

@@ -46,8 +46,8 @@ def test_rounded_components_from_raw():
         Decimal("2.15"),
         Decimal("1.05"),
     )
-    assert comp.carbs == Decimal("10.4")  # half-up 1 dec
-    assert comp.proteins == Decimal("5.2")
+    assert comp.carbs == Decimal("10")  # >=10g rounds to integer (half-up)
+    assert comp.proteins == Decimal("5.3")
     assert comp.total_fat == Decimal("2.2")
     assert comp.soluble_fiber == Decimal("1.1")
 
