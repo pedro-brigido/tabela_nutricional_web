@@ -33,7 +33,7 @@ RUN useradd -m -u 1000 appuser && \
     mkdir -p /app/data && \
     chown -R appuser:appuser /app
 
-COPY app.py auth.py models.py ./
+COPY app.py auth.py models.py email_service.py ./
 COPY src/ ./src/
 COPY static/ ./static/
 COPY templates/ ./templates/
