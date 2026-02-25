@@ -86,9 +86,9 @@ echo ""
 echo "Limpando recursos Docker após build..."
 docker image prune -f 2>/dev/null || true
 
-# Iniciar containers
+# Iniciar containers (o entrypoint já roda: flask db upgrade + flask seed-plans)
 echo ""
-echo "Iniciando containers..."
+echo "Iniciando containers (migrações e seed dos planos rodam automaticamente no startup)..."
 docker compose up -d
 
 echo ""
@@ -98,9 +98,9 @@ echo ""
 # =============================================================================
 echo -e "${YELLOW}Passo 3: Verificando saúde dos serviços...${NC}"
 
-# Aguardar inicialização
-echo "Aguardando serviços iniciarem..."
-sleep 10
+# Aguardar entrypoint terminar (migrações + seed + gunicorn)
+echo "Aguardando migrações, seed e servidor iniciarem..."
+sleep 15
 
 # Verificar containers
 echo ""
@@ -158,9 +158,13 @@ echo ""
 echo -e "${BLUE}Para mais detalhes, consulte: deploy/HOSTINGER_DNS_SETUP.md${NC}"
 
 echo ""
+echo -e "${GREEN}Migrações e seed:${NC} rodam automaticamente no startup do container (entrypoint)."
+echo ""
 echo -e "${YELLOW}Comandos úteis:${NC}"
 echo "  docker compose logs -f        # Ver logs em tempo real"
 echo "  docker compose logs web       # Ver logs do servidor web"
+echo "  docker compose exec web flask db upgrade   # Reaplicar migrações (se necessário)"
+echo "  docker compose exec web flask seed-plans  # Recarregar planos"
 echo "  docker compose ps             # Ver status dos containers"
 echo "  docker compose restart        # Reiniciar todos os serviços"
 echo "  docker compose down           # Parar todos os serviços"

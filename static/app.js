@@ -17,6 +17,17 @@ const state = {
     calculatedData: null
 };
 
+function getCsrfToken() {
+    const el = document.querySelector('meta[name="csrf-token"]');
+    return el?.getAttribute('content') || '';
+}
+
+function withCsrfHeaders(headers = {}) {
+    const token = getCsrfToken();
+    if (!token) return headers;
+    return { ...headers, 'X-CSRFToken': token };
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
 });
@@ -341,7 +352,7 @@ async function calculateResult() {
     try {
         const res = await fetch('/api/calculate', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: withCsrfHeaders({ 'Content-Type': 'application/json' }),
             body: JSON.stringify(payload)
         });
         if (res.status === 401) {
@@ -488,6 +499,7 @@ async function handleExcelUpload(file) {
 
         const res = await fetch('/api/import-excel', {
             method: 'POST',
+            headers: withCsrfHeaders({}),
             body: formData
         });
         if (res.status === 401) {

@@ -33,16 +33,23 @@ RUN useradd -m -u 1000 appuser && \
     mkdir -p /app/data && \
     chown -R appuser:appuser /app
 
-COPY app.py auth.py models.py email_service.py ./
+COPY wsgi.py ./
+COPY app/ ./app/
 COPY src/ ./src/
 COPY static/ ./static/
 COPY templates/ ./templates/
+COPY migrations/ ./migrations/
+COPY entrypoint.sh ./
+
+RUN chmod +x /app/entrypoint.sh && chown appuser:appuser /app/entrypoint.sh
 
 USER appuser
 
 EXPOSE 5000
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+ENV FLASK_APP=wsgi:app
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--threads", "2", "--timeout", "120", "--access-logfile", "-", "--error-logfile", "-", "app:app"]
+ENTRYPOINT ["/app/entrypoint.sh"]

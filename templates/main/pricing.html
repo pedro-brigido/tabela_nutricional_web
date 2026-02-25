@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+{% block title %}Planos e Preços | Terracota{% endblock %}
+{% block content %}
+{% if bootstrap_error %}
+<div class="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-sm text-red-200">
+    <strong class="block mb-1">Atenção (bootstrap)</strong>
+    {{ bootstrap_error }}
+</div>
+{% elif bootstrap_warning %}
+<div class="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl text-sm text-yellow-200">
+    <strong class="block mb-1">Aviso</strong>
+    {{ bootstrap_warning }}
+</div>
+{% endif %}
+
+{% set cta_start = url_for('auth.register') %}
+{% set cta_unlimited = url_for('support.contact', category='billing', subject='Teste Unlimited (14 dias)', plan='flow_studio') %}
+
+<section class="text-center mb-14">
+    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-terracota-cyan/20 bg-terracota-cyan/5 mb-6">
+        <span class="w-2 h-2 rounded-full bg-terracota-cyan animate-pulse"></span>
+        <span class="text-xs font-medium text-terracota-cyan uppercase tracking-wider">Planos & Assinatura</span>
+    </div>
+
+    <h1 class="text-4xl md:text-5xl font-heading font-bold mb-4 leading-tight">
+        Tabelas nutricionais rápidas + monitoramento de normas para você não ser pego de surpresa.
+    </h1>
+    <p class="text-terracota-textMuted text-lg max-w-3xl mx-auto leading-relaxed">
+        Crie tabelas nutricionais com poucos cliques e receba resumos e alertas sobre mudanças relevantes em normas.
+        Cresça do Free ao Unlimited conforme sua demanda aumenta.
+    </p>
+
+    <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="{{ cta_start }}" class="px-6 py-3 bg-terracota-cyan text-terracota-base font-semibold rounded-xl hover:bg-white transition-colors shadow-[0_0_20px_-5px_rgba(0,240,255,0.25)]">
+            Começar grátis (Free)
+        </a>
+        <a href="{{ cta_unlimited }}" class="px-6 py-3 bg-terracota-surfaceHighlight border border-white/10 text-white font-semibold rounded-xl hover:bg-white/5 transition-colors">
+            Testar Unlimited por 14 dias (Studio)
+        </a>
+    </div>
+
+    <p class="mt-6 text-xs text-terracota-textMuted max-w-3xl mx-auto">
+        <strong class="text-white/90">Nota de transparência:</strong>
+        O Terracota Pulse ajuda você a se manter atualizado com resumos e alertas relevantes.
+        A validação final e a adequação ao seu contexto dependem do seu produto/processo.
+    </p>
+</section>
+
+<section class="mb-14">
+    <h2 class="text-2xl md:text-3xl font-heading font-bold mb-6">Como funciona</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
+            <div class="w-12 h-12 rounded-xl bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-4">
+                <i class="ph ph-table text-2xl"></i>
+            </div>
+            <h3 class="font-semibold mb-2">Crie sua tabela</h3>
+            <p class="text-sm text-terracota-textMuted leading-relaxed">
+                Adicione ingredientes, gere a tabela e exporte em poucos passos.
+            </p>
+        </div>
+        <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
+            <div class="w-12 h-12 rounded-xl bg-terracota-purple/10 border border-terracota-purple/20 flex items-center justify-center text-terracota-purple mb-4">
+                <i class="ph ph-pulse text-2xl"></i>
+            </div>
+            <h3 class="font-semibold mb-2">Receba o Pulse</h3>
+            <p class="text-sm text-terracota-textMuted leading-relaxed">
+                Newsletter + alertas das mudanças mais importantes — sem ruído.
+            </p>
+        </div>
+        <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
+            <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-4">
+                <i class="ph ph-trend-up text-2xl"></i>
+            </div>
+            <h3 class="font-semibold mb-2">Evolua quando precisar</h3>
+            <p class="text-sm text-terracota-textMuted leading-relaxed">
+                Mais tabelas/mês, mais ingredientes/tabela, mais monitoramento e exports melhores.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="mb-12" id="plans">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+        <div>
+            <h2 class="text-2xl md:text-3xl font-heading font-bold">Planos</h2>
+            <p class="text-terracota-textMuted text-sm mt-2">Sem pagamento online por enquanto. As assinaturas são ativadas manualmente (suporte).</p>
+        </div>
+        <div class="text-sm text-terracota-textMuted">
+            <a href="#compare" class="hover:text-white transition-colors">Ver tabela comparativa</a>
+            <span class="mx-2 text-white/10">|</span>
+            <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+        </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for p in plans %}
+        {% set is_pro = (p.slug == 'flow_pro') %}
+        {% set is_free = (p.slug == 'free') %}
+        {% set is_start = (p.slug == 'flow_start') %}
+        {% set is_studio = (p.slug == 'flow_studio') %}
+
+        {% if is_free %}
+            {% set subtitle = 'Para quem quer testar sem compromisso.' %}
+            {% set bullets = [
+                '1 tabela/mês',
+                'Até 10 ingredientes por tabela',
+                'Digest Pulse (semanal/quinzenal, sem personalização)',
+                'Visualização/impressão básica',
+            ] %}
+            {% set cta_label = 'Começar grátis' %}
+            {% set cta_href = url_for('auth.register') %}
+        {% elif is_start %}
+            {% set subtitle = 'Para quem está começando a produzir com consistência.' %}
+            {% set bullets = [
+                '3 tabelas/mês',
+                'Até 25 ingredientes por tabela',
+                'Export PDF básico',
+                'Pulse incluso: newsletter + principais mudanças do mês',
+            ] %}
+            {% set cta_label = 'Assinar Start' %}
+            {% set cta_href = url_for('support.contact', category='billing', subject='Assinar Start', plan='flow_start') %}
+        {% elif is_pro %}
+            {% set subtitle = 'Para quem precisa de mais volume e acompanhamento por tema.' %}
+            {% set bullets = [
+                '10 tabelas/mês',
+                'Até 80 ingredientes por tabela',
+                'Templates + duplicar tabelas',
+                'Export PDF/PNG mais apresentável',
+                'Histórico de versões',
+                'Pulse Pro: monitoramento de até 5 temas + alertas',
+            ] %}
+            {% set cta_label = 'Assinar Pro' %}
+            {% set cta_href = url_for('support.contact', category='billing', subject='Assinar Pro', plan='flow_pro') %}
+        {% else %}
+            {% set subtitle = 'Para operação real: escala, padronização e monitoramento avançado.' %}
+            {% set bullets = [
+                'Tabelas ilimitadas',
+                'Ingredientes ilimitados',
+                'Export premium + branding no PDF (logo/rodapé)',
+                'Biblioteca de templates avançados',
+                'Pulse Advanced: monitoramento de até 15 temas + radar semanal + relatório mensal',
+            ] %}
+            {% set cta_label = 'Testar Unlimited' %}
+            {% set cta_href = url_for('support.contact', category='billing', subject='Teste Unlimited (14 dias)', plan='flow_studio') %}
+        {% endif %}
+
+        <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6 flex flex-col {{ 'ring-2 ring-terracota-cyan/50' if is_pro else '' }}">
+            {% if is_pro %}
+            <span class="self-start px-3 py-1 bg-terracota-cyan/20 text-terracota-cyan text-xs font-bold rounded-full mb-4">Popular</span>
+            {% endif %}
+
+            <h3 class="text-lg font-heading font-bold mb-1">
+                {{ 'Terracota Flow Studio (Unlimited)' if is_studio else p.name }}
+            </h3>
+            <p class="text-sm text-terracota-textMuted mb-4 leading-relaxed">{{ subtitle }}</p>
+
+            <p class="text-3xl font-bold mb-4">
+                {% if p.price_brl > 0 %}
+                R$ {{ "%.2f"|format(p.price_brl) }}<span class="text-sm font-normal text-terracota-textMuted">/mês</span>
+                {% else %}
+                R$ 0
+                {% endif %}
+            </p>
+
+            <ul class="space-y-2 text-sm text-terracota-textMuted flex-grow mb-6">
+                {% for b in bullets %}
+                <li class="flex gap-2">
+                    <i class="ph ph-check text-terracota-cyan mt-0.5"></i>
+                    <span>{{ b }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <a href="{{ cta_href }}" class="block text-center px-4 py-2.5 {{ 'bg-terracota-cyan text-terracota-base font-bold' if is_pro else 'bg-terracota-surfaceHighlight border border-white/10 text-white' }} rounded-xl text-sm hover:bg-white/90 transition-colors">
+                {{ cta_label }}
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="mb-14" id="compare">
+    <h2 class="text-2xl md:text-3xl font-heading font-bold mb-6">Comparativo (recursos × planos)</h2>
+    <div class="overflow-x-auto bg-terracota-surface/60 border border-white/10 rounded-2xl">
+        <table class="min-w-[860px] w-full text-sm">
+            <thead>
+                <tr class="text-left text-terracota-textMuted">
+                    <th class="px-5 py-4 font-semibold">Recurso</th>
+                    <th class="px-5 py-4 font-semibold">Free</th>
+                    <th class="px-5 py-4 font-semibold">Flow Start</th>
+                    <th class="px-5 py-4 font-semibold">Flow Pro</th>
+                    <th class="px-5 py-4 font-semibold">Flow Studio</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+                <tr><td class="px-5 py-4">Tabelas/mês</td><td class="px-5 py-4">1</td><td class="px-5 py-4">3</td><td class="px-5 py-4">10</td><td class="px-5 py-4">&infin;</td></tr>
+                <tr><td class="px-5 py-4">Ingredientes por tabela</td><td class="px-5 py-4">10</td><td class="px-5 py-4">25</td><td class="px-5 py-4">80</td><td class="px-5 py-4">&infin;</td></tr>
+                <tr><td class="px-5 py-4">Pulse (newsletter + resumos)</td><td class="px-5 py-4">Digest</td><td class="px-5 py-4">✅</td><td class="px-5 py-4">✅</td><td class="px-5 py-4">✅</td></tr>
+                <tr><td class="px-5 py-4">Pulse: monitoramento por temas</td><td class="px-5 py-4">—</td><td class="px-5 py-4">—</td><td class="px-5 py-4">5 temas</td><td class="px-5 py-4">15 temas</td></tr>
+                <tr><td class="px-5 py-4">Alertas (quando relevante)</td><td class="px-5 py-4">—</td><td class="px-5 py-4">Básico</td><td class="px-5 py-4">✅</td><td class="px-5 py-4">Prioritário</td></tr>
+                <tr><td class="px-5 py-4">Templates e duplicar tabela</td><td class="px-5 py-4">—</td><td class="px-5 py-4">Básico</td><td class="px-5 py-4">✅</td><td class="px-5 py-4">Avançado</td></tr>
+                <tr><td class="px-5 py-4">Histórico de versões</td><td class="px-5 py-4">—</td><td class="px-5 py-4">—</td><td class="px-5 py-4">✅</td><td class="px-5 py-4">✅</td></tr>
+                <tr><td class="px-5 py-4">Export PDF</td><td class="px-5 py-4">Básico</td><td class="px-5 py-4">✅</td><td class="px-5 py-4">✅</td><td class="px-5 py-4">✅ Premium</td></tr>
+                <tr><td class="px-5 py-4">Export PNG alta qualidade</td><td class="px-5 py-4">—</td><td class="px-5 py-4">—</td><td class="px-5 py-4">✅</td><td class="px-5 py-4">✅</td></tr>
+                <tr><td class="px-5 py-4">Branding no PDF (logo/rodapé)</td><td class="px-5 py-4">—</td><td class="px-5 py-4">—</td><td class="px-5 py-4">—</td><td class="px-5 py-4">✅</td></tr>
+                <tr><td class="px-5 py-4">Suporte</td><td class="px-5 py-4">Base</td><td class="px-5 py-4">Base</td><td class="px-5 py-4">Prioritário</td><td class="px-5 py-4">Prioritário</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="mb-14">
+    <h2 class="text-2xl md:text-3xl font-heading font-bold mb-4">O que é o Pulse (incluso nos planos pagos)</h2>
+    <p class="text-terracota-textMuted leading-relaxed max-w-4xl">
+        <strong class="text-white/90">Terracota Pulse</strong> = newsletter + alertas (gerais e por tema) sobre mudanças relevantes em normas, com foco em impacto prático.
+    </p>
+    <div class="grid md:grid-cols-3 gap-6 mt-6">
+        <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
+            <h3 class="font-semibold mb-2">Start</h3>
+            <p class="text-sm text-terracota-textMuted">Resumos e curadoria geral.</p>
+        </div>
+        <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
+            <h3 class="font-semibold mb-2">Pro</h3>
+            <p class="text-sm text-terracota-textMuted">Monitoramento de até 5 temas + alertas.</p>
+        </div>
+        <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
+            <h3 class="font-semibold mb-2">Studio</h3>
+            <p class="text-sm text-terracota-textMuted">Monitoramento de até 15 temas + radar + relatório.</p>
+        </div>
+    </div>
+</section>
+
+<section class="mb-14">
+    <h2 class="text-2xl md:text-3xl font-heading font-bold mb-4">Garantia / Cancelamento</h2>
+    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
+        <p class="text-terracota-textMuted leading-relaxed">
+            Cancele quando quiser. Sem multa. Você mantém acesso até o fim do período pago.
+        </p>
+    </div>
+</section>
+
+<section class="mb-6" id="faq">
+    <h2 class="text-2xl md:text-3xl font-heading font-bold mb-6">FAQ</h2>
+    <div class="space-y-3">
+        <details class="bg-terracota-surface border border-white/10 rounded-xl p-5">
+            <summary class="cursor-pointer font-semibold">O que conta como “tabela”?</summary>
+            <p class="text-sm text-terracota-textMuted mt-3 leading-relaxed">
+                Cada geração final conta como 1. (Você pode permitir rascunho sem consumir, e só consumir ao “finalizar”.)
+            </p>
+        </details>
+        <details class="bg-terracota-surface border border-white/10 rounded-xl p-5">
+            <summary class="cursor-pointer font-semibold">O que é “ingrediente”?</summary>
+            <p class="text-sm text-terracota-textMuted mt-3 leading-relaxed">
+                Cada item inserido na lista de composição da tabela.
+            </p>
+        </details>
+        <details class="bg-terracota-surface border border-white/10 rounded-xl p-5">
+            <summary class="cursor-pointer font-semibold">Posso mudar de plano depois?</summary>
+            <p class="text-sm text-terracota-textMuted mt-3 leading-relaxed">
+                Sim. Upgrade é imediato; downgrade pode valer no próximo ciclo.
+            </p>
+        </details>
+        <details class="bg-terracota-surface border border-white/10 rounded-xl p-5">
+            <summary class="cursor-pointer font-semibold">O Pulse garante conformidade?</summary>
+            <p class="text-sm text-terracota-textMuted mt-3 leading-relaxed">
+                Ele ajuda você a se manter atualizado e informado. A validação final depende do contexto do produto e revisão responsável.
+            </p>
+        </details>
+    </div>
+</section>
+
+<div class="mt-10 text-center">
+    <p class="text-sm text-terracota-textMuted mb-4">
+        Para ativar assinatura agora, fale com a equipe. Pagamento online será disponibilizado em uma etapa separada.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="{{ url_for('support.contact', category='billing', subject='Quero fazer upgrade', source='pricing') }}" class="px-6 py-3 bg-terracota-surfaceHighlight border border-white/10 text-white font-semibold rounded-xl hover:bg-white/5 transition-colors">
+            Falar com suporte
+        </a>
+        <a href="{{ url_for('main.index') }}" class="px-6 py-3 border border-white/10 rounded-xl text-sm text-terracota-textMuted hover:text-white hover:bg-white/5 transition-colors">
+            Voltar ao início
+        </a>
+    </div>
+</div>
+{% endblock %}

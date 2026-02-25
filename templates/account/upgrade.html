@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Planos | Terracota{% endblock %}
+{% block content %}
+<div class="text-center mb-12">
+    <h1 class="text-3xl font-heading font-bold mb-4">Escolha seu plano</h1>
+    <p class="text-terracota-textMuted">Seu plano atual: <span class="text-terracota-cyan font-semibold">{{ current_plan.name }}</span></p>
+</div>
+
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+    {% for p in plans %}
+    <div class="bg-terracota-surface border {{ 'border-terracota-cyan/50' if p.slug == current_plan.slug else 'border-white/10' }} rounded-2xl p-6 flex flex-col relative">
+        {% if p.slug == current_plan.slug %}
+        <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-terracota-cyan text-terracota-base text-xs font-bold rounded-full">Atual</span>
+        {% endif %}
+
+        <h3 class="text-lg font-heading font-bold mb-1">{{ p.name }}</h3>
+        <p class="text-2xl font-bold mb-4">
+            {% if p.price_brl > 0 %}
+            R$ {{ "%.2f"|format(p.price_brl) }}<span class="text-sm font-normal text-terracota-textMuted">/mês</span>
+            {% else %}
+            Grátis
+            {% endif %}
+        </p>
+
+        <ul class="space-y-2 text-sm text-terracota-textMuted flex-grow mb-6">
+            <li><i class="ph ph-check text-terracota-cyan mr-1"></i> {{ p.max_tables_per_month if p.max_tables_per_month else '&infin;' | safe }} tabelas/mês</li>
+            <li><i class="ph ph-check text-terracota-cyan mr-1"></i> {{ p.max_ingredients_per_table if p.max_ingredients_per_table else '&infin;' | safe }} ingredientes</li>
+            {% if p.has_templates %}<li><i class="ph ph-check text-terracota-cyan mr-1"></i> Templates</li>{% endif %}
+            {% if p.has_pdf_export %}<li><i class="ph ph-check text-terracota-cyan mr-1"></i> Export PDF/PNG</li>{% endif %}
+            {% if p.has_version_history %}<li><i class="ph ph-check text-terracota-cyan mr-1"></i> Histórico de versões</li>{% endif %}
+            {% if p.has_branding %}<li><i class="ph ph-check text-terracota-cyan mr-1"></i> Branding no PDF</li>{% endif %}
+        </ul>
+
+        {% if p.slug != current_plan.slug %}
+        <a href="{{ url_for('support.contact') }}" class="block text-center px-4 py-2.5 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">
+            Fale conosco
+        </a>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<p class="text-center text-sm text-terracota-textMuted mt-8">
+    Pagamento online em breve. Para upgrade, entre em contato com nossa equipe.
+</p>
+{% endblock %}

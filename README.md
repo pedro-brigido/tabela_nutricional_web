@@ -1,6 +1,6 @@
 # Terracota | Calculadora Nutricional
 
-Calculadora nutricional em conformidade com a **RDC 429/2020** e **IN 75/2020** (ANVISA). Projeto Python com aplicação Flask. Gerenciado com [uv](https://docs.astral.sh/uv/).
+Calculadora nutricional em conformidade com a **RDC 429/2020** e **IN 75/2020** (ANVISA). Aplicação Flask com controle de acesso por planos (Free, Flow Start, Flow Pro, Flow Studio). Gerenciado com [uv](https://docs.astral.sh/uv/).
 
 ## Requisitos
 
@@ -22,51 +22,108 @@ uv sync
 
 ## Como executar
 
+A aplicação usa **application factory** e o entry point é `wsgi.py` (não existe mais `app.py`).
+
 ```bash
-# Opção 1: uv run (recomendado, usa o ambiente gerenciado pelo uv)
-uv run python app.py
+# Opção 1: Servidor de desenvolvimento (recomendado local)
+# Requer FLASK_APP=wsgi:app no .env (já está em .env.example)
+uv run flask run
 
-# Opção 2: Script auxiliar
-./run.sh
+# Opção 2: Via wsgi.py (inicia app com create_app, não depende de FLASK_APP)
+uv run python wsgi.py
 
-# Opção 3: Python do venv diretamente
-.venv/bin/python app.py
+# Opção 3: Gunicorn (produção)
+uv run gunicorn --bind 0.0.0.0:5000 wsgi:app
 ```
 
 Acesse [http://127.0.0.1:5000](http://127.0.0.1:5000) no navegador.
 
-### Variáveis de ambiente opcionais
+### Variáveis de ambiente
 
-- `SECRET_KEY` — Chave para sessões Flask (gere com `python -c "import secrets; print(secrets.token_hex(32))"`)
-- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — Para login com Google (opcional)
-- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_USE_TLS`, `EMAIL_FROM` — SMTP para envio de e-mails
-- `NEWSLETTER_NOTIFY_EMAIL` — E-mail que recebe aviso a cada submissão de newsletter (padrão: `comercial@terracotabpo.com`)
-- `USE_RELOADER=1` — Habilita reload automático ao editar código
-- `FLASK_RUN_HOST` / `FLASK_RUN_PORT` — Host e porta (padrão: 127.0.0.1:5000)
+Copie `.env.example` para `.env` e ajuste conforme necessário.
+
+| Variável | Descrição |
+|----------|-----------|
+| `FLASK_ENV` | `development`, `testing` ou `production` |
+| `SECRET_KEY` | Chave para sessões (gere com `python -c "import secrets; print(secrets.token_hex(32))"`) |
+| `DATA_DIR` | Diretório para `app.db` e `subscribers.db` (padrão: `./data`) |
+| `DATABASE_URL` | URI do banco (padrão: `sqlite:///{DATA_DIR}/app.db`) |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Login com Google (opcional) |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_USE_TLS`, `EMAIL_FROM` | SMTP para e-mails transacionais |
+| `NEWSLETTER_NOTIFY_EMAIL` | E-mail que recebe aviso de newsletter (padrão: `comercial@terracotabpo.com`) |
+| `USE_RELOADER` | `1` para reload automático ao editar (apenas com `python wsgi.py`) |
+| `FLASK_RUN_HOST` / `FLASK_RUN_PORT` | Host e porta (padrão: 127.0.0.1:5000) |
+
+## Banco de dados e migrações
+
+O schema é gerenciado pelo **Alembic** (Flask-Migrate).
+
+```bash
+# Aplicar migrações
+uv run flask db upgrade
+
+# Criar nova migração (após alterar models)
+uv run flask db migrate -m "descrição"
+
+# Comandos CLI úteis
+uv run flask seed-plans              # Popular tabela de planos (Free, Flow Start, etc.)
+uv run flask create-admin <email>    # Tornar usuário admin
+uv run flask backfill-free-plan      # Atribuir plano Free a usuários sem assinatura
+uv run flask anonymize-deleted       # Anonimizar contas soft-deleted há 30+ dias
+```
 
 ## Estrutura do projeto
 
 ```
 .
-├── app.py                 # Aplicação Flask (rotas, API, auth)
-├── auth.py                # Blueprint de autenticação (login, registro, OAuth)
-├── models.py              # Modelo User (SQLAlchemy)
-├── pyproject.toml         # Dependências e config (uv)
-├── uv.lock                # Lock file para instalação reproduzível
-├── src/
-│   └── tabela_nutricional/   # Pacote de cálculo ANVISA
+├── wsgi.py                # Entry point (create_app + gunicorn)
+├── app/
+│   ├── __init__.py        # create_app() — application factory
+│   ├── config.py          # Config Dev/Test/Prod
+│   ├── extensions.py      # db, login_manager, csrf, limiter, migrate
+│   ├── decorators.py      # @require_entitlement, @require_quota, @require_role
+│   ├── errors.py           # Handlers 400, 403, 404, 429, 500
+│   ├── middleware.py       # Security headers, request logging
+│   ├── cli.py             # Comandos Flask (seed-plans, create-admin, etc.)
+│   ├── models/            # User, Plan, Subscription, UsageRecord, NutritionTable, AuditLog, SupportTicket
+│   ├── services/          # plan_service, usage_service, table_service, auth_service, audit_service, email_service
+│   └── blueprints/        # auth, main, calculator, account, admin, support
+├── migrations/            # Alembic
+├── src/tabela_nutricional/  # Cálculo ANVISA
 ├── static/
-├── templates/
+├── templates/             # base, auth/, main/, account/, admin/, support/, errors/
 ├── tests/
-├── deploy/                # Docker e scripts de deploy
-└── legacy/                # Implementação antiga em JavaScript
+├── deploy/                # Docker e scripts
+├── pyproject.toml
+└── .env.example
 ```
 
-## API
+## Planos e funcionalidades
 
-- **POST /api/calculate** — Recebe `{ product, ingredients }` e retorna dados nutricionais (requer login).
-- **POST /api/import-excel** — Recebe arquivo `.xlsx` e retorna lista de ingredientes (requer login).
-- **POST /api/subscribe** — Cadastro de e-mail para newsletter.
+| Plano | Tabelas/mês | Ingredientes/tabela | Recursos |
+|-------|-------------|---------------------|----------|
+| **Free** | 1 | 10 | Pulse Digest |
+| **Flow Start** (R$ 39,90) | 3 | 25 | Pulse geral |
+| **Flow Pro** (R$ 79,90) | 10 | 80 | Templates, PDF/PNG, histórico, Pulse Pro (5 temas + alertas) |
+| **Flow Studio** (R$ 199,90) | Ilimitado | Ilimitado | Branding PDF, Pulse Advanced (15 temas + radar) |
+
+Assinaturas são atribuídas manualmente ou via admin; integração de pagamento (Stripe/MercadoPago) está planejada para fase futura.
+
+## Rotas principais
+
+- **/** — Landing
+- **/pricing** — Planos e preços
+- **/health** — Health check (inclui status do banco)
+- **/login**, **/register**, **/logout** — Auth
+- **/forgot-password**, **/reset-password/<token>** — Redefinição de senha
+- **/verify-email/<token>** — Verificação de e-mail
+- **/account** — Minha Conta (plano, consumo, configurações, upgrade)
+- **/help**, **/contact** — Suporte
+- **/admin/** — Painel admin (requer `is_admin`); usuários, planos, quotas, logs, tickets
+- **POST /api/calculate** — Calcular tabela nutricional (requer login, respeita quota de ingredientes)
+- **POST /api/import-excel** — Importar ingredientes de Excel
+- **POST /api/tables**, **GET /api/tables**, **GET /api/tables/<id>**, **DELETE /api/tables/<id>** — CRUD de tabelas salvas (consome quota ao salvar)
+- **POST /api/subscribe** — Newsletter
 
 ## Testes
 
@@ -75,12 +132,33 @@ uv sync --group dev
 uv run pytest
 ```
 
+Com cobertura:
+
+```bash
+uv run pytest --cov=app --cov-report=term-missing
+```
+
 ## Deploy com Docker
+
+O container sobe com um **entrypoint** que, na ordem:
+
+1. Aplica migrações (`flask db upgrade`)
+2. Garante planos no banco (`flask seed-plans`)
+3. Inicia o Gunicorn
+
+Não é preciso rodar migrações ou seed manualmente após o deploy.
 
 ```bash
 cd deploy
 docker compose build
 docker compose up -d
+```
+
+Ou use o script completo no VPS:
+
+```bash
+cd deploy
+sudo ./vps_deploy.sh
 ```
 
 Consulte `deploy/HOSTINGER_DNS_SETUP.md` para configurar DNS no Hostinger.

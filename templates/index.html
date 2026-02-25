@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script>
@@ -54,7 +55,7 @@
     <!-- Header -->
     <header class="fixed w-full top-0 z-50 transition-all duration-300 bg-terracota-base/80 backdrop-blur-xl border-b border-white/5">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <a href="{{ url_for('index') }}" class="flex items-center gap-4 group">
+            <a href="{{ url_for('main.index') }}" class="flex items-center gap-4 group">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-terracota-surfaceHighlight to-terracota-surface flex items-center justify-center border border-white/10 group-hover:border-terracota-cyan/50 transition-colors relative overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-terracota-cyan/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <span class="font-heading font-bold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-white to-terracota-cyan">T</span>
@@ -70,10 +71,17 @@
                 <a href="#features" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Soluções</a>
                 <a href="#market" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Mercado</a>
                 <a href="#calculator" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Calculadora</a>
+                <a href="{{ url_for('main.pricing') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Planos</a>
+                <a href="{{ url_for('support.help_page') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Ajuda</a>
+                <a href="{{ url_for('support.contact') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Contato</a>
             </nav>
 
             <div class="hidden md:flex items-center gap-4">
                 {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('account.dashboard') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Minha Conta</a>
+                    {% if current_user.is_admin %}
+                    <a href="{{ url_for('admin.dashboard') }}" class="text-sm font-medium text-terracota-purple hover:text-white transition-colors">Admin</a>
+                    {% endif %}
                     <span class="text-sm text-terracota-textMuted">Olá, {{ current_user.name }}</span>
                     <a href="{{ url_for('auth.logout') }}" class="px-5 py-2.5 rounded-lg border border-white/10 text-terracota-textMuted text-sm font-medium hover:bg-white/5 hover:text-white transition-colors">Sair</a>
                 {% else %}
@@ -376,7 +384,10 @@
             <div class="text-terracota-textMuted text-xs font-light">
                 <p>&copy; 2026 Terracota Compliance & Systems. Inteligência Regulatória.</p>
             </div>
-            <div class="flex gap-4">
+            <div class="flex items-center gap-6">
+                <a href="{{ url_for('support.help_page') }}" class="text-terracota-textMuted hover:text-white transition-colors text-sm">Ajuda</a>
+                <a href="{{ url_for('support.contact') }}" class="text-terracota-textMuted hover:text-white transition-colors text-sm">Contato</a>
+                <a href="{{ url_for('main.privacy') }}" class="text-terracota-textMuted hover:text-white transition-colors text-sm">Privacidade</a>
                 <a href="#" class="text-terracota-textMuted hover:text-white transition-colors"><i class="ph ph-linkedin-logo text-xl"></i></a>
                 <a href="#" class="text-terracota-textMuted hover:text-white transition-colors"><i class="ph ph-envelope-simple text-xl"></i></a>
             </div>

@@ -35,7 +35,7 @@
 
     <header class="fixed w-full top-0 z-50 bg-terracota-base/80 backdrop-blur-xl border-b border-white/5">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <a href="{{ url_for('index') }}" class="flex items-center gap-4 group">
+            <a href="{{ url_for('main.index') }}" class="flex items-center gap-4 group">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-terracota-surfaceHighlight to-terracota-surface flex items-center justify-center border border-white/10 group-hover:border-terracota-cyan/50 transition-colors">
                     <span class="font-heading font-bold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-white to-terracota-cyan">T</span>
                 </div>
@@ -44,7 +44,7 @@
                     <span class="text-[10px] tracking-[0.25em] text-terracota-cyan/80 uppercase mt-1">Compliance</span>
                 </div>
             </a>
-            <a href="{{ url_for('index') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Voltar ao site</a>
+            <a href="{{ url_for('main.index') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Voltar ao site</a>
         </div>
     </header>
 
@@ -65,6 +65,7 @@
                 {% endwith %}
 
                 <form method="post" action="{{ url_for('auth.register') }}" class="space-y-4">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div>
                         <label for="name" class="block text-sm font-medium text-terracota-textMuted mb-1">Nome</label>
                         <input type="text" id="name" name="name" required autocomplete="name"
