@@ -6,7 +6,11 @@ set -e
 export FLASK_APP="${FLASK_APP:-wsgi:app}"
 
 echo "[entrypoint] Aplicando migrações..."
-flask db upgrade
+flask db upgrade || {
+    echo "[entrypoint] Migração falhou. Tentando stamp head e upgrade..."
+    flask db stamp head
+    flask db upgrade
+}
 
 echo "[entrypoint] Garantindo planos no banco..."
 flask seed-plans
