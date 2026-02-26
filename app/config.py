@@ -17,9 +17,13 @@ class BaseConfig:
         "DATABASE_URL", f"sqlite:///{DATA_DIR / 'app.db'}"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "connect_args": {"timeout": 30},
+        "pool_pre_ping": True,
+    }
 
-    GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
-    GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", "")
+    GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "").strip('"').strip("'")
+    GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", "").strip('"').strip("'")
     NEWSLETTER_NOTIFY_EMAIL = os.environ.get(
         "NEWSLETTER_NOTIFY_EMAIL", "comercial@terracotabpo.com"
     )

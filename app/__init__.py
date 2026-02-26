@@ -51,6 +51,18 @@ def create_app(config_name: str | None = None) -> "Flask":
     limiter.init_app(flask_app)
     migrate.init_app(flask_app, db)
 
+    # Enable SQLite WAL mode for better concurrency with multiple workers
+    if "sqlite" in flask_app.config.get("SQLALCHEMY_DATABASE_URI", ""):
+        from sqlalchemy import event
+
+        with flask_app.app_context():
+            @event.listens_for(db.engine, "connect")
+            def _set_sqlite_pragma(dbapi_conn, connection_record):
+                cursor = dbapi_conn.cursor()
+                cursor.execute("PRAGMA journal_mode=WAL")
+                cursor.execute("PRAGMA busy_timeout=5000")
+                cursor.close()
+
     # Import all models so Alembic can see them
     import app.models  # noqa: F401
 
@@ -63,6 +75,22 @@ def create_app(config_name: str | None = None) -> "Flask":
     from app.blueprints.support import support_bp
 
     init_oauth(flask_app)
+
+    # Diagnostic: confirm Google OAuth credentials are loaded
+    import logging as _logging
+
+    _startup_logger = _logging.getLogger(__name__)
+    if flask_app.config.get("GOOGLE_CLIENT_ID") and flask_app.config.get(
+        "GOOGLE_CLIENT_SECRET"
+    ):
+        _startup_logger.info("Google OAuth credentials loaded successfully.")
+    else:
+        _startup_logger.warning(
+            "Google OAuth credentials are MISSING – "
+            "Google login will be unavailable. "
+            "Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in .env"
+        )
+
     flask_app.register_blueprint(auth_bp)
     flask_app.register_blueprint(main_bp)
     flask_app.register_blueprint(calculator_bp)

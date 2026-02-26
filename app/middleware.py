@@ -32,7 +32,8 @@ def register_security_headers(app: Flask) -> None:
             "style-src 'self' 'unsafe-inline' fonts.googleapis.com cdn.tailwindcss.com",
             "font-src 'self' fonts.gstatic.com",
             "img-src 'self' data: https:",
-            "connect-src 'self'",
+            "connect-src 'self' accounts.google.com",
+            "form-action 'self' accounts.google.com",
             "frame-ancestors 'none'",
         ]
         response.headers["Content-Security-Policy"] = "; ".join(csp_parts)

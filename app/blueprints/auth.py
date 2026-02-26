@@ -2,17 +2,28 @@
 Auth blueprint: login, register, logout, and Google OAuth.
 """
 
+import logging
 from datetime import datetime, timezone
 from urllib.parse import urlparse
 
 from authlib.integrations.flask_client import OAuth
 from email_validator import EmailNotValidError, validate_email
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import current_user, login_required, login_user, logout_user
 
 from app.extensions import db, limiter
 from app.models.user import User
 from app.services.email_service import send_welcome_email
+
+logger = logging.getLogger(__name__)
 
 auth_bp = Blueprint("auth", __name__, url_prefix="")
 oauth_registry = None
@@ -72,9 +83,13 @@ def login():
             )
             return render_template("login.html")
 
-        user.last_login_at = datetime.now(timezone.utc)
-        user.login_count = (user.login_count or 0) + 1
-        db.session.commit()
+        try:
+            user.last_login_at = datetime.now(timezone.utc)
+            user.login_count = (user.login_count or 0) + 1
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            logger.exception("Failed to update login stats for %s", email)
 
         login_user(user)
 
@@ -128,11 +143,22 @@ def register():
             flash("Já existe uma conta com este e-mail. Faça login.", "error")
             return redirect(url_for("auth.login"))
 
-        user = User(email=email, name=name)
-        user.set_password(password)
-        db.session.add(user)
-        db.session.commit()
-        send_welcome_email(user_name=user.name, user_email=user.email)
+        try:
+            user = User(email=email, name=name)
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            logger.exception("Failed to create user %s", email)
+            flash(
+                "Erro ao criar sua conta. Tente novamente em alguns instantes.",
+                "error",
+            )
+            return render_template("register.html")
+
+        if not send_welcome_email(user_name=user.name, user_email=user.email):
+            logger.warning("Welcome email failed for %s", user.email)
         login_user(user)
         return redirect(url_for("main.index"))
     return render_template("register.html")
@@ -145,8 +171,28 @@ def register():
 def google_login():
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
-    redirect_uri = url_for("auth.google_callback", _external=True)
-    return oauth_registry.google.authorize_redirect(redirect_uri)
+
+    if not current_app.config.get("GOOGLE_CLIENT_ID") or not current_app.config.get(
+        "GOOGLE_CLIENT_SECRET"
+    ):
+        logger.error(
+            "Google OAuth credentials not configured – "
+            "GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET is empty."
+        )
+        flash(
+            "Login com Google não está disponível no momento. "
+            "Por favor, use e-mail e senha.",
+            "error",
+        )
+        return redirect(url_for("auth.login"))
+
+    try:
+        redirect_uri = url_for("auth.google_callback", _external=True)
+        return oauth_registry.google.authorize_redirect(redirect_uri)
+    except Exception:
+        logger.exception("Failed to initiate Google OAuth redirect")
+        flash("Falha ao iniciar login com Google. Tente novamente.", "error")
+        return redirect(url_for("auth.login"))
 
 
 @auth_bp.route("/auth/google/callback")
@@ -154,8 +200,10 @@ def google_callback():
     try:
         token = oauth_registry.google.authorize_access_token()
     except Exception:
+        logger.exception("Google OAuth token exchange failed")
         flash("Falha ao conectar com Google. Tente novamente.", "error")
         return redirect(url_for("auth.login"))
+
     userinfo = token.get("userinfo")
     if not userinfo:
         flash("Não foi possível obter seus dados do Google.", "error")
@@ -172,40 +220,64 @@ def google_callback():
         )
         return redirect(url_for("auth.register"))
 
-    user = (
-        db.session.query(User)
-        .filter_by(oauth_provider="google", oauth_id=oauth_id)
-        .first()
-    )
-    if user:
-        user.last_login_at = datetime.now(timezone.utc)
-        user.login_count = (user.login_count or 0) + 1
+    try:
+        # Returning Google user (matched by oauth_id)
+        user = (
+            db.session.query(User)
+            .filter_by(oauth_provider="google", oauth_id=oauth_id)
+            .first()
+        )
+        if user:
+            user.last_login_at = datetime.now(timezone.utc)
+            user.login_count = (user.login_count or 0) + 1
+            db.session.commit()
+            login_user(user)
+            return redirect(url_for("main.index"))
+
+        # Existing account with same email — link Google OAuth
+        user = db.session.query(User).filter_by(email=email).first()
+        if user:
+            user.oauth_provider = "google"
+            user.oauth_id = oauth_id
+            user.email_verified = True
+            user.email_verified_at = user.email_verified_at or datetime.now(
+                timezone.utc
+            )
+            user.last_login_at = datetime.now(timezone.utc)
+            user.login_count = (user.login_count or 0) + 1
+            db.session.commit()
+            login_user(user)
+            return redirect(url_for("main.index"))
+
+        # Brand-new user via Google
+        user = User(
+            email=email,
+            name=name,
+            oauth_provider="google",
+            oauth_id=oauth_id,
+            password_hash=None,
+            email_verified=True,
+            email_verified_at=datetime.now(timezone.utc),
+        )
+        db.session.add(user)
         db.session.commit()
+
+        if not send_welcome_email(user_name=user.name, user_email=user.email):
+            logger.warning(
+                "Welcome email failed for new Google user %s", email
+            )
+
         login_user(user)
         return redirect(url_for("main.index"))
 
-    user = db.session.query(User).filter_by(email=email).first()
-    if user:
-        user.oauth_provider = "google"
-        user.oauth_id = oauth_id
-        user.last_login_at = datetime.now(timezone.utc)
-        user.login_count = (user.login_count or 0) + 1
-        db.session.commit()
-        login_user(user)
-        return redirect(url_for("main.index"))
-
-    user = User(
-        email=email,
-        name=name,
-        oauth_provider="google",
-        oauth_id=oauth_id,
-        password_hash=None,
-    )
-    db.session.add(user)
-    db.session.commit()
-    send_welcome_email(user_name=user.name, user_email=user.email)
-    login_user(user)
-    return redirect(url_for("main.index"))
+    except Exception:
+        db.session.rollback()
+        logger.exception("Error during Google OAuth user lookup/creation")
+        flash(
+            "Ocorreu um erro ao processar seu login com Google. Tente novamente.",
+            "error",
+        )
+        return redirect(url_for("auth.login"))
 
 
 # ---- Forgot / Reset Password -----------------------------------------------
