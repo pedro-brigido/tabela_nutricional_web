@@ -28,6 +28,10 @@ def _as_dt(ts: int | None) -> datetime | None:
     return datetime.fromtimestamp(int(ts), tz=timezone.utc)
 
 
+class DuplicateSubscriptionError(ValueError):
+    """Raised when user already has an active subscription for the same plan."""
+
+
 def _require_stripe_enabled() -> None:
     if not current_app.config.get("STRIPE_ENABLED"):
         raise ValueError("Stripe billing is not enabled in this environment.")
@@ -80,6 +84,21 @@ def create_checkout_session(
     if not price_id:
         raise ValueError("Plano sem price_id da Stripe configurado.")
 
+    # Prevent duplicate Stripe subscriptions: if user already has an active
+    # subscription on this same plan, raise so the caller can redirect to portal.
+    existing_sub = get_user_subscription(user.id)
+    if (
+        existing_sub
+        and existing_sub.status == "active"
+        and existing_sub.stripe_subscription_id
+        and existing_sub.plan
+        and existing_sub.plan.slug == plan_slug
+    ):
+        raise DuplicateSubscriptionError(
+            "Você já possui uma assinatura ativa neste plano. "
+            "Use o portal de cobrança para gerenciar."
+        )
+
     customer_id = get_or_create_stripe_customer(user)
     stripe = _stripe_module()
 
@@ -87,12 +106,17 @@ def create_checkout_session(
         mode="subscription",
         customer=customer_id,
         line_items=[{"price": price_id, "quantity": 1}],
-        success_url=success_url,
+        success_url=success_url + "?session_id={CHECKOUT_SESSION_ID}",
         cancel_url=cancel_url,
         metadata={"user_id": str(user.id), "plan_slug": plan_slug},
         subscription_data={
             "metadata": {"user_id": str(user.id), "plan_slug": plan_slug}
         },
+    )
+
+    current_app.logger.info(
+        "Stripe checkout session created: session=%s plan=%s customer=%s user=%s",
+        session["id"], plan_slug, customer_id, user.id,
     )
     return session["url"]
 
@@ -358,7 +382,10 @@ def handle_webhook_event(event: dict[str, Any]) -> None:
     obj = event.get("data", {}).get("object", {})
     if event_type == "checkout.session.completed":
         _handle_checkout_completed(obj, event_id)
-    elif event_type == "customer.subscription.updated":
+    elif event_type in {
+        "customer.subscription.created",
+        "customer.subscription.updated",
+    }:
         _handle_subscription_updated(obj, event_id)
     elif event_type == "customer.subscription.deleted":
         _handle_subscription_deleted(obj, event_id)

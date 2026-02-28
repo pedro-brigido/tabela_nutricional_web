@@ -21,7 +21,19 @@ def _login_session(client, user_id: int):
         sess["_fresh"] = True
 
 
-def test_billing_routes_disabled_when_feature_off(client):
+def test_billing_routes_disabled_when_feature_off(client, flask_app):
+    # Explicitly disable Stripe
+    flask_app.config["STRIPE_ENABLED"] = False
+
+    # Unauthenticated: before_request aborts with 404 (runs before @login_required)
+    response = client.get("/billing/success")
+    assert response.status_code == 404
+
+    # Authenticated: still 404 because billing is disabled
+    with flask_app.app_context():
+        user = _make_user("disabled@test.com")
+        user_id = user.id
+    _login_session(client, user_id)
     response = client.get("/billing/success")
     assert response.status_code == 404
 

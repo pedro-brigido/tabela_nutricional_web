@@ -180,7 +180,7 @@
                 {% endfor %}
             </ul>
 
-            {% if stripe_enabled and not is_free %}
+            {% if stripe_enabled and not is_free and p.stripe_price_id %}
             <form method="post" action="{{ url_for('billing.checkout') }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="plan_slug" value="{{ cta_plan_slug }}">

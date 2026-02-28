@@ -2,6 +2,7 @@
 {% block title %}Pagamento confirmado | Terracota{% endblock %}
 {% block content %}
 <section class="max-w-2xl mx-auto text-center py-12">
+    {% if verified %}
     <div class="w-16 h-16 mx-auto rounded-full bg-terracota-cyan/15 border border-terracota-cyan/30 flex items-center justify-center mb-6">
         <i class="ph ph-check-circle text-3xl text-terracota-cyan"></i>
     </div>
@@ -15,10 +16,38 @@
     <a href="{{ url_for('account.dashboard') }}" class="inline-block mt-6 px-6 py-3 border border-white/10 rounded-xl hover:bg-white/5 transition-colors">
         Ir para Minha Conta
     </a>
+    <script>
+    setTimeout(function () {
+        window.location.href = "{{ url_for('account.dashboard') }}";
+    }, 5000);
+    </script>
+    {% elif session_id %}
+    <div class="w-16 h-16 mx-auto rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center mb-6">
+        <i class="ph ph-hourglass text-3xl text-yellow-300"></i>
+    </div>
+    <h1 class="text-3xl font-heading font-bold mb-3">Processando pagamento</h1>
+    <p class="text-terracota-textMuted mb-6">
+        Seu pagamento está sendo processado. Se o plano não atualizar em alguns minutos, entre em contato com o suporte.
+    </p>
+    <a href="{{ url_for('account.dashboard') }}" class="inline-block mt-6 px-6 py-3 border border-white/10 rounded-xl hover:bg-white/5 transition-colors">
+        Ir para Minha Conta
+    </a>
+    <script>
+    setTimeout(function () {
+        window.location.href = "{{ url_for('account.dashboard') }}";
+    }, 8000);
+    </script>
+    {% else %}
+    <div class="w-16 h-16 mx-auto rounded-full bg-terracota-cyan/15 border border-terracota-cyan/30 flex items-center justify-center mb-6">
+        <i class="ph ph-info text-3xl text-terracota-cyan"></i>
+    </div>
+    <h1 class="text-3xl font-heading font-bold mb-3">Informação de pagamento</h1>
+    <p class="text-terracota-textMuted mb-6">
+        Para verificar o status da sua assinatura, acesse Minha Conta.
+    </p>
+    <a href="{{ url_for('account.dashboard') }}" class="inline-block mt-6 px-6 py-3 border border-white/10 rounded-xl hover:bg-white/5 transition-colors">
+        Ir para Minha Conta
+    </a>
+    {% endif %}
 </section>
-<script>
-setTimeout(function () {
-    window.location.href = "{{ url_for('account.dashboard') }}";
-}, 5000);
-</script>
 {% endblock %}
