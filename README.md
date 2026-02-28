@@ -33,7 +33,7 @@ uv run flask run
 uv run python wsgi.py
 
 # Opção 3: Gunicorn (produção)
-uv run gunicorn --bind 0.0.0.0:5000 wsgi:app
+uv run gunicorn -c gunicorn.conf.py wsgi:app
 ```
 
 Acesse [http://127.0.0.1:5000](http://127.0.0.1:5000) no navegador.
