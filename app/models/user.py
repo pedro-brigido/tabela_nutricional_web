@@ -53,6 +53,9 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(255), nullable=True)
     oauth_provider = db.Column(db.String(50), nullable=True)
     oauth_id = db.Column(db.String(255), nullable=True)
+    stripe_customer_id = db.Column(
+        db.String(255), unique=True, nullable=True, index=True
+    )
     created_at = db.Column(
         db.DateTime, default=lambda: datetime.now(timezone.utc)
     )

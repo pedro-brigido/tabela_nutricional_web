@@ -14,6 +14,7 @@
             <p><span class="text-terracota-textMuted">E-mail verificado:</span> {{ 'Sim' if user.email_verified else 'Não' }}</p>
             <p><span class="text-terracota-textMuted">Logins:</span> {{ user.login_count or 0 }}</p>
             <p><span class="text-terracota-textMuted">Criado em:</span> {{ user.created_at.strftime('%d/%m/%Y %H:%M') if user.created_at }}</p>
+            <p><span class="text-terracota-textMuted">Stripe customer:</span> {{ user.stripe_customer_id or '—' }}</p>
         </div>
         <form method="post" action="{{ url_for('admin.toggle_active', user_id=user.id) }}" class="mt-4">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -27,6 +28,13 @@
         <h2 class="text-lg font-heading font-semibold mb-4">Plano e Consumo</h2>
         <p class="text-sm mb-1"><span class="text-terracota-textMuted">Plano:</span> <span class="text-terracota-cyan font-semibold">{{ plan.name }}</span></p>
         <p class="text-sm mb-4"><span class="text-terracota-textMuted">Tabelas (mês):</span> {{ usage.tables_created }}</p>
+        {% if subscription %}
+        <div class="mb-4 text-sm space-y-1">
+            <p><span class="text-terracota-textMuted">Stripe subscription:</span> {{ subscription.stripe_subscription_id or '—' }}</p>
+            <p><span class="text-terracota-textMuted">Stripe status:</span> {{ subscription.stripe_status or subscription.status }}</p>
+            <p><span class="text-terracota-textMuted">Próximo ciclo:</span> {{ subscription.current_period_end.strftime('%d/%m/%Y') if subscription.current_period_end else '—' }}</p>
+        </div>
+        {% endif %}
 
         <form method="post" action="{{ url_for('admin.set_plan', user_id=user.id) }}" class="flex gap-2 mb-4">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

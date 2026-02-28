@@ -32,15 +32,29 @@
         </ul>
 
         {% if p.slug != current_plan.slug %}
-        <a href="{{ url_for('support.contact') }}" class="block text-center px-4 py-2.5 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">
-            Fale conosco
-        </a>
+            {% if stripe_enabled and p.slug != 'free' %}
+            <form method="post" action="{{ url_for('billing.checkout') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="plan_slug" value="{{ p.slug }}">
+                <button type="submit" class="w-full text-center px-4 py-2.5 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">
+                    Assinar agora
+                </button>
+            </form>
+            {% else %}
+            <a href="{{ url_for('support.contact') }}" class="block text-center px-4 py-2.5 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">
+                Fale conosco
+            </a>
+            {% endif %}
         {% endif %}
     </div>
     {% endfor %}
 </div>
 
 <p class="text-center text-sm text-terracota-textMuted mt-8">
+    {% if stripe_enabled %}
+    Você pode iniciar a assinatura online. A ativação do plano acontece após confirmação do pagamento via Stripe.
+    {% else %}
     Pagamento online em breve. Para upgrade, entre em contato com nossa equipe.
+    {% endif %}
 </p>
 {% endblock %}

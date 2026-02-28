@@ -55,6 +55,39 @@
     </div>
 </div>
 
+{% if stripe_enabled %}
+<div class="bg-terracota-surface border border-white/10 rounded-2xl p-6 mb-8">
+    <div class="flex items-start justify-between gap-4">
+        <div>
+            <h2 class="text-lg font-heading font-semibold mb-2">Cobrança</h2>
+            <p class="text-sm text-terracota-textMuted">
+                Status:
+                <span class="text-white">{{ subscription.stripe_status or subscription.status if subscription else 'sem assinatura Stripe' }}</span>
+            </p>
+            {% if subscription and subscription.current_period_end %}
+            <p class="text-sm text-terracota-textMuted mt-1">
+                Próxima renovação: {{ subscription.current_period_end.strftime('%d/%m/%Y') }}
+            </p>
+            {% endif %}
+            {% if subscription and subscription.cancel_at_period_end %}
+            <p class="text-sm text-yellow-300 mt-1">Cancelamento agendado para o fim do período.</p>
+            {% endif %}
+            {% if subscription and subscription.stripe_subscription_id %}
+            <p class="text-xs text-terracota-textMuted mt-2">
+                Referência: {{ subscription.stripe_subscription_id[:18] }}...
+            </p>
+            {% endif %}
+        </div>
+        <form method="post" action="{{ url_for('billing.portal') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="px-4 py-2 border border-white/10 rounded-lg text-sm hover:bg-white/5 transition-colors">
+                Gerenciar cobrança
+            </button>
+        </form>
+    </div>
+</div>
+{% endif %}
+
 <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
     <h2 class="text-lg font-heading font-semibold mb-4">Tabelas Recentes</h2>
     {% if recent_tables %}

@@ -39,6 +39,15 @@ def create_app(config_name: str | None = None) -> "Flask":
         static_url_path="/static",
     )
     flask_app.config.from_object(config_map[config_name])
+    flask_app.config["STRIPE_PRICE_MAP"] = {
+        "flow_start": flask_app.config.get("STRIPE_PRICE_ID_FLOW_START", ""),
+        "flow_pro": flask_app.config.get("STRIPE_PRICE_ID_FLOW_PRO", ""),
+        "flow_studio": flask_app.config.get("STRIPE_PRICE_ID_FLOW_STUDIO", ""),
+    }
+    flask_app.config["STRIPE_ENABLED"] = bool(
+        flask_app.config.get("STRIPE_SECRET_KEY")
+        and flask_app.config.get("STRIPE_WEBHOOK_SECRET")
+    )
 
     flask_app.wsgi_app = ProxyFix(
         flask_app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
@@ -73,6 +82,7 @@ def create_app(config_name: str | None = None) -> "Flask":
     from app.blueprints.account import account_bp
     from app.blueprints.admin import admin_bp
     from app.blueprints.support import support_bp
+    from app.blueprints.billing import billing_bp
 
     init_oauth(flask_app)
 
@@ -97,6 +107,11 @@ def create_app(config_name: str | None = None) -> "Flask":
     flask_app.register_blueprint(account_bp)
     flask_app.register_blueprint(admin_bp)
     flask_app.register_blueprint(support_bp)
+    flask_app.register_blueprint(billing_bp)
+
+    @flask_app.context_processor
+    def inject_billing_flags():
+        return {"stripe_enabled": flask_app.config.get("STRIPE_ENABLED", False)}
 
     # Security middleware
     from app.middleware import register_request_logging, register_security_headers

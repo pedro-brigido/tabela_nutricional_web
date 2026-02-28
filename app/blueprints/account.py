@@ -7,7 +7,11 @@ from flask_login import current_user, login_required
 
 from app.extensions import csrf, db, limiter
 from app.models.user import User
-from app.services.plan_service import get_user_plan, list_plans
+from app.services.plan_service import (
+    get_user_plan,
+    get_user_subscription,
+    list_plans,
+)
 from app.services.usage_service import get_usage, get_usage_summary
 from app.services.table_service import list_tables
 
@@ -24,6 +28,7 @@ def dashboard():
     return render_template(
         "account/dashboard.html",
         plan=plan,
+        subscription=get_user_subscription(current_user.id),
         usage=usage_summary,
         recent_tables=recent.items,
     )

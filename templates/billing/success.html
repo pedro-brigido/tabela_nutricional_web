@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Pagamento confirmado | Terracota{% endblock %}
+{% block content %}
+<section class="max-w-2xl mx-auto text-center py-12">
+    <div class="w-16 h-16 mx-auto rounded-full bg-terracota-cyan/15 border border-terracota-cyan/30 flex items-center justify-center mb-6">
+        <i class="ph ph-check-circle text-3xl text-terracota-cyan"></i>
+    </div>
+    <h1 class="text-3xl font-heading font-bold mb-3">Pagamento recebido</h1>
+    <p class="text-terracota-textMuted mb-6">
+        Estamos confirmando sua assinatura. O acesso ao plano será atualizado automaticamente em instantes.
+    </p>
+    <p class="text-sm text-terracota-textMuted">
+        Você será redirecionado para Minha Conta em 5 segundos.
+    </p>
+    <a href="{{ url_for('account.dashboard') }}" class="inline-block mt-6 px-6 py-3 border border-white/10 rounded-xl hover:bg-white/5 transition-colors">
+        Ir para Minha Conta
+    </a>
+</section>
+<script>
+setTimeout(function () {
+    window.location.href = "{{ url_for('account.dashboard') }}";
+}, 5000);
+</script>
+{% endblock %}

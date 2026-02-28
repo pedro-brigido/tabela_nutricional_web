@@ -12,7 +12,11 @@ from app.models.plan import Plan, Subscription, UsageRecord
 from app.models.support import SupportTicket
 from app.models.user import User
 from app.services.audit_service import log_action
-from app.services.plan_service import assign_plan, get_user_plan
+from app.services.plan_service import (
+    assign_plan,
+    get_user_plan,
+    get_user_subscription,
+)
 from app.services.usage_service import get_usage
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -83,6 +87,7 @@ def user_detail(user_id):
         "admin/user_detail.html",
         user=user,
         plan=plan,
+        subscription=get_user_subscription(user_id),
         usage=usage,
         plans=plans,
         logs=logs,

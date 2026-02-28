@@ -83,7 +83,13 @@
     <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
         <div>
             <h2 class="text-2xl md:text-3xl font-heading font-bold">Planos</h2>
-            <p class="text-terracota-textMuted text-sm mt-2">Sem pagamento online por enquanto. As assinaturas são ativadas manualmente (suporte).</p>
+            <p class="text-terracota-textMuted text-sm mt-2">
+                {% if stripe_enabled %}
+                Assine com checkout seguro via Stripe. A ativação do plano ocorre após confirmação por webhook.
+                {% else %}
+                Sem pagamento online por enquanto. As assinaturas são ativadas manualmente (suporte).
+                {% endif %}
+            </p>
         </div>
         <div class="text-sm text-terracota-textMuted">
             <a href="#compare" class="hover:text-white transition-colors">Ver tabela comparativa</a>
@@ -119,6 +125,7 @@
             ] %}
             {% set cta_label = 'Assinar Start' %}
             {% set cta_href = url_for('support.contact', category='billing', subject='Assinar Start', plan='flow_start') %}
+            {% set cta_plan_slug = 'flow_start' %}
         {% elif is_pro %}
             {% set subtitle = 'Para quem precisa de mais volume e acompanhamento por tema.' %}
             {% set bullets = [
@@ -131,6 +138,7 @@
             ] %}
             {% set cta_label = 'Assinar Pro' %}
             {% set cta_href = url_for('support.contact', category='billing', subject='Assinar Pro', plan='flow_pro') %}
+            {% set cta_plan_slug = 'flow_pro' %}
         {% else %}
             {% set subtitle = 'Para operação real: escala, padronização e monitoramento avançado.' %}
             {% set bullets = [
@@ -142,6 +150,7 @@
             ] %}
             {% set cta_label = 'Testar Unlimited' %}
             {% set cta_href = url_for('support.contact', category='billing', subject='Teste Unlimited (14 dias)', plan='flow_studio') %}
+            {% set cta_plan_slug = 'flow_studio' %}
         {% endif %}
 
         <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6 flex flex-col {{ 'ring-2 ring-terracota-cyan/50' if is_pro else '' }}">
@@ -171,9 +180,19 @@
                 {% endfor %}
             </ul>
 
+            {% if stripe_enabled and not is_free %}
+            <form method="post" action="{{ url_for('billing.checkout') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="plan_slug" value="{{ cta_plan_slug }}">
+                <button type="submit" class="w-full text-center px-4 py-2.5 {{ 'bg-terracota-cyan text-terracota-base font-bold' if is_pro else 'bg-terracota-surfaceHighlight border border-white/10 text-white' }} rounded-xl text-sm hover:bg-white/90 transition-colors">
+                    {{ cta_label }}
+                </button>
+            </form>
+            {% else %}
             <a href="{{ cta_href }}" class="block text-center px-4 py-2.5 {{ 'bg-terracota-cyan text-terracota-base font-bold' if is_pro else 'bg-terracota-surfaceHighlight border border-white/10 text-white' }} rounded-xl text-sm hover:bg-white/90 transition-colors">
                 {{ cta_label }}
             </a>
+            {% endif %}
         </div>
         {% endfor %}
     </div>
@@ -271,7 +290,11 @@
 
 <div class="mt-10 text-center">
     <p class="text-sm text-terracota-textMuted mb-4">
+        {% if stripe_enabled %}
+        Pagamento online habilitado. Se preferir atendimento comercial, também podemos ativar via suporte.
+        {% else %}
         Para ativar assinatura agora, fale com a equipe. Pagamento online será disponibilizado em uma etapa separada.
+        {% endif %}
     </p>
     <div class="flex flex-col sm:flex-row gap-3 justify-center">
         <a href="{{ url_for('support.contact', category='billing', subject='Quero fazer upgrade', source='pricing') }}" class="px-6 py-3 bg-terracota-surfaceHighlight border border-white/10 text-white font-semibold rounded-xl hover:bg-white/5 transition-colors">

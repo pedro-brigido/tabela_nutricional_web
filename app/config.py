@@ -27,6 +27,22 @@ class BaseConfig:
     NEWSLETTER_NOTIFY_EMAIL = os.environ.get(
         "NEWSLETTER_NOTIFY_EMAIL", "comercial@terracotabpo.com"
     )
+    STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "").strip()
+    STRIPE_PUBLISHABLE_KEY = os.environ.get(
+        "STRIPE_PUBLISHABLE_KEY", ""
+    ).strip()
+    STRIPE_WEBHOOK_SECRET = os.environ.get(
+        "STRIPE_WEBHOOK_SECRET", ""
+    ).strip()
+    STRIPE_PRICE_ID_FLOW_START = os.environ.get(
+        "STRIPE_PRICE_ID_FLOW_START", ""
+    ).strip()
+    STRIPE_PRICE_ID_FLOW_PRO = os.environ.get(
+        "STRIPE_PRICE_ID_FLOW_PRO", ""
+    ).strip()
+    STRIPE_PRICE_ID_FLOW_STUDIO = os.environ.get(
+        "STRIPE_PRICE_ID_FLOW_STUDIO", ""
+    ).strip()
 
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5 MB
 

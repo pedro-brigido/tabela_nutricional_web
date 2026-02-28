@@ -49,6 +49,8 @@ Copie `.env.example` para `.env` e ajuste conforme necessário.
 | `DATA_DIR` | Diretório para `app.db` e `subscribers.db` (padrão: `./data`) |
 | `DATABASE_URL` | URI do banco (padrão: `sqlite:///{DATA_DIR}/app.db`) |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Login com Google (opcional) |
+| `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET` | Stripe Checkout/Billing/Webhooks |
+| `STRIPE_PRICE_ID_FLOW_START`, `STRIPE_PRICE_ID_FLOW_PRO`, `STRIPE_PRICE_ID_FLOW_STUDIO` | Price IDs Stripe para cada plano pago. Ver [Configuração do Stripe (passo a passo)](docs/STRIPE_SETUP.md) |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_USE_TLS`, `EMAIL_FROM` | SMTP para e-mails transacionais |
 | `NEWSLETTER_NOTIFY_EMAIL` | E-mail que recebe aviso de newsletter (padrão: `comercial@terracotabpo.com`) |
 | `USE_RELOADER` | `1` para reload automático ao editar (apenas com `python wsgi.py`) |
@@ -70,6 +72,7 @@ uv run flask seed-plans              # Popular tabela de planos (Free, Flow Star
 uv run flask create-admin <email>    # Tornar usuário admin
 uv run flask backfill-free-plan      # Atribuir plano Free a usuários sem assinatura
 uv run flask anonymize-deleted       # Anonimizar contas soft-deleted há 30+ dias
+uv run flask sync-stripe-prices      # Sincronizar STRIPE_PRICE_ID_* para a tabela de planos
 ```
 
 ## Estrutura do projeto
@@ -107,7 +110,7 @@ uv run flask anonymize-deleted       # Anonimizar contas soft-deleted há 30+ di
 | **Flow Pro** (R$ 79,90) | 10 | 80 | Templates, PDF/PNG, histórico, Pulse Pro (5 temas + alertas) |
 | **Flow Studio** (R$ 199,90) | Ilimitado | Ilimitado | Branding PDF, Pulse Advanced (15 temas + radar) |
 
-Assinaturas são atribuídas manualmente ou via admin; integração de pagamento (Stripe/MercadoPago) está planejada para fase futura.
+Assinaturas podem ser atribuídas manualmente via admin e também via Stripe (Checkout + Billing Portal + Webhooks).
 
 ## Rotas principais
 
@@ -118,6 +121,8 @@ Assinaturas são atribuídas manualmente ou via admin; integração de pagamento
 - **/forgot-password**, **/reset-password/<token>** — Redefinição de senha
 - **/verify-email/<token>** — Verificação de e-mail
 - **/account** — Minha Conta (plano, consumo, configurações, upgrade)
+- **POST /billing/checkout**, **POST /billing/portal**, **POST /billing/webhook** — Fluxos Stripe
+- **/billing/success**, **/billing/cancel** — Páginas informativas pós-checkout
 - **/help**, **/contact** — Suporte
 - **/admin/** — Painel admin (requer `is_admin`); usuários, planos, quotas, logs, tickets
 - **POST /api/calculate** — Calcular tabela nutricional (requer login, respeita quota de ingredientes)
@@ -137,6 +142,20 @@ Com cobertura:
 ```bash
 uv run pytest --cov=app --cov-report=term-missing
 ```
+
+## Stripe local (webhooks)
+
+Para configurar cada variável Stripe passo a passo (chaves, webhook secret, Price IDs), veja [docs/STRIPE_SETUP.md](docs/STRIPE_SETUP.md).
+
+1. Configure as variáveis `STRIPE_*` no `.env`.
+2. Inicie a aplicação local.
+3. Em outro terminal, rode:
+
+```bash
+stripe listen --forward-to localhost:5000/billing/webhook
+```
+
+4. Copie o `whsec_...` exibido pelo Stripe CLI para `STRIPE_WEBHOOK_SECRET`.
 
 ## Deploy com Docker
 

@@ -3,6 +3,7 @@ Flask CLI commands.
 """
 
 import csv
+import os
 from pathlib import Path
 
 import click
@@ -122,7 +123,28 @@ def register_cli(app: Flask) -> None:
         from app.extensions import db
         from app.models.plan import Plan
 
+        stripe_price_map = {
+            "flow_start": (
+                app.config.get("STRIPE_PRICE_ID_FLOW_START")
+                or os.environ.get("STRIPE_PRICE_ID_FLOW_START")
+                or ""
+            ).strip(),
+            "flow_pro": (
+                app.config.get("STRIPE_PRICE_ID_FLOW_PRO")
+                or os.environ.get("STRIPE_PRICE_ID_FLOW_PRO")
+                or ""
+            ).strip(),
+            "flow_studio": (
+                app.config.get("STRIPE_PRICE_ID_FLOW_STUDIO")
+                or os.environ.get("STRIPE_PRICE_ID_FLOW_STUDIO")
+                or ""
+            ).strip(),
+        }
+
         for plan_data in _PLANS_SEED:
+            plan_data = dict(plan_data)
+            if plan_data["slug"] in stripe_price_map:
+                plan_data["stripe_price_id"] = stripe_price_map[plan_data["slug"]] or None
             existing = Plan.query.filter_by(slug=plan_data["slug"]).first()
             if existing:
                 for k, v in plan_data.items():
@@ -138,6 +160,155 @@ def register_cli(app: Flask) -> None:
                 click.echo(f"  Created plan '{plan_data['slug']}'.")
         db.session.commit()
         click.echo("Done.")
+
+    @app.cli.command("sync-stripe-prices")
+    def sync_stripe_prices():
+        """Sync STRIPE_PRICE_ID_* env vars into Plan.stripe_price_id."""
+        from app.extensions import db
+        from app.models.plan import Plan
+
+        stripe_price_map = {
+            "flow_start": (
+                app.config.get("STRIPE_PRICE_ID_FLOW_START")
+                or os.environ.get("STRIPE_PRICE_ID_FLOW_START")
+                or ""
+            ).strip(),
+            "flow_pro": (
+                app.config.get("STRIPE_PRICE_ID_FLOW_PRO")
+                or os.environ.get("STRIPE_PRICE_ID_FLOW_PRO")
+                or ""
+            ).strip(),
+            "flow_studio": (
+                app.config.get("STRIPE_PRICE_ID_FLOW_STUDIO")
+                or os.environ.get("STRIPE_PRICE_ID_FLOW_STUDIO")
+                or ""
+            ).strip(),
+        }
+
+        updated = 0
+        for slug, price_id in stripe_price_map.items():
+            if not price_id:
+                continue
+            plan = Plan.query.filter_by(slug=slug).first()
+            if not plan:
+                click.echo(f"Plan '{slug}' not found, skipping.")
+                continue
+            if plan.stripe_price_id != price_id:
+                plan.stripe_price_id = price_id
+                updated += 1
+                click.echo(f"Updated plan '{slug}' with stripe price '{price_id}'.")
+        db.session.commit()
+        click.echo(f"Done. Updated {updated} plan(s).")
+
+    # -----------------------------------------------------------------
+    # Stripe webhook endpoint automation
+    # -----------------------------------------------------------------
+    WEBHOOK_EVENTS = [
+        "checkout.session.completed",
+        "customer.subscription.created",
+        "customer.subscription.updated",
+        "customer.subscription.deleted",
+        "invoice.payment_succeeded",
+        "invoice.payment_failed",
+    ]
+
+    @app.cli.command("setup-stripe-webhook")
+    @click.argument("webhook_url")
+    @click.option(
+        "--update-env",
+        is_flag=True,
+        default=False,
+        help="Grava automaticamente o STRIPE_WEBHOOK_SECRET no .env",
+    )
+    def setup_stripe_webhook(webhook_url: str, update_env: bool):
+        """Create (or update) a Stripe webhook endpoint for production.
+
+        WEBHOOK_URL is the full public URL, e.g.
+        https://rotulagem.terracotabpo.com/billing/webhook
+
+        The signing secret (whsec_...) is printed to stdout.  Pass
+        --update-env to patch the .env file automatically.
+        """
+        import stripe as stripe_mod
+
+        secret_key = (
+            app.config.get("STRIPE_SECRET_KEY")
+            or os.environ.get("STRIPE_SECRET_KEY", "")
+        ).strip()
+        if not secret_key:
+            click.echo("STRIPE_SECRET_KEY não encontrada. Configure no .env primeiro.")
+            raise SystemExit(1)
+
+        stripe_mod.api_key = secret_key
+
+        # Check if an endpoint for this URL already exists
+        existing_endpoints = stripe_mod.WebhookEndpoint.list(limit=100)
+        endpoint = None
+        for ep in existing_endpoints.auto_paging_iter():
+            if ep.url == webhook_url:
+                endpoint = ep
+                break
+
+        if endpoint:
+            # Update enabled_events to ensure they match
+            stripe_mod.WebhookEndpoint.modify(
+                endpoint.id,
+                enabled_events=WEBHOOK_EVENTS,
+            )
+            click.echo(f"Webhook endpoint já existe (id: {endpoint.id}).")
+            click.echo(
+                "O signing secret original não pode ser recuperado após a criação."
+            )
+            click.echo(
+                "Se você perdeu o secret, delete o endpoint no Dashboard e rode "
+                "este comando novamente para criar um novo."
+            )
+            click.echo(f"\nPara deletar: stripe webhook_endpoints delete {endpoint.id}")
+            click.echo("Ou: Stripe Dashboard → Developers → Webhooks → endpoint → Delete")
+            return
+
+        # Create a new webhook endpoint
+        new_ep = stripe_mod.WebhookEndpoint.create(
+            url=webhook_url,
+            enabled_events=WEBHOOK_EVENTS,
+            description="Tabela Nutricional Web - auto-provisioned",
+        )
+
+        signing_secret = new_ep.secret
+        click.echo(f"Webhook endpoint criado com sucesso (id: {new_ep.id}).")
+        click.echo(f"\n  STRIPE_WEBHOOK_SECRET={signing_secret}\n")
+
+        if update_env:
+            _patch_env_file("STRIPE_WEBHOOK_SECRET", signing_secret)
+            click.echo("✓ .env atualizado com o novo STRIPE_WEBHOOK_SECRET.")
+        else:
+            click.echo(
+                "Copie o valor acima para o .env, ou rode novamente com "
+                "--update-env para gravar automaticamente."
+            )
+
+    def _patch_env_file(key: str, value: str) -> None:
+        """Replace or append KEY=value in the .env file at project root."""
+        env_path = Path(__file__).resolve().parent.parent / ".env"
+        if not env_path.exists():
+            env_path.write_text(f"{key}={value}\n", encoding="utf-8")
+            return
+
+        lines = env_path.read_text(encoding="utf-8").splitlines(keepends=True)
+        found = False
+        new_lines = []
+        for line in lines:
+            stripped = line.lstrip()
+            if stripped.startswith(f"{key}="):
+                new_lines.append(f"{key}={value}\n")
+                found = True
+            else:
+                new_lines.append(line)
+        if not found:
+            if new_lines and not new_lines[-1].endswith("\n"):
+                new_lines.append("\n")
+            new_lines.append(f"{key}={value}\n")
+        env_path.write_text("".join(new_lines), encoding="utf-8")
 
     @app.cli.command("create-admin")
     @click.argument("email")

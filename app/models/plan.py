@@ -18,6 +18,7 @@ class Plan(db.Model):
     slug = db.Column(db.String(50), unique=True, nullable=False)
     name = db.Column(db.String(100), nullable=False)
     price_brl = db.Column(db.Numeric(10, 2), nullable=False, default=0)
+    stripe_price_id = db.Column(db.String(255), nullable=True)
 
     max_tables_per_month = db.Column(db.Integer, nullable=True)
     max_ingredients_per_table = db.Column(db.Integer, nullable=True)
@@ -57,6 +58,15 @@ class Subscription(db.Model):
     cancelled_at = db.Column(db.DateTime, nullable=True)
     assigned_by = db.Column(db.String(50), default="system")
     notes = db.Column(db.Text, nullable=True)
+    stripe_subscription_id = db.Column(
+        db.String(255), unique=True, nullable=True, index=True
+    )
+    stripe_status = db.Column(db.String(30), nullable=True)
+    current_period_start = db.Column(db.DateTime, nullable=True)
+    current_period_end = db.Column(db.DateTime, nullable=True)
+    cancel_at_period_end = db.Column(db.Boolean, default=False)
+    stripe_latest_event_id = db.Column(db.String(255), nullable=True)
+    stripe_latest_event_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=_utcnow)
     updated_at = db.Column(db.DateTime, default=_utcnow, onupdate=_utcnow)
 
