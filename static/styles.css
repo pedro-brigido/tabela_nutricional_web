@@ -37,38 +37,10 @@ body {
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* Print styles for the nutritional table */
+/* Minimal print fallback (main printing uses popup window) */
 @media print {
-    body {
-        background: none !important;
-        animation: none !important;
-        color: #000 !important;
-    }
-
-    body * {
-        visibility: hidden;
-    }
-
-    #nutritional-table-print-area,
-    #nutritional-table-print-area * {
-        visibility: visible;
-        color: #000 !important;
-    }
-
-    #nutritional-table-print-area {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        box-shadow: none;
-        max-width: none;
-        border: none;
-    }
-
-    /* Hide buttons in print */
-    .no-print {
+    .no-print,
+    #toast-container {
         display: none !important;
     }
 }

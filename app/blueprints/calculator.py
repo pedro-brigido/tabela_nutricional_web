@@ -137,6 +137,57 @@ def _process_excel_data(file_bytes: bytes) -> list[dict]:
 # ---- Routes -----------------------------------------------------------------
 
 
+@calculator_bp.route("/api/quota", methods=["GET"])
+@csrf.exempt
+@login_required
+def api_quota():
+    """Return current user's quota status for the frontend."""
+    from flask_login import current_user
+    from app.services.usage_service import can_create_table, get_usage_summary
+
+    summary = get_usage_summary(current_user.id)
+    return jsonify(
+        {
+            "canCreate": can_create_table(current_user.id),
+            "tablesCreated": summary["tables_created"],
+            "tablesLimit": summary["tables_limit"],
+            "planName": summary["plan_name"],
+            "planSlug": summary["plan_slug"],
+        }
+    )
+
+
+@calculator_bp.route("/api/tables/latest", methods=["GET"])
+@csrf.exempt
+@login_required
+def api_latest_table():
+    """Return the most recent finalized table with full data (for quota-exhausted view)."""
+    from flask_login import current_user
+    from app.models.table import NutritionTable
+
+    table = (
+        NutritionTable.query.filter_by(user_id=current_user.id, is_finalized=True)
+        .order_by(NutritionTable.created_at.desc())
+        .first()
+    )
+    if not table:
+        return jsonify({"table": None})
+
+    return jsonify(
+        {
+            "table": {
+                "id": table.id,
+                "title": table.title,
+                "product_data": table.product_data,
+                "ingredients_data": table.ingredients_data,
+                "result_data": table.result_data,
+                "ingredient_count": table.ingredient_count,
+                "created_at": table.created_at.isoformat() if table.created_at else None,
+            }
+        }
+    )
+
+
 @calculator_bp.route("/api/calculate", methods=["POST"])
 @csrf.exempt
 @login_required
@@ -190,7 +241,14 @@ def api_calculate():
             400,
         )
 
-    return jsonify({"calculatedData": result})
+    # Soft quota warning — don't block preview, just inform
+    from app.services.usage_service import can_create_table
+
+    response = {"calculatedData": result}
+    if not can_create_table(current_user.id):
+        response["warning"] = "QUOTA_EXHAUSTED"
+
+    return jsonify(response)
 
 
 @calculator_bp.route("/api/import-excel", methods=["POST"])

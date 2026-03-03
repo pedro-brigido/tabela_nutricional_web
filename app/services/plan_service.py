@@ -6,79 +6,11 @@ from __future__ import annotations
 
 from app.extensions import db
 from app.models.plan import Plan, Subscription
+from app.plan_seed_data import PLANS_SEED
 
 
 _FREE_PLAN_SLUG = "free"
-_MARKETING_PLANS_SEED = [
-    {
-        "slug": "free",
-        "name": "Free",
-        "price_brl": 0,
-        "max_tables_per_month": 1,
-        "max_ingredients_per_table": 10,
-        "has_templates": False,
-        "has_pdf_export": False,
-        "has_png_export": False,
-        "has_version_history": False,
-        "has_branding": False,
-        "pulse_level": "digest",
-        "pulse_max_topics": 0,
-        "pulse_has_alerts": False,
-        "pulse_has_radar": False,
-        "display_order": 0,
-    },
-    {
-        "slug": "flow_start",
-        "name": "Terracota Flow Start",
-        "price_brl": 39.90,
-        "max_tables_per_month": 3,
-        "max_ingredients_per_table": 25,
-        "has_templates": True,
-        "has_pdf_export": True,
-        "has_png_export": False,
-        "has_version_history": False,
-        "has_branding": False,
-        "pulse_level": "general",
-        "pulse_max_topics": 0,
-        "pulse_has_alerts": True,
-        "pulse_has_radar": False,
-        "display_order": 1,
-    },
-    {
-        "slug": "flow_pro",
-        "name": "Terracota Flow Pro",
-        "price_brl": 79.90,
-        "max_tables_per_month": 10,
-        "max_ingredients_per_table": 80,
-        "has_templates": True,
-        "has_pdf_export": True,
-        "has_png_export": True,
-        "has_version_history": True,
-        "has_branding": False,
-        "pulse_level": "pro",
-        "pulse_max_topics": 5,
-        "pulse_has_alerts": True,
-        "pulse_has_radar": False,
-        "display_order": 2,
-    },
-    {
-        "slug": "flow_studio",
-        "name": "Terracota Flow Studio (Unlimited)",
-        "price_brl": 199.90,
-        "max_tables_per_month": None,
-        "max_ingredients_per_table": None,
-        "has_templates": True,
-        "has_pdf_export": True,
-        "has_png_export": True,
-        "has_version_history": True,
-        "has_branding": True,
-        "pulse_level": "advanced",
-        "pulse_max_topics": 15,
-        "pulse_has_alerts": True,
-        "pulse_has_radar": True,
-        "display_order": 3,
-    },
-]
+_MARKETING_PLANS_SEED = PLANS_SEED
 
 
 def get_user_plan(user_id: int) -> Plan:

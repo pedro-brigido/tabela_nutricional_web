@@ -405,60 +405,65 @@
             font-family: 'Space Grotesk', sans-serif !important;
         }
 
-        /* Adjust internal app tables */
-        #app-container table {
-            border-collapse: separate;
-            border-spacing: 0;
-            width: 100%;
-        }
-        
-        #app-container th {
-            background-color: rgba(21, 24, 40, 0.8) !important; /* terracota-surface */
-            border-bottom: 1px solid rgba(255,255,255,0.1) !important;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-            color: #94A3B8 !important; /* terracota-textMuted */
-        }
-        
-        #app-container td {
-            border-bottom: 1px solid rgba(255,255,255,0.05) !important;
-            border-top: none !important;
-            padding: 1rem 0.5rem;
-        }
+        @media screen {
+            /* Adjust internal app tables — screen only to protect print popup */
+            #app-container table {
+                border-collapse: separate;
+                border-spacing: 0;
+                width: 100%;
+                background-color: rgba(255,255,255,0.02) !important;
+                border-radius: 0.75rem;
+                overflow: hidden;
+            }
 
-        /* Adjust buttons created via JS */
-        .bg-terracota-purple { background-color: #7B2CBF !important; }
-        .text-terracota-cyan { color: #00F0FF !important; }
-        .border-terracota-cyan { border-color: rgba(0, 240, 255, 0.3) !important; }
-        
-        /* Glass styling for file drops */
-        .border-dashed {
-            border-color: rgba(255,255,255,0.1) !important;
-            background-color: rgba(255,255,255,0.02) !important;
-        }
-        .border-dashed:hover {
-            border-color: #00F0FF !important;
-            background-color: rgba(0, 240, 255, 0.05) !important;
-        }
-        
-        /* Inputs styling */
-        #wizard-content input, #wizard-content select {
-            background-color: rgba(30, 35, 58, 0.5) !important; /* surfaceHighlight */
-            border: 1px solid rgba(255,255,255,0.1) !important;
-            color: white !important;
-            border-radius: 0.5rem;
-        }
-        #wizard-content input:focus, #wizard-content select:focus {
-            border-color: #00F0FF !important;
-            box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.2) !important;
-        }
-        
-        /* Labels */
-        #wizard-content label {
-            color: #94A3B8 !important;
-            font-size: 0.875rem;
-            margin-bottom: 0.25rem;
+            #app-container th {
+                background-color: rgba(21, 24, 40, 0.8) !important;
+                border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+                text-transform: uppercase;
+                font-size: 0.75rem;
+                letter-spacing: 0.05em;
+                color: #94A3B8 !important;
+            }
+
+            #app-container td {
+                border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+                border-top: none !important;
+                padding: 1rem 0.5rem;
+            }
+
+            /* Adjust buttons created via JS */
+            .bg-terracota-purple { background-color: #7B2CBF !important; }
+            .text-terracota-cyan { color: #00F0FF !important; }
+            .border-terracota-cyan { border-color: rgba(0, 240, 255, 0.3) !important; }
+            
+            /* Glass styling for file drops */
+            .border-dashed {
+                border-color: rgba(255,255,255,0.1) !important;
+                background-color: rgba(255,255,255,0.02) !important;
+            }
+            .border-dashed:hover {
+                border-color: #00F0FF !important;
+                background-color: rgba(0, 240, 255, 0.05) !important;
+            }
+            
+            /* Inputs styling */
+            #wizard-content input, #wizard-content select {
+                background-color: rgba(30, 35, 58, 0.5) !important;
+                border: 1px solid rgba(255,255,255,0.1) !important;
+                color: white !important;
+                border-radius: 0.5rem;
+            }
+            #wizard-content input:focus, #wizard-content select:focus {
+                border-color: #00F0FF !important;
+                box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.2) !important;
+            }
+            
+            /* Labels */
+            #wizard-content label {
+                color: #94A3B8 !important;
+                font-size: 0.875rem;
+                margin-bottom: 0.25rem;
+            }
         }
     </style>
 

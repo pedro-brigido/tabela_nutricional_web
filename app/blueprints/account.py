@@ -13,7 +13,7 @@ from app.services.plan_service import (
     list_plans,
 )
 from app.services.usage_service import get_usage, get_usage_summary
-from app.services.table_service import list_tables
+from app.services.table_service import list_tables, get_table
 
 account_bp = Blueprint("account", __name__, url_prefix="/account")
 
@@ -31,7 +31,33 @@ def dashboard():
         subscription=get_user_subscription(current_user.id),
         usage=usage_summary,
         recent_tables=recent.items,
+        has_more_tables=recent.total > 5,
     )
+
+
+@account_bp.route("/tables")
+@login_required
+def tables_list():
+    """All tables, paginated."""
+    page = request.args.get("page", 1, type=int)
+    pagination = list_tables(current_user.id, page=page, per_page=20)
+    return render_template(
+        "account/tables_list.html",
+        tables=pagination.items,
+        pagination=pagination,
+    )
+
+
+@account_bp.route("/tables/<int:table_id>")
+@login_required
+def view_table(table_id):
+    """View a single saved table (read-only, with print)."""
+    from flask import abort
+
+    table = get_table(table_id, current_user.id)
+    if not table:
+        abort(404)
+    return render_template("account/table_view.html", table=table)
 
 
 @account_bp.route("/usage")

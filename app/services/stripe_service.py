@@ -32,6 +32,10 @@ class DuplicateSubscriptionError(ValueError):
     """Raised when user already has an active subscription for the same plan."""
 
 
+class ExistingSubscriptionError(ValueError):
+    """Raised when user has another active Stripe subscription."""
+
+
 def _require_stripe_enabled() -> None:
     if not current_app.config.get("STRIPE_ENABLED"):
         raise ValueError("Stripe billing is not enabled in this environment.")
@@ -85,18 +89,21 @@ def create_checkout_session(
         raise ValueError("Plano sem price_id da Stripe configurado.")
 
     # Prevent duplicate Stripe subscriptions: if user already has an active
-    # subscription on this same plan, raise so the caller can redirect to portal.
+    # Stripe-backed subscription, direct management through billing portal.
     existing_sub = get_user_subscription(user.id)
     if (
         existing_sub
         and existing_sub.status == "active"
         and existing_sub.stripe_subscription_id
-        and existing_sub.plan
-        and existing_sub.plan.slug == plan_slug
     ):
-        raise DuplicateSubscriptionError(
-            "Você já possui uma assinatura ativa neste plano. "
-            "Use o portal de cobrança para gerenciar."
+        if existing_sub.plan and existing_sub.plan.slug == plan_slug:
+            raise DuplicateSubscriptionError(
+                "Você já possui uma assinatura ativa neste plano. "
+                "Use o portal de cobrança para gerenciar."
+            )
+        raise ExistingSubscriptionError(
+            "Você já possui uma assinatura ativa em outro plano. "
+            "Use o portal de cobrança para upgrade/downgrade."
         )
 
     customer_id = get_or_create_stripe_customer(user)
@@ -124,15 +131,36 @@ def create_checkout_session(
 def create_billing_portal_session(*, user: User, return_url: str) -> str:
     _require_stripe_enabled()
     if not user.stripe_customer_id:
-        raise ValueError(
-            "Usuário ainda não tem customer Stripe. Assine um plano primeiro."
-        )
+        get_or_create_stripe_customer(user)
 
     stripe = _stripe_module()
     session = stripe.billing_portal.Session.create(
         customer=user.stripe_customer_id, return_url=return_url
     )
     return session["url"]
+
+
+def schedule_subscription_cancellation(
+    *, user: User, cancel_at_period_end: bool
+) -> Subscription:
+    _require_stripe_enabled()
+    sub = get_user_subscription(user.id)
+    if not sub or sub.status != "active" or not sub.stripe_subscription_id:
+        raise ValueError("Nenhuma assinatura Stripe ativa encontrada para este usuário.")
+
+    stripe = _stripe_module()
+    updated = stripe.Subscription.modify(
+        sub.stripe_subscription_id,
+        cancel_at_period_end=cancel_at_period_end,
+    )
+
+    sub.cancel_at_period_end = bool(updated.get("cancel_at_period_end", False))
+    sub.current_period_end = _as_dt(updated.get("current_period_end")) or sub.current_period_end
+    sub.stripe_status = updated.get("status") or sub.stripe_status
+    sub.stripe_latest_event_id = f"manual:{'cancel' if cancel_at_period_end else 'reactivate'}"
+    sub.stripe_latest_event_at = _utcnow()
+    db.session.commit()
+    return sub
 
 
 def verify_webhook_signature(payload: bytes, sig_header: str | None) -> dict:

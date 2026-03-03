@@ -17,9 +17,11 @@ from flask_login import current_user, login_required
 from app.extensions import csrf, limiter
 from app.services.stripe_service import (
     DuplicateSubscriptionError,
+    ExistingSubscriptionError,
     create_billing_portal_session,
     create_checkout_session,
     handle_webhook_event,
+    schedule_subscription_cancellation,
     verify_webhook_signature,
 )
 
@@ -42,6 +44,12 @@ def checkout():
         flash("Plano inválido para checkout.", "error")
         return redirect(url_for("main.pricing"))
 
+    current_app.logger.info(
+        "Checkout requested by user=%s plan=%s",
+        getattr(current_user, "id", None),
+        plan_slug,
+    )
+
     try:
         checkout_url = create_checkout_session(
             user=current_user,
@@ -53,6 +61,13 @@ def checkout():
         flash(
             "Você já possui uma assinatura ativa neste plano. "
             "Use o portal de cobrança para gerenciar.",
+            "info",
+        )
+        return redirect(url_for("billing.portal_redirect"))
+    except ExistingSubscriptionError:
+        flash(
+            "Você já possui uma assinatura ativa. "
+            "Use o portal de cobrança para fazer upgrade/downgrade sem duplicidade.",
             "info",
         )
         return redirect(url_for("billing.portal_redirect"))
@@ -69,6 +84,9 @@ def checkout():
 @billing_bp.post("/billing/portal")
 @login_required
 def portal():
+    current_app.logger.info(
+        "Billing portal requested by user=%s", getattr(current_user, "id", None)
+    )
     try:
         portal_url = create_billing_portal_session(
             user=current_user,
@@ -116,6 +134,39 @@ def portal_redirect():
         flash("Não foi possível abrir o portal de cobrança agora.", "error")
         return redirect(url_for("main.pricing"))
     return redirect(portal_url)
+
+
+@billing_bp.post("/billing/cancel-subscription")
+@login_required
+def cancel_subscription():
+    action = (request.form.get("action") or "cancel").strip().lower()
+    cancel_at_period_end = action != "reactivate"
+
+    current_app.logger.info(
+        "Subscription update requested by user=%s action=%s",
+        getattr(current_user, "id", None),
+        action,
+    )
+
+    try:
+        sub = schedule_subscription_cancellation(
+            user=current_user,
+            cancel_at_period_end=cancel_at_period_end,
+        )
+    except Exception as exc:
+        current_app.logger.exception(
+            "Falha ao atualizar cancelamento da assinatura user=%s: %s",
+            getattr(current_user, "id", None),
+            exc,
+        )
+        flash("Não foi possível atualizar o status da assinatura agora.", "error")
+        return redirect(url_for("account.dashboard"))
+
+    if sub.cancel_at_period_end:
+        flash("Cancelamento agendado para o fim do período atual.", "success")
+    else:
+        flash("Assinatura reativada com sucesso.", "success")
+    return redirect(url_for("account.dashboard"))
 
 
 @billing_bp.get("/billing/success")

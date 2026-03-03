@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% from "_nutrition_table_macro.html" import render_nutrition_table %}
+{% block title %}{{ table.title }} | Terracota{% endblock %}
+{% block content %}
+<div class="mb-6">
+    <a href="{{ url_for('account.tables_list') }}" class="text-sm text-terracota-textMuted hover:text-white transition-colors inline-flex items-center gap-1">
+        <i class="ph ph-arrow-left"></i> Todas as Tabelas
+    </a>
+</div>
+
+<div class="bg-terracota-surface border border-white/10 rounded-2xl p-6 mb-6">
+    <div class="flex items-center justify-between mb-4">
+        <div>
+            <h1 class="text-2xl font-heading font-bold">{{ table.title }}</h1>
+            <p class="text-sm text-terracota-textMuted mt-1">
+                {{ table.ingredient_count }} ingredientes &middot;
+                {{ table.created_at.strftime('%d/%m/%Y %H:%M') if table.created_at else '' }}
+            </p>
+        </div>
+        <button onclick="printTable()" class="px-6 py-2.5 bg-terracota-cyan text-terracota-base font-bold rounded-lg hover:bg-white shadow-[0_0_15px_rgba(0,196,204,0.3)] transition-all flex items-center gap-2 text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+            Imprimir / PDF
+        </button>
+    </div>
+</div>
+
+<div class="mb-8">
+    {{ render_nutrition_table(table.result_data, table.product_data) }}
+</div>
+
+<div class="flex justify-center gap-4">
+    <a href="{{ url_for('account.tables_list') }}" class="px-6 py-2.5 bg-white/10 border border-white/20 text-white font-medium rounded-lg hover:bg-white/20 transition-all text-sm">
+        <i class="ph ph-arrow-left mr-1"></i> Todas as Tabelas
+    </a>
+    <a href="{{ url_for('account.dashboard') }}" class="px-6 py-2.5 bg-white/10 border border-white/20 text-white font-medium rounded-lg hover:bg-white/20 transition-all text-sm">
+        Minha Conta
+    </a>
+</div>
+
+<script>
+function printTable() {
+    const printArea = document.getElementById('nutritional-table-print-area');
+    if (!printArea) return;
+    const html = printArea.outerHTML;
+    const win = window.open('', '_blank', 'width=800,height=600');
+    if (!win) { alert('Permita popups para imprimir.'); return; }
+    win.document.write('<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n<meta charset="UTF-8">\n<title>Tabela Nutricional</title>\n<style>\n  @page { margin: 1cm; }\n  body { margin: 0; padding: 1cm; font-family: "Helvetica Neue", Arial, sans-serif; background: #fff; color: #000; }\n  #nutritional-table-print-area { max-width: 100% !important; border: none !important; border-radius: 0 !important; padding: 0 !important; }\n</style>\n</head>\n<body>' + html + '</body>\n</html>');
+    win.document.close();
+    win.focus();
+    setTimeout(function() {
+        win.print();
+        win.onafterprint = function() { win.close(); };
+    }, 250);
+}
+</script>
+{% endblock %}
