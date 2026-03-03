@@ -30,6 +30,7 @@ RUN useradd -m -u 1000 appuser && \
     chown -R appuser:appuser /app
 
 COPY wsgi.py ./
+COPY gunicorn.conf.py ./
 COPY app/ ./app/
 COPY src/ ./src/
 COPY static/ ./static/
