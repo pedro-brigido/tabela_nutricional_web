@@ -67,9 +67,21 @@ def pricing():
                 "Rode `flask seed-plans` para persistir."
             )
 
+    # Provide current plan for authenticated users so the template can
+    # show duplicate-subscription warnings client-side.
+    current_plan = None
+    try:
+        from flask_login import current_user
+        if current_user.is_authenticated:
+            from app.services.plan_service import get_user_plan
+            current_plan = get_user_plan(current_user.id)
+    except Exception:
+        pass
+
     return render_template(
         "main/pricing.html",
         plans=plans,
+        current_plan=current_plan,
         bootstrap_warning=bootstrap_warning,
         bootstrap_error=bootstrap_error,
     )

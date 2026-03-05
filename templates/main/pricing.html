@@ -181,11 +181,12 @@
             </ul>
 
             {% if stripe_enabled and not is_free and p.stripe_price_id %}
-            <form method="post" action="{{ url_for('billing.checkout') }}">
+            {% set is_current = (current_plan and current_plan.slug == p.slug) %}
+            <form method="post" action="{{ url_for('billing.checkout') }}" class="checkout-form" data-plan-slug="{{ cta_plan_slug }}" data-plan-name="{{ p.name }}" data-is-current="{{ 'true' if is_current else 'false' }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="plan_slug" value="{{ cta_plan_slug }}">
                 <button type="submit" class="w-full text-center px-4 py-2.5 {{ 'bg-terracota-cyan text-terracota-base font-bold' if is_pro else 'bg-terracota-surfaceHighlight border border-white/10 text-white' }} rounded-xl text-sm hover:bg-white/90 transition-colors">
-                    {{ cta_label }}
+                    {% if is_current %}Plano Atual{% else %}{{ cta_label }}{% endif %}
                 </button>
             </form>
             {% else %}
@@ -287,6 +288,82 @@
         </details>
     </div>
 </section>
+
+<!-- Subscription Modal -->
+<div id="subscription-modal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeSubscriptionModal()"></div>
+    <div class="relative bg-terracota-surface border border-white/10 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl shadow-black/50">
+        <button onclick="closeSubscriptionModal()" class="absolute top-4 right-4 text-terracota-textMuted hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <div id="modal-icon" class="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center text-2xl"></div>
+        <h3 id="modal-title" class="text-xl font-heading font-bold text-center mb-2"></h3>
+        <p id="modal-message" class="text-sm text-terracota-textMuted text-center mb-6 leading-relaxed"></p>
+        <div id="modal-actions" class="flex flex-col gap-3"></div>
+    </div>
+</div>
+
+<script>
+function closeSubscriptionModal() {
+    document.getElementById('subscription-modal').classList.add('hidden');
+}
+
+function showSubscriptionModal(planName, planSlug, isCurrent) {
+    const modal = document.getElementById('subscription-modal');
+    const icon = document.getElementById('modal-icon');
+    const title = document.getElementById('modal-title');
+    const message = document.getElementById('modal-message');
+    const actions = document.getElementById('modal-actions');
+
+    if (isCurrent) {
+        icon.className = 'w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center text-2xl bg-terracota-cyan/10 border border-terracota-cyan/30 text-terracota-cyan';
+        icon.innerHTML = '<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+        title.textContent = 'Você já possui este plano!';
+        message.textContent = `Você já está assinando o plano ${planName}. Deseja gerenciar sua assinatura ou fazer upgrade para outro plano?`;
+        actions.innerHTML = `
+            <a href="{{ url_for('billing.portal_redirect') }}" class="w-full text-center px-4 py-3 bg-terracota-cyan text-terracota-base font-bold rounded-xl text-sm hover:bg-white transition-colors">
+                Gerenciar Assinatura
+            </a>
+            <a href="{{ url_for('account.upgrade') }}" class="w-full text-center px-4 py-3 bg-terracota-surfaceHighlight border border-white/10 text-white font-medium rounded-xl text-sm hover:bg-white/5 transition-colors">
+                Ver outros planos
+            </a>
+            <button onclick="closeSubscriptionModal()" class="w-full text-center px-4 py-2 text-sm text-terracota-textMuted hover:text-white transition-colors">
+                Fechar
+            </button>
+        `;
+    } else {
+        icon.className = 'w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center text-2xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400';
+        icon.innerHTML = '<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>';
+        title.textContent = 'Você já possui uma assinatura ativa';
+        message.textContent = `Para migrar para o plano ${planName}, recomendamos usar o Portal de Cobrança para evitar dupla cobrança.`;
+        actions.innerHTML = `
+            <a href="{{ url_for('billing.portal_redirect') }}" class="w-full text-center px-4 py-3 bg-terracota-cyan text-terracota-base font-bold rounded-xl text-sm hover:bg-white transition-colors">
+                Abrir Portal de Cobrança
+            </a>
+            <button onclick="closeSubscriptionModal()" class="w-full text-center px-4 py-2 text-sm text-terracota-textMuted hover:text-white transition-colors">
+                Cancelar
+            </button>
+        `;
+    }
+
+    modal.classList.remove('hidden');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPlanSlug = '{{ current_plan.slug if current_plan else "" }}';
+    if (!currentPlanSlug || currentPlanSlug === 'free') return;
+
+    document.querySelectorAll('.checkout-form').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const planSlug = form.dataset.planSlug;
+            const planName = form.dataset.planName;
+            const isCurrent = form.dataset.isCurrent === 'true';
+            showSubscriptionModal(planName, planSlug, isCurrent);
+        });
+    });
+});
+</script>
 
 <div class="mt-10 text-center">
     <p class="text-sm text-terracota-textMuted mb-4">

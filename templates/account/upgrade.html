@@ -58,22 +58,42 @@
     {% endif %}
 </p>
 {% if stripe_enabled and current_plan and current_plan.slug != 'free' %}
+<!-- Subscription Modal -->
+<div id="subscription-modal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeSubscriptionModal()"></div>
+    <div class="relative bg-terracota-surface border border-white/10 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl shadow-black/50">
+        <button onclick="closeSubscriptionModal()" class="absolute top-4 right-4 text-terracota-textMuted hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center text-2xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        </div>
+        <h3 class="text-xl font-heading font-bold text-center mb-2">Você já possui uma assinatura ativa</h3>
+        <p id="modal-message" class="text-sm text-terracota-textMuted text-center mb-6 leading-relaxed"></p>
+        <div class="flex flex-col gap-3">
+            <a href="{{ url_for('billing.portal_redirect') }}" class="w-full text-center px-4 py-3 bg-terracota-cyan text-terracota-base font-bold rounded-xl text-sm hover:bg-white transition-colors">
+                Abrir Portal de Cobrança
+            </a>
+            <button onclick="closeSubscriptionModal()" class="w-full text-center px-4 py-2 text-sm text-terracota-textMuted hover:text-white transition-colors">
+                Cancelar
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
+function closeSubscriptionModal() {
+    document.getElementById('subscription-modal').classList.add('hidden');
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.upgrade-checkout-form').forEach(function (form) {
         form.addEventListener('submit', function (event) {
-            const targetPlanName = form.dataset.targetPlanName || 'outro plano';
-            const confirmed = window.confirm(
-                `Você já possui um plano ativo ({{ current_plan.name }}). Para migrar para ${targetPlanName}, recomendamos usar o Portal de Cobrança para evitar dupla cobrança. Deseja ir para o portal agora?`
-            );
-
-            if (!confirmed) {
-                event.preventDefault();
-                return;
-            }
-
             event.preventDefault();
-            window.location.href = "{{ url_for('billing.portal_redirect') }}";
+            const targetPlanName = form.dataset.targetPlanName || 'outro plano';
+            document.getElementById('modal-message').textContent =
+                `Você já possui o plano {{ current_plan.name }}. Para migrar para ${targetPlanName}, recomendamos usar o Portal de Cobrança para evitar dupla cobrança.`;
+            document.getElementById('subscription-modal').classList.remove('hidden');
         });
     });
 });
