@@ -133,6 +133,27 @@ def test_total_sugars_and_added_sugars_in_result():
     assert "addedSugars" in NUTRIENT_KEYS
 
 
+def test_legacy_output_displays_added_and_total_sugars_vd():
+    ingredients = [
+        {
+            "quantity": 100,
+            "nutritionalInfo": {
+                "carbs": 20,
+                "proteins": 1,
+                "totalFat": 0,
+                "fiber": 1,
+                "sodium": 20,
+                "totalSugars": 8,
+                "addedSugars": 5,
+            },
+        }
+    ]
+    result = calculate(ingredients, 100)
+    legacy = to_legacy_output(result)
+    assert legacy["perPortion"]["addedSugars"]["vd"] == "10"
+    assert legacy["perPortion"]["totalSugars"]["vd"] == ""
+
+
 def test_trans_fat_vd_display_is_asterisks():
     ingredients = [
         {
@@ -158,3 +179,29 @@ def test_result_has_meta():
     result = calculate(ingredients, 50)
     assert result.meta.context_echo
     assert "portion_size" in result.meta.context_echo
+
+
+def test_calculate_liquid_context_echo():
+    ingredients = [
+        {
+            "quantity": 100,
+            "nutritionalInfo": {
+                "carbs": 10,
+                "proteins": 2,
+                "totalFat": 1,
+                "fiber": 0.5,
+                "sodium": 50,
+            },
+        }
+    ]
+    result = calculate(
+        ingredients,
+        200,
+        food_form="liquid",
+        unit_base="100ml",
+        portion_unit="ml",
+    )
+    assert result is not None
+    assert result.meta.context_echo["food_form"] == "liquid"
+    assert result.meta.context_echo["unit_base"] == "100ml"
+    assert result.meta.context_echo["portion_unit"] == "ml"

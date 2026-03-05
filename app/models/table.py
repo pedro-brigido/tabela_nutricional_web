@@ -26,6 +26,11 @@ class NutritionTable(db.Model):
     ingredient_count = db.Column(db.Integer, default=0)
     version = db.Column(db.Integer, default=1)
     is_finalized = db.Column(db.Boolean, default=False)
+    regulatory_version = db.Column(
+        db.String(64), nullable=True, default="IN_75_2020_RDC_429_2020_v1"
+    )
+    is_deleted = db.Column(db.Boolean, default=False, index=True)
+    deleted_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=_utcnow)
     updated_at = db.Column(db.DateTime, default=_utcnow, onupdate=_utcnow)
 

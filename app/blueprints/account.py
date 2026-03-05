@@ -10,10 +10,11 @@ from app.models.user import User
 from app.services.plan_service import (
     get_user_plan,
     get_user_subscription,
+    has_entitlement,
     list_plans,
 )
 from app.services.usage_service import get_usage, get_usage_summary
-from app.services.table_service import list_tables, get_table
+from app.services.table_service import get_table, get_versions, list_tables
 
 account_bp = Blueprint("account", __name__, url_prefix="/account")
 
@@ -40,7 +41,8 @@ def dashboard():
 def tables_list():
     """All tables, paginated."""
     page = request.args.get("page", 1, type=int)
-    pagination = list_tables(current_user.id, page=page, per_page=20)
+    search = request.args.get("search", "", type=str).strip()
+    pagination = list_tables(current_user.id, page=page, per_page=20, search=search)
     return render_template(
         "account/tables_list.html",
         tables=pagination.items,
@@ -57,7 +59,42 @@ def view_table(table_id):
     table = get_table(table_id, current_user.id)
     if not table:
         abort(404)
-    return render_template("account/table_view.html", table=table)
+    can_view_versions = has_entitlement(current_user.id, "has_version_history")
+    versions = get_versions(table.id, current_user.id) if can_view_versions else []
+    return render_template(
+        "account/table_view.html",
+        table=table,
+        versions=versions,
+        can_view_versions=can_view_versions,
+    )
+
+
+@account_bp.route("/tables/<int:table_id>/versions")
+@login_required
+def table_versions(table_id):
+    """List version snapshots for a table."""
+    table = get_table(table_id, current_user.id)
+    if not table:
+        return jsonify({"error": "Tabela não encontrada."}), 404
+    if not has_entitlement(current_user.id, "has_version_history"):
+        return jsonify({"error": "Seu plano não inclui histórico de versões."}), 403
+
+    versions = get_versions(table.id, current_user.id)
+    return jsonify(
+        {
+            "table_id": table.id,
+            "versions": [
+                {
+                    "id": version.id,
+                    "version_number": version.version_number,
+                    "created_at": version.created_at.isoformat()
+                    if version.created_at
+                    else None,
+                }
+                for version in versions
+            ],
+        }
+    )
 
 
 @account_bp.route("/usage")

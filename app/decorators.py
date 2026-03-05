@@ -38,6 +38,16 @@ def require_quota(resource: str):
         @login_required
         def wrapper(*args, **kwargs):
             if resource == "table":
+                data = request.get_json(silent=True) or {}
+                idempotency_key = data.get("idempotencyKey")
+                if idempotency_key:
+                    from app.models.table import NutritionTable
+
+                    existing = NutritionTable.query.filter_by(
+                        user_id=current_user.id, idempotency_key=idempotency_key
+                    ).first()
+                    if existing:
+                        return f(*args, **kwargs)
                 if not can_create_table(current_user.id):
                     msg = "Limite de tabelas atingido este mês. Faça upgrade para continuar."
                     if _wants_json():

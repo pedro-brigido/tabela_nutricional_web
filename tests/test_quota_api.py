@@ -198,7 +198,10 @@ def test_save_table_succeeds_within_quota(client, flask_app):
             "title": "My Saved Table",
             "product": {"name": "Bolo"},
             "ingredients": [{"name": "Farinha"}],
-            "calculatedData": {"perPortion": {"energy": {"display": "100"}}},
+            "calculatedData": {
+                "per100g": {"energy": {"display": "250"}},
+                "perPortion": {"energy": {"display": "100"}},
+            },
             "idempotencyKey": "unique-save-key-001"
         }
         resp = client.post("/api/tables", json=payload)
@@ -224,7 +227,10 @@ def test_save_table_blocked_when_quota_exceeded(client, flask_app):
             "title": "Should Fail",
             "product": {},
             "ingredients": [],
-            "calculatedData": {"energy": 100},
+            "calculatedData": {
+                "per100g": {"energy": {"display": "250"}},
+                "perPortion": {"energy": {"display": "100"}},
+            },
             "idempotencyKey": "blocked-key-001"
         }
         resp = client.post("/api/tables", json=payload)
@@ -243,7 +249,10 @@ def test_save_table_idempotency_no_double_count(client, flask_app):
             "title": "Idempotent Table",
             "product": {"name": "Test"},
             "ingredients": [],
-            "calculatedData": {"energy": 100},
+            "calculatedData": {
+                "per100g": {"energy": {"display": "250"}},
+                "perPortion": {"energy": {"display": "100"}},
+            },
             "idempotencyKey": "idem-key-999"
         }
         resp1 = client.post("/api/tables", json=payload)
@@ -274,3 +283,66 @@ def test_latest_requires_auth(client, flask_app):
     with flask_app.app_context():
         resp = client.get("/api/tables/latest")
         assert resp.status_code in (401, 302)
+
+
+def test_calculate_rejects_non_list_ingredients(client, flask_app):
+    with flask_app.app_context():
+        _seed_plans(db.session)
+        user = _make_user(db.session, "bad-ingredients@test.com")
+        _login(client, user.id)
+        payload = {
+            "product": {"portionSize": 100},
+            "ingredients": "not-a-list",
+        }
+        resp = client.post("/api/calculate", json=payload)
+        assert resp.status_code == 400
+
+
+def test_calculate_rejects_invalid_portion_size(client, flask_app):
+    with flask_app.app_context():
+        _seed_plans(db.session)
+        user = _make_user(db.session, "bad-portion@test.com")
+        _login(client, user.id)
+        payload = {
+            "product": {"portionSize": "abc"},
+            "ingredients": [
+                {"name": "Farinha", "quantity": 100, "nutritionalInfo": {"carbs": 10}}
+            ],
+        }
+        resp = client.post("/api/calculate", json=payload)
+        assert resp.status_code == 400
+
+
+def test_calculate_rejects_negative_ingredient_values(client, flask_app):
+    with flask_app.app_context():
+        _seed_plans(db.session)
+        user = _make_user(db.session, "negative-ingredient@test.com")
+        _login(client, user.id)
+        payload = {
+            "product": {"portionSize": 100},
+            "ingredients": [
+                {
+                    "name": "Farinha",
+                    "quantity": -5,
+                    "nutritionalInfo": {"carbs": 10, "proteins": 1},
+                }
+            ],
+        }
+        resp = client.post("/api/calculate", json=payload)
+        assert resp.status_code == 400
+
+
+def test_save_table_rejects_invalid_result_shape(client, flask_app):
+    with flask_app.app_context():
+        _seed_plans(db.session)
+        user = _make_user(db.session, "invalid-result@test.com")
+        _login(client, user.id)
+        payload = {
+            "title": "Invalid",
+            "product": {"name": "Bolo"},
+            "ingredients": [{"name": "Farinha"}],
+            "calculatedData": {"energy": 100},
+            "idempotencyKey": "invalid-result-key",
+        }
+        resp = client.post("/api/tables", json=payload)
+        assert resp.status_code == 400

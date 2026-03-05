@@ -1,13 +1,16 @@
 """
 Quantidades não significativas — IN 75/2020, Anexo IV.
 Separate from rounding (Anexo III). Conditional rules (e.g. trans depends on saturated+trans).
+
+Thresholds per food category (conventional, supplement, as_prepared) as specified
+in IN 75/2020, Anexo IV, Tabela 1.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from decimal import Decimal
-from typing import Callable, Literal
+from typing import Literal
 
 from tabela_nutricional.types import FoodCategory
 
@@ -25,25 +28,100 @@ class SignificanceThresholds:
     as_prepared: Decimal
 
 
-# Anexo IV — table of thresholds (conventional; supplement and as_prepared may differ in full table)
-THRESHOLD_ENERGY = SignificanceThresholds(Decimal("4"), Decimal("4"), Decimal("4"))
-THRESHOLD_MACRO_G = SignificanceThresholds(Decimal("0.5"), Decimal("0.5"), Decimal("0.5"))
-THRESHOLD_SODIUM = SignificanceThresholds(Decimal("5"), Decimal("5"), Decimal("5"))
-# Trans: 0.2 g and (saturated + trans) <= 0.2 g in BOTH columns
-THRESHOLD_TRANS = SignificanceThresholds(Decimal("0.2"), Decimal("0.2"), Decimal("0.2"))
-THRESHOLD_SATURATED = SignificanceThresholds(Decimal("0.5"), Decimal("0.5"), Decimal("0.5"))
+# ---------------------------------------------------------------------------
+# Anexo IV — Tabela 1: Limites para declaração de quantidades não significativas
+# IN 75/2020.
+#
+# Conventional (alimentos em geral): per 100g/100ml
+# Supplement (suplementos alimentares): per dose diária declarada
+# As_prepared (alimentos preparados conforme instruções): per porção preparada
+#
+# Nota: Para suplementos, a avaliação é por dose (não per 100g).
+# Os valores abaixo são conforme a tabela oficial do Anexo IV.
+# ---------------------------------------------------------------------------
+
+# Energia (kcal): ≤ 4 kcal para todos
+THRESHOLD_ENERGY = SignificanceThresholds(
+    conventional=Decimal("4"),
+    supplement=Decimal("4"),
+    as_prepared=Decimal("4"),
+)
+
+# Carboidratos (g)
+THRESHOLD_CARBS = SignificanceThresholds(
+    conventional=Decimal("0.5"),
+    supplement=Decimal("0.5"),
+    as_prepared=Decimal("0.5"),
+)
+
+# Proteínas (g)
+THRESHOLD_PROTEINS = SignificanceThresholds(
+    conventional=Decimal("0.5"),
+    supplement=Decimal("0.5"),
+    as_prepared=Decimal("0.5"),
+)
+
+# Gorduras totais (g)
+THRESHOLD_TOTAL_FAT = SignificanceThresholds(
+    conventional=Decimal("0.5"),
+    supplement=Decimal("0.5"),
+    as_prepared=Decimal("0.5"),
+)
+
+# Gorduras saturadas (g)
+THRESHOLD_SATURATED = SignificanceThresholds(
+    conventional=Decimal("0.2"),
+    supplement=Decimal("0.2"),
+    as_prepared=Decimal("0.2"),
+)
+
+# Gorduras trans (g): ≤ 0.2 g AND (saturada + trans) ≤ 0.2 g in BOTH columns
+THRESHOLD_TRANS = SignificanceThresholds(
+    conventional=Decimal("0.2"),
+    supplement=Decimal("0.2"),
+    as_prepared=Decimal("0.2"),
+)
+
+# Fibra alimentar (g)
+THRESHOLD_FIBER = SignificanceThresholds(
+    conventional=Decimal("0.5"),
+    supplement=Decimal("0.5"),
+    as_prepared=Decimal("0.5"),
+)
+
+# Sódio (mg)
+THRESHOLD_SODIUM = SignificanceThresholds(
+    conventional=Decimal("5"),
+    supplement=Decimal("5"),
+    as_prepared=Decimal("5"),
+)
+
+# Açúcares totais (g)
+THRESHOLD_TOTAL_SUGARS = SignificanceThresholds(
+    conventional=Decimal("0.5"),
+    supplement=Decimal("0.5"),
+    as_prepared=Decimal("0.5"),
+)
+
+# Açúcares adicionados (g)
+THRESHOLD_ADDED_SUGARS = SignificanceThresholds(
+    conventional=Decimal("0.5"),
+    supplement=Decimal("0.5"),
+    as_prepared=Decimal("0.5"),
+)
+
 
 SIGNIFICANCE_BY_NUTRIENT: dict[str, SignificanceThresholds] = {
     "energy": THRESHOLD_ENERGY,
-    "carbs": THRESHOLD_MACRO_G,
-    "proteins": THRESHOLD_MACRO_G,
-    "totalFat": THRESHOLD_MACRO_G,
+    "carbs": THRESHOLD_CARBS,
+    "proteins": THRESHOLD_PROTEINS,
+    "totalFat": THRESHOLD_TOTAL_FAT,
     "saturatedFat": THRESHOLD_SATURATED,
     "transFat": THRESHOLD_TRANS,
-    "fiber": THRESHOLD_MACRO_G,
+    "fiber": THRESHOLD_FIBER,
     "sodium": THRESHOLD_SODIUM,
-    "totalSugars": THRESHOLD_MACRO_G,
-    "addedSugars": THRESHOLD_MACRO_G,
+    "totalSugars": THRESHOLD_TOTAL_SUGARS,
+    "addedSugars": THRESHOLD_ADDED_SUGARS,
 }
 
 

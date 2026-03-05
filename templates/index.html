@@ -26,12 +26,14 @@
                     colors: {
                         terracota: {
                             base: '#0B0D17',
+                            deepDark: '#0B0D17',
                             surface: '#151828',
                             surfaceHighlight: '#1E233A',
                             cyan: '#00F0FF',
                             cyanHover: '#00C8D6',
                             purple: '#7B2CBF',
                             text: '#FFFFFF',
+                            textLight: '#CBD5E1',
                             textMuted: '#94A3B8',
                         }
                     },
@@ -257,7 +259,7 @@
                     </div>
 
                     <div class="border-t border-white/5 p-6 flex justify-between items-center bg-terracota-surfaceHighlight/30">
-                        <button id="btn-back" class="px-6 py-2.5 text-terracota-textMuted font-medium hover:text-white hover:bg-white/5 rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed border border-transparent hover:border-white/10" disabled>
+                        <button id="btn-back" class="px-6 py-2.5 text-terracota-textMuted font-medium hover:text-white hover:bg-white/5 rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed border border-transparent hover:border-white/10">
                             <i class="ph ph-arrow-left mr-2"></i> Voltar
                         </button>
                         <button id="btn-next" class="px-8 py-2.5 bg-gradient-to-r from-terracota-cyan to-[#009da3] hover:from-white hover:to-white text-terracota-base font-bold rounded-lg shadow-[0_0_15px_rgba(0,240,255,0.4)] hover:shadow-[0_0_20px_rgba(255,255,255,0.6)] transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:shadow-none flex items-center">
@@ -449,20 +451,12 @@
             /* Inputs styling */
             #wizard-content input, #wizard-content select {
                 background-color: rgba(30, 35, 58, 0.5) !important;
-                border: 1px solid rgba(255,255,255,0.1) !important;
-                color: white !important;
+                border: 1px solid rgba(255,255,255,0.12) !important;
                 border-radius: 0.5rem;
             }
             #wizard-content input:focus, #wizard-content select:focus {
                 border-color: #00F0FF !important;
                 box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.2) !important;
-            }
-            
-            /* Labels */
-            #wizard-content label {
-                color: #94A3B8 !important;
-                font-size: 0.875rem;
-                margin-bottom: 0.25rem;
             }
         }
     </style>

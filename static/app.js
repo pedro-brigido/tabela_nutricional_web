@@ -10,7 +10,13 @@ const state = {
         portionSize: '',
         portionDesc: '',
         allergens: '',
-        gluten: 'Não contém glúten'
+        allergenKeys: [],
+        customAllergens: '',
+        gluten: 'Não contém glúten',
+        glutenStatus: 'gluten_free',
+        foodForm: 'solid',
+        portionUnit: 'g',
+        groupCode: ''
     },
     ingredients: [],
     calculatedData: null,
@@ -21,7 +27,9 @@ const state = {
     saveTableError: '',
     currentIdempotencyKey: null,  // generated once per calculation session
     lastTable: null,        // most recent table (shown when quota exhausted)
-    toastTimeout: null
+    toastTimeout: null,
+    allergenRegistry: null, // cached from /api/allergens
+    portionGroups: null     // cached from /api/portion-references
 };
 
 // ---- Helpers ----------------------------------------------------------------
@@ -138,6 +146,28 @@ async function fetchLatestTable() {
     } catch (e) { console.error('fetchLatestTable error', e); return null; }
 }
 
+async function fetchAllergenRegistry() {
+    if (state.allergenRegistry) return state.allergenRegistry;
+    try {
+        const res = await fetch('/api/allergens', { headers: withCsrfHeaders() });
+        if (!res.ok) return null;
+        const data = await res.json();
+        state.allergenRegistry = data;
+        return data;
+    } catch (e) { console.error('fetchAllergenRegistry error', e); return null; }
+}
+
+async function fetchPortionGroups() {
+    if (state.portionGroups) return state.portionGroups;
+    try {
+        const res = await fetch('/api/portion-references', { headers: withCsrfHeaders() });
+        if (!res.ok) return null;
+        const data = await res.json();
+        state.portionGroups = data.groups;
+        return data.groups;
+    } catch (e) { console.error('fetchPortionGroups error', e); return null; }
+}
+
 async function saveCurrentTable() {
     if (!state.calculatedData) return { ok: false, error: 'Sem tabela para salvar.' };
     if (state.isSavingTable) return { ok: false, error: 'Salvamento em andamento.' };
@@ -193,7 +223,12 @@ async function saveCurrentTable() {
 document.addEventListener('DOMContentLoaded', () => { initApp(); });
 
 async function initApp() {
-    await fetchQuota();
+    await Promise.all([fetchQuota(), fetchAllergenRegistry(), fetchPortionGroups()]);
+    const duplicated = await preloadDuplicateIfAny();
+    if (duplicated) {
+        setupNavigation();
+        return;
+    }
 
     if (state.quotaInfo && !state.quotaInfo.canCreate) {
         await fetchLatestTable();
@@ -202,6 +237,43 @@ async function initApp() {
         renderWelcome();
     }
     setupNavigation();
+}
+
+async function preloadDuplicateIfAny() {
+    const params = new URLSearchParams(window.location.search);
+    const duplicateId = params.get('duplicate');
+    if (!duplicateId) return false;
+    try {
+        const res = await fetch(`/api/tables/${duplicateId}`, { headers: withCsrfHeaders() });
+        if (!res.ok) {
+            showToast('Não foi possível carregar a tabela para duplicação.', 'warning');
+            return false;
+        }
+        const data = await res.json();
+        state.product = {
+            name: data.product_data?.name || '',
+            portionSize: data.product_data?.portionSize || data.product_data?.portion_size || '',
+            portionDesc: data.product_data?.portionDesc || data.product_data?.portion_desc || '',
+            allergens: data.product_data?.allergens || '',
+            allergenKeys: Array.isArray(data.product_data?.allergenKeys) ? data.product_data.allergenKeys : [],
+            customAllergens: data.product_data?.customAllergens || '',
+            gluten: data.product_data?.gluten || data.product_data?.gluten_status || 'Não contém glúten',
+            glutenStatus: data.product_data?.glutenStatus || (data.product_data?.gluten === 'Contém glúten' ? 'contains_gluten' : 'gluten_free'),
+            foodForm: data.product_data?.foodForm || 'solid',
+            portionUnit: data.product_data?.portionUnit || data.product_data?.portion_unit || 'g',
+            groupCode: data.product_data?.groupCode || '',
+        };
+        state.ingredients = Array.isArray(data.ingredients_data) ? data.ingredients_data : [];
+        state.calculatedData = null;
+        state.isFinalized = false;
+        state.currentIdempotencyKey = null;
+        goToStep(1);
+        showToast('Tabela carregada para duplicação.', 'info');
+        return true;
+    } catch (err) {
+        console.error(err);
+        return false;
+    }
 }
 
 function setupNavigation() {
@@ -234,8 +306,12 @@ function updateUI() {
     const btnNext = document.getElementById('btn-next');
     const progress = document.getElementById('wizard-progress');
 
-    btnBack.style.display = state.currentStep > 0 && state.currentStep < 3 ? 'block' : 'none';
+    const showBack = state.currentStep === 2;
+    btnBack.style.display = showBack ? 'block' : 'none';
+    btnBack.disabled = !showBack;
+
     btnNext.style.display = state.currentStep > 0 && state.currentStep < 3 ? 'block' : 'none';
+    btnNext.disabled = false;
 
     if (state.currentStep > 0 && state.currentStep <= 3) {
         progress.innerHTML = renderProgressBar(state.currentStep);
@@ -247,11 +323,13 @@ function updateUI() {
     switch (state.currentStep) {
         case 1:
             renderStep1(content);
-            btnNext.innerText = 'Próximo: Ingredientes';
+            btnNext.innerHTML = 'Próximo: Ingredientes <i class="ph ph-arrow-right ml-2"></i>';
+            btnBack.innerHTML = '<i class="ph ph-arrow-left mr-2"></i> Voltar';
             break;
         case 2:
             renderStep2(content);
-            btnNext.innerText = 'Calcular Tabela';
+            btnNext.innerHTML = 'Calcular Tabela <i class="ph ph-arrow-right ml-2"></i>';
+            btnBack.innerHTML = '<i class="ph ph-arrow-left mr-2"></i> Voltar: Produto';
             break;
         case 3:
             renderStep3(content);
@@ -267,11 +345,14 @@ function renderProgressBar(step) {
         const s = idx + 1;
         const active = s <= step;
         const current = s === step;
+        const canClick = s < step || (s === 3 && state.calculatedData);
         const bgCircle = active ? 'bg-terracota-cyan text-terracota-deepDark shadow-[0_0_15px_rgba(0,196,204,0.4)]' : 'bg-terracota-deepDark border border-white/20 text-terracota-textLight';
         const ring = current ? 'ring-4 ring-terracota-cyan/20' : '';
         const textClass = active ? 'text-terracota-cyan' : 'text-terracota-textLight/50';
+        const clickClass = canClick ? 'cursor-pointer hover:scale-110' : '';
+        const clickAttr = canClick ? `onclick="goToStep(${s})"` : '';
         return `
-            <div class="relative z-10 flex flex-col items-center">
+            <div class="relative z-10 flex flex-col items-center ${clickClass}" ${clickAttr}>
                 <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${bgCircle} ${ring}">${s}</div>
                 <span class="mt-3 text-xs font-medium uppercase tracking-wider ${textClass}">${label}</span>
             </div>
@@ -372,6 +453,63 @@ function renderWelcome() {
 function renderStep1(container) {
     const inputClass = "w-full px-4 py-3 bg-black/20 border border-white/10 rounded-lg text-white placeholder-white/30 focus:ring-2 focus:ring-terracota-cyan focus:border-transparent outline-none transition-all";
     const labelClass = "block text-sm font-medium text-terracota-textLight mb-2 uppercase tracking-wide text-[10px]";
+    const isLiquid = state.product.foodForm === 'liquid';
+    const portionUnitLabel = isLiquid ? 'ml' : 'g';
+
+    // Build allergen checkboxes HTML
+    let allergenCheckboxesHtml = '';
+    if (state.allergenRegistry && state.allergenRegistry.allergens) {
+        const groups = {};
+        for (const a of state.allergenRegistry.allergens) {
+            if (!groups[a.group]) groups[a.group] = [];
+            groups[a.group].push(a);
+        }
+        for (const [group, items] of Object.entries(groups)) {
+            const checkboxes = items.map(a => {
+                const checked = state.product.allergenKeys.includes(a.key) ? 'checked' : '';
+                return `<label class="flex items-center gap-2 text-sm text-terracota-textLight cursor-pointer hover:text-white transition-colors">
+                    <input type="checkbox" value="${a.key}" ${checked} class="allergen-checkbox rounded border-white/20 bg-black/20 text-terracota-cyan focus:ring-terracota-cyan">
+                    <span class="capitalize">${escapeHtml(a.label)}</span>
+                </label>`;
+            }).join('');
+            allergenCheckboxesHtml += `
+                <div class="mb-3">
+                    <p class="text-[10px] font-bold text-terracota-cyan/70 uppercase tracking-wider mb-1">${escapeHtml(group)}</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">${checkboxes}</div>
+                </div>`;
+        }
+    } else {
+        allergenCheckboxesHtml = `<textarea id="input-allergens-fallback" rows="2" class="${inputClass}" placeholder="Ex: CONTÉM OVO E TRIGO">${escapeHtml(state.product.allergens)}</textarea>`;
+    }
+
+    // Build gluten options from registry
+    let glutenOptionsHtml = '';
+    if (state.allergenRegistry && state.allergenRegistry.glutenOptions) {
+        glutenOptionsHtml = state.allergenRegistry.glutenOptions.map(o =>
+            `<option value="${o.key}" class="bg-terracota-deepDark" ${state.product.glutenStatus === o.key ? 'selected' : ''}>${escapeHtml(o.label)}</option>`
+        ).join('');
+    } else {
+        glutenOptionsHtml = `
+            <option value="gluten_free" class="bg-terracota-deepDark" ${state.product.glutenStatus === 'gluten_free' ? 'selected' : ''}>NÃO CONTÉM GLÚTEN</option>
+            <option value="contains_gluten" class="bg-terracota-deepDark" ${state.product.glutenStatus === 'contains_gluten' ? 'selected' : ''}>CONTÉM GLÚTEN</option>`;
+    }
+
+    // Build portion reference dropdown
+    let portionGroupHtml = '';
+    if (state.portionGroups && state.portionGroups.length > 0) {
+        const options = state.portionGroups.map(g =>
+            `<option value="${g.code}" class="bg-terracota-deepDark" ${state.product.groupCode === g.code ? 'selected' : ''}>${escapeHtml(g.name)} (${g.portion_g}${portionUnitLabel} — ${escapeHtml(g.household_measure)})</option>`
+        ).join('');
+        portionGroupHtml = `
+            <div>
+                <label class="${labelClass}">Grupo de Alimento (Anexo V)</label>
+                <select id="input-group-code" class="${inputClass} appearance-none cursor-pointer">
+                    <option value="" class="bg-terracota-deepDark">— Selecione (opcional) —</option>
+                    ${options}
+                </select>
+                <p class="text-[10px] text-terracota-textMuted mt-1">Porção de referência regulatória para validação</p>
+            </div>`;
+    }
 
     container.innerHTML = `
         <div class="space-y-8 max-w-lg mx-auto">
@@ -380,10 +518,18 @@ function renderStep1(container) {
                 <label class="${labelClass}">Nome do Produto</label>
                 <input type="text" id="input-name" value="${escapeHtml(state.product.name)}" class="${inputClass}" placeholder="Ex: Bolo de Chocolate">
             </div>
+            <div>
+                <label class="${labelClass}">Tipo de Produto</label>
+                <select id="input-food-form" class="${inputClass} appearance-none cursor-pointer">
+                    <option value="solid" class="bg-terracota-deepDark" ${state.product.foodForm === 'solid' ? 'selected' : ''}>Sólido</option>
+                    <option value="liquid" class="bg-terracota-deepDark" ${state.product.foodForm === 'liquid' ? 'selected' : ''}>Líquido</option>
+                </select>
+            </div>
+            ${portionGroupHtml}
             <div class="grid grid-cols-2 gap-6">
                 <div>
-                    <label class="${labelClass}">Porção (g ou ml)</label>
-                    <input type="number" id="input-portion" value="${escapeHtml(state.product.portionSize)}" class="${inputClass}" placeholder="Ex: 60">
+                    <label class="${labelClass}">Porção (${portionUnitLabel})</label>
+                    <input type="number" id="input-portion" value="${escapeHtml(state.product.portionSize)}" class="${inputClass}" placeholder="Ex: 60" min="0.1" step="0.1">
                 </div>
                 <div>
                     <label class="${labelClass}">Medida Caseira</label>
@@ -391,48 +537,370 @@ function renderStep1(container) {
                 </div>
             </div>
             <div>
-                <label class="${labelClass}">Declaração de Alergênicos</label>
-                <textarea id="input-allergens" rows="3" class="${inputClass}" placeholder="Ex: ALÉRGICOS: CONTÉM OVO E TRIGO.">${escapeHtml(state.product.allergens)}</textarea>
+                <label class="${labelClass}">Declaração de Alérgenos (RDC 26/2015)</label>
+                <div class="bg-black/20 border border-white/10 rounded-lg p-4">
+                    ${allergenCheckboxesHtml}
+                    <div class="mt-3 pt-3 border-t border-white/10">
+                        <label class="${labelClass}">Outros alérgenos</label>
+                        <input type="text" id="input-custom-allergens" value="${escapeHtml(state.product.customAllergens)}" class="${inputClass}" placeholder="Ex: kiwi, gergelim">
+                    </div>
+                </div>
             </div>
             <div>
                 <label class="${labelClass}">Glúten</label>
-                <select id="input-gluten" class="${inputClass} appearance-none cursor-pointer">
-                    <option value="Não contém glúten" class="bg-terracota-deepDark" ${state.product.gluten === 'Não contém glúten' ? 'selected' : ''}>Não contém glúten</option>
-                    <option value="Contém glúten" class="bg-terracota-deepDark" ${state.product.gluten === 'Contém glúten' ? 'selected' : ''}>Contém glúten</option>
+                <select id="input-gluten-status" class="${inputClass} appearance-none cursor-pointer">
+                    ${glutenOptionsHtml}
                 </select>
             </div>
         </div>
     `;
 
+    // Event listeners
     document.getElementById('input-name').addEventListener('input', (e) => state.product.name = e.target.value);
     document.getElementById('input-portion').addEventListener('input', (e) => state.product.portionSize = e.target.value);
     document.getElementById('input-desc').addEventListener('input', (e) => state.product.portionDesc = e.target.value);
-    document.getElementById('input-allergens').addEventListener('input', (e) => state.product.allergens = e.target.value);
-    document.getElementById('input-gluten').addEventListener('change', (e) => state.product.gluten = e.target.value);
+    document.getElementById('input-custom-allergens')?.addEventListener('input', (e) => state.product.customAllergens = e.target.value);
+
+    // Allergen checkboxes
+    document.querySelectorAll('.allergen-checkbox').forEach(cb => {
+        cb.addEventListener('change', () => {
+            const checked = [...document.querySelectorAll('.allergen-checkbox:checked')].map(c => c.value);
+            state.product.allergenKeys = checked;
+            _syncAllergenText();
+        });
+    });
+
+    // Fallback allergens textarea
+    const fallbackTextarea = document.getElementById('input-allergens-fallback');
+    if (fallbackTextarea) {
+        fallbackTextarea.addEventListener('input', (e) => state.product.allergens = e.target.value);
+    }
+
+    // Gluten
+    const glutenSelect = document.getElementById('input-gluten-status');
+    if (glutenSelect) {
+        glutenSelect.addEventListener('change', (e) => {
+            state.product.glutenStatus = e.target.value;
+            const label = state.allergenRegistry?.glutenOptions?.find(o => o.key === e.target.value)?.label;
+            state.product.gluten = label || (e.target.value === 'contains_gluten' ? 'Contém glúten' : 'Não contém glúten');
+        });
+    }
+
+    // Group code
+    const groupCodeSelect = document.getElementById('input-group-code');
+    if (groupCodeSelect) {
+        groupCodeSelect.addEventListener('change', (e) => {
+            state.product.groupCode = e.target.value;
+            // Auto-fill portion if group selected and portion empty
+            if (e.target.value && !state.product.portionSize && state.portionGroups) {
+                const group = state.portionGroups.find(g => g.code === e.target.value);
+                if (group) {
+                    state.product.portionSize = group.portion_g;
+                    state.product.portionDesc = group.household_measure;
+                    document.getElementById('input-portion').value = group.portion_g;
+                    document.getElementById('input-desc').value = group.household_measure;
+                }
+            }
+        });
+    }
+
+    // Food form toggle
+    document.getElementById('input-food-form').addEventListener('change', (e) => {
+        state.product.foodForm = e.target.value;
+        state.product.portionUnit = state.product.foodForm === 'liquid' ? 'ml' : 'g';
+        renderStep1(container);
+    });
+}
+
+/** Sync allergenKeys → legacy allergens text for template rendering */
+function _syncAllergenText() {
+    if (!state.allergenRegistry) return;
+    const labels = state.product.allergenKeys
+        .map(k => state.allergenRegistry.allergens.find(a => a.key === k)?.label)
+        .filter(Boolean)
+        .map(l => l.toUpperCase());
+    if (state.product.customAllergens?.trim()) {
+        labels.push(state.product.customAllergens.trim().toUpperCase());
+    }
+    state.product.allergens = labels.length > 0
+        ? `ALÉRGICOS: CONTÉM ${labels.join(', ')}.`
+        : '';
+}
+
+// ---- TACO Autocomplete ------------------------------------------------------
+
+let _tacoDebounceTimer = null;
+let _activeTacoDropdown = null;
+let _tacoHighlightIndex = -1;
+let _tacoSearching = false;
+
+async function tacoSearch(query) {
+    if (!query || query.length < 2) return [];
+    try {
+        const res = await fetch(`/api/taco/search?q=${encodeURIComponent(query)}&limit=8`, { headers: withCsrfHeaders() });
+        if (!res.ok) return [];
+        const data = await res.json();
+        return data.results || [];
+    } catch { return []; }
+}
+
+function closeTacoDropdown() {
+    if (_activeTacoDropdown) {
+        _activeTacoDropdown.remove();
+        _activeTacoDropdown = null;
+    }
+    _tacoHighlightIndex = -1;
+    _removeTacoLoader();
+}
+
+function _showTacoLoader(inputEl) {
+    _removeTacoLoader();
+    const wrapper = inputEl.closest('.relative');
+    if (!wrapper) return;
+    const loader = document.createElement('div');
+    loader.id = 'taco-loader';
+    loader.className = 'absolute right-2 top-1/2 -translate-y-1/2 z-40 pointer-events-none';
+    loader.innerHTML = '<div class="w-4 h-4 border-2 border-terracota-cyan border-t-transparent rounded-full animate-spin"></div>';
+    wrapper.appendChild(loader);
+}
+
+function _removeTacoLoader() {
+    document.getElementById('taco-loader')?.remove();
+}
+
+function _highlightTacoItem(direction) {
+    if (!_activeTacoDropdown) return;
+    const items = _activeTacoDropdown.querySelectorAll('[data-taco-item]');
+    if (!items.length) return;
+    items.forEach(it => it.classList.remove('bg-terracota-cyan/20'));
+    if (direction === 'down') {
+        _tacoHighlightIndex = (_tacoHighlightIndex + 1) % items.length;
+    } else {
+        _tacoHighlightIndex = (_tacoHighlightIndex - 1 + items.length) % items.length;
+    }
+    items[_tacoHighlightIndex].classList.add('bg-terracota-cyan/20');
+    items[_tacoHighlightIndex].scrollIntoView({ block: 'nearest' });
+}
+
+function _selectHighlightedTacoItem() {
+    if (!_activeTacoDropdown || _tacoHighlightIndex < 0) return false;
+    const items = _activeTacoDropdown.querySelectorAll('[data-taco-item]');
+    if (items[_tacoHighlightIndex]) {
+        items[_tacoHighlightIndex].dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+        return true;
+    }
+    return false;
+}
+
+function showTacoDropdown(inputEl, results, index) {
+    closeTacoDropdown();
+
+    const dd = document.createElement('div');
+    dd.className = 'absolute z-50 left-0 right-0 top-full mt-1 bg-terracota-surface border border-white/20 rounded-lg shadow-xl max-h-56 overflow-y-auto';
+    dd.id = 'taco-dropdown';
+    _activeTacoDropdown = dd;
+
+    if (!results.length) {
+        dd.innerHTML = '<div class="px-3 py-3 text-sm text-terracota-textMuted text-center">Nenhum resultado encontrado</div>';
+        const wrapper = inputEl.closest('.relative');
+        if (wrapper) wrapper.appendChild(dd);
+        return;
+    }
+
+    for (const food of results) {
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.setAttribute('data-taco-item', '');
+        item.className = 'w-full text-left px-3 py-2 hover:bg-terracota-cyan/20 transition-colors flex flex-col border-b border-white/5 last:border-0';
+        item.innerHTML = `<span class="text-sm text-white truncate">${escapeHtml(food.name)}</span><span class="text-[10px] text-terracota-textMuted">${escapeHtml(food.category)} · ${food.per100g.energyKcal ?? '?'} kcal</span>`;
+        item.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            applyTacoFood(index, food);
+            closeTacoDropdown();
+        });
+        dd.appendChild(item);
+    }
+
+    const wrapper = inputEl.closest('.relative');
+    if (wrapper) wrapper.appendChild(dd);
+}
+
+function applyTacoFood(index, food) {
+    const ing = state.ingredients[index];
+    ing.name = food.name;
+    ing._tacoId = food.id;
+    const n = food.per100g;
+    ing.nutritionalInfo = {
+        energyKcal: n.energyKcal ?? '',
+        carbs: n.carbs ?? '',
+        proteins: n.proteins ?? '',
+        totalFat: n.totalFat ?? '',
+        saturatedFat: n.saturatedFat ?? '',
+        transFat: n.transFat ?? '',
+        fiber: n.fiber ?? '',
+        sodium: n.sodium ?? '',
+        totalSugars: n.totalSugars ?? '',
+        addedSugars: n.addedSugars ?? '',
+    };
+    renderStep2(document.getElementById('wizard-content'));
+
+    requestAnimationFrame(() => {
+        const row = document.querySelector(`[data-ing-index="${index}"]`);
+        if (row) {
+            row.classList.add('border-emerald-400/50');
+            row.style.transition = 'border-color 0.3s ease';
+            setTimeout(() => row.classList.remove('border-emerald-400/50'), 1200);
+        }
+    });
+    showToast(`"${food.name}" preenchido via TACO`, 'success', 2500);
+}
+
+// ---- Auto Kcal Estimation ---------------------------------------------------
+
+function estimateKcal(nutri) {
+    const carbs = parseFloat(nutri.carbs) || 0;
+    const proteins = parseFloat(nutri.proteins) || 0;
+    const totalFat = parseFloat(nutri.totalFat) || 0;
+    const fiber = parseFloat(nutri.fiber) || 0;
+    if (carbs === 0 && proteins === 0 && totalFat === 0) return null;
+    return Math.round(carbs * 4 + proteins * 4 + totalFat * 9 + fiber * 2);
+}
+
+// ---- Inline Consistency Validation ------------------------------------------
+
+function getIngredientWarnings(nutri) {
+    const warnings = [];
+    const sat = parseFloat(nutri.saturatedFat);
+    const trans = parseFloat(nutri.transFat);
+    const totalFat = parseFloat(nutri.totalFat);
+    if (!isNaN(sat) && !isNaN(trans) && !isNaN(totalFat) && totalFat > 0) {
+        if (sat + trans > totalFat) {
+            warnings.push({ fields: ['saturatedFat', 'transFat', 'totalFat'], msg: 'Sat + Trans excede Gorduras Totais' });
+        }
+    }
+    const addedSugars = parseFloat(nutri.addedSugars);
+    const totalSugars = parseFloat(nutri.totalSugars);
+    const carbs = parseFloat(nutri.carbs);
+    if (!isNaN(addedSugars) && !isNaN(totalSugars) && addedSugars > totalSugars) {
+        warnings.push({ fields: ['addedSugars', 'totalSugars'], msg: 'Açúcares Adic. excede Açúcares Totais' });
+    }
+    if (!isNaN(totalSugars) && !isNaN(carbs) && totalSugars > carbs && carbs > 0) {
+        warnings.push({ fields: ['totalSugars', 'carbs'], msg: 'Açúcares Totais excede Carboidratos' });
+    }
+    return warnings;
+}
+
+// ---- Running Totals ---------------------------------------------------------
+
+function computeRunningTotals() {
+    let totalWeight = 0;
+    const sums = { energyKcal: 0, carbs: 0, proteins: 0, totalFat: 0, fiber: 0, sodium: 0 };
+    for (const ing of state.ingredients) {
+        const qty = parseFloat(ing.quantity) || 0;
+        if (qty <= 0) continue;
+        totalWeight += qty;
+        const n = ing.nutritionalInfo || {};
+        const f = qty / 100;
+        sums.energyKcal += (parseFloat(n.energyKcal) || (estimateKcal(n) || 0)) * f;
+        sums.carbs += (parseFloat(n.carbs) || 0) * f;
+        sums.proteins += (parseFloat(n.proteins) || 0) * f;
+        sums.totalFat += (parseFloat(n.totalFat) || 0) * f;
+        sums.fiber += (parseFloat(n.fiber) || 0) * f;
+        sums.sodium += (parseFloat(n.sodium) || 0) * f;
+    }
+    if (totalWeight <= 0) return null;
+    const per100 = {};
+    for (const k of Object.keys(sums)) {
+        per100[k] = (sums[k] / totalWeight) * 100;
+    }
+    return { totalWeight, count: state.ingredients.length, per100 };
+}
+
+function renderRunningTotals() {
+    const el = document.getElementById('running-totals');
+    if (!el) return;
+    const totals = computeRunningTotals();
+    if (!totals) {
+        el.innerHTML = '';
+        return;
+    }
+    const unit = state.product.portionUnit || 'g';
+    const p = totals.per100;
+    const fmt = (v, d = 1) => v.toFixed(d);
+    el.innerHTML = `
+        <div class="bg-black/30 border border-white/[0.12] rounded-xl p-4">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] font-bold text-terracota-cyan uppercase tracking-wider">Resumo da Receita</span>
+                <span class="text-xs text-terracota-textMuted">${totals.count} ingrediente${totals.count > 1 ? 's' : ''} · ${fmt(totals.totalWeight, 0)}${unit} total</span>
+            </div>
+            <div class="grid grid-cols-3 sm:grid-cols-6 gap-3 text-center">
+                <div>
+                    <div class="text-[10px] text-terracota-textMuted uppercase">Kcal</div>
+                    <div class="text-sm font-bold text-white">${fmt(p.energyKcal, 0)}</div>
+                </div>
+                <div>
+                    <div class="text-[10px] text-terracota-textMuted uppercase">Carb</div>
+                    <div class="text-sm font-bold text-white">${fmt(p.carbs)}g</div>
+                </div>
+                <div>
+                    <div class="text-[10px] text-terracota-textMuted uppercase">Prot</div>
+                    <div class="text-sm font-bold text-white">${fmt(p.proteins)}g</div>
+                </div>
+                <div>
+                    <div class="text-[10px] text-terracota-textMuted uppercase">Gord</div>
+                    <div class="text-sm font-bold text-white">${fmt(p.totalFat)}g</div>
+                </div>
+                <div>
+                    <div class="text-[10px] text-terracota-textMuted uppercase">Fibra</div>
+                    <div class="text-sm font-bold text-white">${fmt(p.fiber)}g</div>
+                </div>
+                <div>
+                    <div class="text-[10px] text-terracota-textMuted uppercase">Sódio</div>
+                    <div class="text-sm font-bold text-white">${fmt(p.sodium, 0)}mg</div>
+                </div>
+            </div>
+            <div class="text-[10px] text-terracota-textMuted mt-2 text-right">valores por 100${unit} da receita</div>
+        </div>
+    `;
 }
 
 // ---- Step 2: Ingredients ----------------------------------------------------
 
 function renderStep2(container) {
-    container.innerHTML = `
-        <div class="space-y-6">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-2xl font-bold text-white font-heading">Ingredientes</h3>
-                <button onclick="addIngredient()" class="text-xs font-bold uppercase tracking-wider px-4 py-2 bg-white/10 text-terracota-cyan rounded-full hover:bg-terracota-cyan hover:text-terracota-deepDark transition-colors">
-                    + Adicionar Novo
+    const unit = state.product.portionUnit || 'g';
+    const hasIngredients = state.ingredients.length > 0;
+
+    const emptyStateHtml = !hasIngredients ? `
+        <div class="text-center py-8">
+            <div class="mb-4 inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-terracota-cyan/10 border border-terracota-cyan/20 text-terracota-cyan">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            <p class="text-terracota-textLight text-sm mb-1">Comece adicionando ingredientes</p>
+            <p class="text-terracota-textMuted text-xs mb-5">Busque na Tabela TACO ou insira manualmente</p>
+            <div class="flex justify-center gap-3">
+                <button onclick="addIngredientWithFocus()" class="px-5 py-2.5 bg-terracota-cyan/20 border border-terracota-cyan/40 text-terracota-cyan text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-terracota-cyan/30 transition-all">
+                    <span class="inline-flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg> Buscar na TACO</span>
+                </button>
+                <button onclick="addIngredient()" class="px-5 py-2.5 bg-white/10 border border-white/20 text-white text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-white/20 transition-all">
+                    + Adicionar Manual
                 </button>
             </div>
-            <div id="drop-zone" class="border-2 border-dashed border-white/20 rounded-xl p-8 text-center transition-all bg-white/5 hover:bg-white/10 hover:border-terracota-cyan group relative">
+        </div>` : '';
+
+    container.innerHTML = `
+        <div class="space-y-5">
+            <div class="flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-white font-heading">Ingredientes</h3>
+                ${hasIngredients ? `<button onclick="addIngredient()" class="text-xs font-bold uppercase tracking-wider px-4 py-2 bg-white/10 text-terracota-cyan rounded-full hover:bg-terracota-cyan hover:text-terracota-deepDark transition-colors">+ Adicionar</button>` : ''}
+            </div>
+            <div id="drop-zone" class="border-2 border-dashed border-white/20 rounded-xl p-6 text-center transition-all bg-white/5 hover:bg-white/10 hover:border-terracota-cyan group relative">
                 <input type="file" id="file-upload" class="hidden" accept=".xlsx" onchange="handleExcelUpload(this.files[0])">
-                <div class="pointer-events-none">
-                    <div class="mx-auto w-12 h-12 mb-4 text-terracota-textLight group-hover:text-terracota-cyan transition-colors">
-                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <div class="pointer-events-none flex items-center justify-center gap-4">
+                    <svg class="w-8 h-8 text-terracota-textLight group-hover:text-terracota-cyan transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <div class="text-left">
+                        <p class="text-terracota-textLight text-sm">Importar Excel (.xlsx)</p>
+                        <p class="text-[10px] text-terracota-textLight/50">Arraste aqui ou <button onclick="document.getElementById('file-upload').click()" class="text-terracota-cyan underline pointer-events-auto">selecione</button></p>
                     </div>
-                    <p class="text-terracota-textLight text-sm mb-2">Arraste e solte seu arquivo Excel (.xlsx) aqui</p>
-                    <p class="text-xs text-terracota-textLight/50 mb-4">ou</p>
-                    <button onclick="document.getElementById('file-upload').click()" class="px-4 py-2 bg-white/10 text-white text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-white/20 transition-all pointer-events-auto">
-                        Selecionar Arquivo
-                    </button>
                 </div>
                 <div id="upload-loading" class="absolute inset-0 bg-terracota-deepDark/90 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center hidden">
                     <div class="w-8 h-8 border-2 border-terracota-cyan border-t-transparent rounded-full animate-spin mb-3"></div>
@@ -440,77 +908,146 @@ function renderStep2(container) {
                 </div>
             </div>
             <div id="ingredients-list" class="space-y-4">
-                ${state.ingredients.length === 0 ? '<div class="text-center py-4"><p class="text-terracota-textLight text-xs">Ou adicione manualmente abaixo</p></div>' : ''}
+                ${emptyStateHtml}
             </div>
+            <div id="running-totals"></div>
         </div>
     `;
 
-    if (state.ingredients.length > 0) {
+    if (hasIngredients) {
         const list = document.getElementById('ingredients-list');
         list.innerHTML = '';
         state.ingredients.forEach((ing, index) => {
             list.appendChild(createIngredientRow(ing, index));
         });
+        renderRunningTotals();
     }
     setupDragAndDrop();
 }
 
 function createIngredientRow(ing, index) {
-    const inputClass = "w-full text-sm bg-black/20 border-white/10 rounded text-white focus:ring-1 focus:ring-terracota-cyan border px-2 py-1";
-    const labelClass = "block text-[10px] text-terracota-textLight/70 mb-1 uppercase";
+    const inputClass = "w-full text-sm bg-black/20 border-white/10 rounded text-white focus:ring-1 focus:ring-terracota-cyan border px-2 py-1.5";
+    const smInputClass = "w-full text-sm bg-black/20 border-white/10 rounded text-white focus:ring-1 focus:ring-terracota-cyan border px-2 py-1";
+    const labelClass = "block text-[10px] text-slate-400 mb-0.5 uppercase tracking-wider";
     const nutri = ing.nutritionalInfo || {};
+    const unit = state.product.portionUnit || 'g';
+    const warnings = getIngredientWarnings(nutri);
+    const warnFields = new Set(warnings.flatMap(w => w.fields));
+    const hasTaco = !!ing._tacoId;
+    const estimated = estimateKcal(nutri);
+    const hasManualKcal = nutri.energyKcal !== '' && nutri.energyKcal !== null && nutri.energyKcal !== undefined;
+    const kcalDisplay = hasManualKcal ? nutri.energyKcal : (estimated ?? '');
+    const kcalIsAuto = !hasManualKcal && estimated !== null;
+
+    const warnClass = (field) => warnFields.has(field) ? 'border-yellow-500/60 bg-yellow-500/5' : '';
+
     const el = document.createElement('div');
-    el.className = 'bg-white/5 border border-white/10 rounded-xl p-5 relative group hover:bg-white/10 transition-colors';
+    el.className = 'bg-white/[0.08] border border-white/[0.15] rounded-xl p-4 relative group hover:bg-white/[0.12] transition-colors';
+    el.setAttribute('data-ing-index', index);
+
     el.innerHTML = `
-        <div class="grid grid-cols-12 gap-4 items-start">
-            <div class="col-span-4">
-                <label class="${labelClass}">Nome</label>
-                <input type="text" class="${inputClass}" value="${escapeHtml(ing.name)}" oninput="updateIngredient(${index}, 'name', this.value)" placeholder="Farinha">
+        <div class="flex gap-3 items-start mb-3">
+            <div class="flex-1 relative">
+                <label class="${labelClass}">Nome do Ingrediente ${hasTaco ? '<span class="text-[10px] px-1.5 py-0.5 bg-emerald-500/20 text-emerald-300 rounded ml-1">TACO</span>' : ''}</label>
+                <input type="text" class="${inputClass} ingredient-name-input" value="${escapeHtml(ing.name)}" data-index="${index}" placeholder="Digite para buscar na TACO..." autocomplete="off">
             </div>
-            <div class="col-span-2">
-                <label class="${labelClass}">Qtd (g)</label>
-                <input type="number" class="${inputClass}" value="${escapeHtml(ing.quantity)}" oninput="updateIngredient(${index}, 'quantity', this.value)" placeholder="100">
-            </div>
-            <div class="col-span-6 grid grid-cols-4 gap-2 bg-black/20 p-3 rounded-lg border border-white/5">
-                <div class="col-span-4 text-[10px] font-bold text-terracota-cyan uppercase tracking-wider mb-1">Nutricional (por 100g)</div>
-                <div>
-                    <label class="block text-[8px] text-slate-400">Kcal</label>
-                    <input type="number" class="${inputClass} text-xs py-0.5" value="${nutri.energyKcal ?? ''}" oninput="updateIngredientNutri(${index}, 'energyKcal', this.value)">
-                </div>
-                <div>
-                    <label class="block text-[8px] text-slate-400">Carb</label>
-                    <input type="number" class="${inputClass} text-xs py-0.5" value="${nutri.carbs ?? ''}" oninput="updateIngredientNutri(${index}, 'carbs', this.value)">
-                </div>
-                <div>
-                    <label class="block text-[8px] text-slate-400">Prot</label>
-                    <input type="number" class="${inputClass} text-xs py-0.5" value="${nutri.proteins ?? ''}" oninput="updateIngredientNutri(${index}, 'proteins', this.value)">
-                </div>
-                <div>
-                    <label class="block text-[8px] text-slate-400">Gord</label>
-                    <input type="number" class="${inputClass} text-xs py-0.5" value="${nutri.totalFat ?? ''}" oninput="updateIngredientNutri(${index}, 'totalFat', this.value)">
-                </div>
-                <div>
-                    <label class="block text-[8px] text-slate-400">Sat</label>
-                    <input type="number" class="${inputClass} text-xs py-0.5" value="${nutri.saturatedFat ?? ''}" oninput="updateIngredientNutri(${index}, 'saturatedFat', this.value)">
-                </div>
-                <div>
-                    <label class="block text-[8px] text-slate-400">Trans</label>
-                    <input type="number" class="${inputClass} text-xs py-0.5" value="${nutri.transFat ?? ''}" oninput="updateIngredientNutri(${index}, 'transFat', this.value)">
-                </div>
-                <div>
-                    <label class="block text-[8px] text-slate-400">Fibra</label>
-                    <input type="number" class="${inputClass} text-xs py-0.5" value="${nutri.fiber ?? ''}" oninput="updateIngredientNutri(${index}, 'fiber', this.value)">
-                </div>
-                <div>
-                    <label class="block text-[8px] text-slate-400">Sódio</label>
-                    <input type="number" class="${inputClass} text-xs py-0.5" value="${nutri.sodium ?? ''}" oninput="updateIngredientNutri(${index}, 'sodium', this.value)">
-                </div>
+            <div class="w-28 flex-shrink-0">
+                <label class="${labelClass}">Qtd (${unit})</label>
+                <input type="number" class="${inputClass}" value="${escapeHtml(ing.quantity)}" oninput="updateIngredient(${index}, 'quantity', this.value); renderRunningTotals();" placeholder="100" min="0" step="0.1">
             </div>
         </div>
-        <button onclick="removeIngredient(${index})" class="absolute -top-2 -right-2 bg-red-500/80 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-red-600">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
+        <div class="bg-black/30 p-3 rounded-lg border border-white/[0.08]">
+            <div class="text-[10px] font-bold text-terracota-cyan uppercase tracking-wider mb-2">Nutricional (por 100${unit})</div>
+            <div class="grid grid-cols-3 sm:grid-cols-5 gap-x-2 gap-y-1.5">
+                <div class="relative">
+                    <label class="${labelClass}">Kcal ${kcalIsAuto ? '<span class="text-[10px] text-terracota-cyan/80">auto</span>' : ''}</label>
+                    <input type="number" class="${smInputClass} ${kcalIsAuto ? 'text-terracota-cyan' : ''}" value="${kcalDisplay}" oninput="updateIngredientNutri(${index}, 'energyKcal', this.value)" title="Energia é recalculada automaticamente pelo motor ANVISA" min="0" step="0.1">
+                </div>
+                <div>
+                    <label class="${labelClass}">Carb (g)</label>
+                    <input type="number" class="${smInputClass} ${warnClass('carbs')}" value="${nutri.carbs ?? ''}" oninput="updateIngredientNutri(${index}, 'carbs', this.value)" min="0" step="0.01">
+                </div>
+                <div>
+                    <label class="${labelClass}">Prot (g)</label>
+                    <input type="number" class="${smInputClass}" value="${nutri.proteins ?? ''}" oninput="updateIngredientNutri(${index}, 'proteins', this.value)" min="0" step="0.01">
+                </div>
+                <div>
+                    <label class="${labelClass}">Gord Tot (g)</label>
+                    <input type="number" class="${smInputClass} ${warnClass('totalFat')}" value="${nutri.totalFat ?? ''}" oninput="updateIngredientNutri(${index}, 'totalFat', this.value)" min="0" step="0.01">
+                </div>
+                <div>
+                    <label class="${labelClass}">Fibra (g)</label>
+                    <input type="number" class="${smInputClass}" value="${nutri.fiber ?? ''}" oninput="updateIngredientNutri(${index}, 'fiber', this.value)" min="0" step="0.01">
+                </div>
+            </div>
+            <div class="grid grid-cols-3 sm:grid-cols-5 gap-x-2 gap-y-1.5 mt-2 pt-2 border-t border-white/[0.08]">
+                <div>
+                    <label class="${labelClass} text-slate-400">↳ Sat (g)</label>
+                    <input type="number" class="${smInputClass} ${warnClass('saturatedFat')}" value="${nutri.saturatedFat ?? ''}" oninput="updateIngredientNutri(${index}, 'saturatedFat', this.value)" min="0" step="0.01">
+                </div>
+                <div>
+                    <label class="${labelClass} text-slate-400">↳ Trans (g)</label>
+                    <input type="number" class="${smInputClass} ${warnClass('transFat')}" value="${nutri.transFat ?? ''}" oninput="updateIngredientNutri(${index}, 'transFat', this.value)" min="0" step="0.01">
+                </div>
+                <div>
+                    <label class="${labelClass} text-slate-400">↳ Aç Tot (g)</label>
+                    <input type="number" class="${smInputClass} ${warnClass('totalSugars')}" value="${nutri.totalSugars ?? ''}" oninput="updateIngredientNutri(${index}, 'totalSugars', this.value)" min="0" step="0.01">
+                </div>
+                <div>
+                    <label class="${labelClass} text-slate-400">↳ Aç Adic (g)</label>
+                    <input type="number" class="${smInputClass} ${warnClass('addedSugars')}" value="${nutri.addedSugars ?? ''}" oninput="updateIngredientNutri(${index}, 'addedSugars', this.value)" min="0" step="0.01">
+                </div>
+                <div>
+                    <label class="${labelClass}">Sódio (mg)</label>
+                    <input type="number" class="${smInputClass}" value="${nutri.sodium ?? ''}" oninput="updateIngredientNutri(${index}, 'sodium', this.value)" min="0" step="0.01">
+                </div>
+            </div>
+            <div class="ing-warnings">${warnings.length > 0 ? warnings.map(w => `<p class="text-[11px] text-yellow-400 flex items-center gap-1 mt-1"><svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>${escapeHtml(w.msg)}</p>`).join('') : ''}</div>
+        </div>
+        <div class="absolute -top-2 -right-2 flex gap-1 opacity-70 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+            <button onclick="copyIngredient(${index})" class="bg-terracota-cyan/80 text-terracota-deepDark rounded-full p-1.5 shadow-lg hover:bg-terracota-cyan" title="Duplicar ingrediente">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            </button>
+            <button onclick="removeIngredient(${index})" class="bg-red-500/80 text-white rounded-full p-1.5 shadow-lg hover:bg-red-600" title="Remover ingrediente">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
     `;
+
+    // Autocomplete for ingredient name
+    const nameInput = el.querySelector('.ingredient-name-input');
+    nameInput.addEventListener('input', (e) => {
+        const val = e.target.value;
+        state.ingredients[index].name = val;
+        state.ingredients[index]._tacoId = null;
+
+        clearTimeout(_tacoDebounceTimer);
+        if (val.length >= 2) {
+            _showTacoLoader(nameInput);
+            _tacoDebounceTimer = setTimeout(async () => {
+                const results = await tacoSearch(val);
+                _removeTacoLoader();
+                if (state.ingredients[index]?.name === val) {
+                    showTacoDropdown(nameInput, results, index);
+                }
+            }, 300);
+        } else {
+            closeTacoDropdown();
+        }
+    });
+    nameInput.addEventListener('blur', () => {
+        setTimeout(closeTacoDropdown, 200);
+    });
+    nameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { closeTacoDropdown(); return; }
+        if (e.key === 'ArrowDown') { e.preventDefault(); _highlightTacoItem('down'); return; }
+        if (e.key === 'ArrowUp') { e.preventDefault(); _highlightTacoItem('up'); return; }
+        if (e.key === 'Enter' && _activeTacoDropdown) {
+            e.preventDefault();
+            _selectHighlightedTacoItem();
+        }
+    });
+
     return el;
 }
 
@@ -519,9 +1056,42 @@ function addIngredient() {
         id: Date.now(),
         name: '',
         quantity: '',
-        nutritionalInfo: { energyKcal: '', carbs: '', proteins: '', totalFat: '', saturatedFat: '', transFat: '', fiber: '', sodium: '' }
+        _tacoId: null,
+        nutritionalInfo: {
+            energyKcal: '',
+            carbs: '',
+            proteins: '',
+            totalFat: '',
+            saturatedFat: '',
+            transFat: '',
+            fiber: '',
+            sodium: '',
+            totalSugars: '',
+            addedSugars: '',
+        }
     });
     renderStep2(document.getElementById('wizard-content'));
+}
+
+function addIngredientWithFocus() {
+    addIngredient();
+    requestAnimationFrame(() => {
+        const inputs = document.querySelectorAll('.ingredient-name-input');
+        const last = inputs[inputs.length - 1];
+        if (last) last.focus();
+    });
+}
+
+function copyIngredient(index) {
+    const original = state.ingredients[index];
+    if (!original) return;
+    const copy = JSON.parse(JSON.stringify(original));
+    copy.id = Date.now();
+    copy.name = copy.name ? copy.name + ' (cópia)' : '';
+    copy._tacoId = original._tacoId || null;
+    state.ingredients.splice(index + 1, 0, copy);
+    renderStep2(document.getElementById('wizard-content'));
+    showToast('Ingrediente duplicado.', 'info', 2000);
 }
 
 function removeIngredient(index) {
@@ -536,6 +1106,46 @@ function updateIngredient(index, field, value) {
 function updateIngredientNutri(index, field, value) {
     const v = parseFloat(value);
     state.ingredients[index].nutritionalInfo[field] = isNaN(v) ? '' : v;
+    _refreshIngredientFeedback(index);
+}
+
+function _refreshIngredientFeedback(index) {
+    const row = document.querySelector(`[data-ing-index="${index}"]`);
+    if (!row) return;
+    const nutri = state.ingredients[index].nutritionalInfo;
+
+    // Auto kcal
+    const estimated = estimateKcal(nutri);
+    const hasManual = nutri.energyKcal !== '' && nutri.energyKcal !== null && nutri.energyKcal !== undefined;
+    const kcalInput = row.querySelector('input[oninput*="energyKcal"]');
+    if (kcalInput && !hasManual && estimated !== null) {
+        kcalInput.value = estimated;
+        kcalInput.classList.add('text-terracota-cyan');
+    } else if (kcalInput && hasManual) {
+        kcalInput.classList.remove('text-terracota-cyan');
+    }
+
+    // Inline warnings
+    const warnings = getIngredientWarnings(nutri);
+    const warnContainer = row.querySelector('.ing-warnings');
+    const warnFields = new Set(warnings.flatMap(w => w.fields));
+    const allFields = ['saturatedFat', 'transFat', 'totalFat', 'addedSugars', 'totalSugars', 'carbs'];
+    for (const f of allFields) {
+        const input = row.querySelector(`input[oninput*="'${f}'"]`);
+        if (!input) continue;
+        input.classList.toggle('border-yellow-500/60', warnFields.has(f));
+        input.classList.toggle('bg-yellow-500/5', warnFields.has(f));
+    }
+
+    if (warnContainer) {
+        if (warnings.length > 0) {
+            warnContainer.innerHTML = warnings.map(w => `<p class="text-[11px] text-yellow-400 flex items-center gap-1 mt-1"><svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>${escapeHtml(w.msg)}</p>`).join('');
+        } else {
+            warnContainer.innerHTML = '';
+        }
+    }
+
+    renderRunningTotals();
 }
 
 // ---- Validation -------------------------------------------------------------
@@ -544,10 +1154,50 @@ function validateStep(step) {
     if (step === 1) {
         if (!state.product.name) { showToast('Informe o nome do produto.', 'warning'); return false; }
         if (!state.product.portionSize) { showToast('Informe o tamanho da porção.', 'warning'); return false; }
+        if ((parseFloat(state.product.portionSize) || 0) <= 0) {
+            showToast('A porção deve ser um número positivo.', 'warning');
+            return false;
+        }
+        if (!state.product.portionDesc?.trim()) {
+            showToast('Medida caseira não informada (ex: "1 fatia"). Preencha para conformidade regulatória.', 'info', 4000);
+        }
+        if ((!state.product.allergenKeys || state.product.allergenKeys.length === 0) && !state.product.allergens?.trim() && !state.product.customAllergens?.trim()) {
+            showToast('Declaração de alérgenos não preenchida. Obrigatória conforme RDC 26/2015.', 'info', 4000);
+        }
+        if (!state.product.groupCode) {
+            showToast('Grupo de alimento não selecionado. Opcional, mas recomendado para validação da porção.', 'info', 3000);
+        }
         return true;
     }
     if (step === 2) {
-        if (state.ingredients.length === 0) { showToast('Adicione pelo menos um ingrediente.', 'warning'); return false; }
+        if (state.ingredients.length === 0) {
+            showToast('Adicione pelo menos um ingrediente.', 'warning');
+            return false;
+        }
+        const issues = [];
+        let firstBadIndex = -1;
+        state.ingredients.forEach((ing, idx) => {
+            const problems = [];
+            if (!ing.name || !ing.name.trim()) problems.push('sem nome');
+            const qty = parseFloat(ing.quantity);
+            if (!ing.quantity || isNaN(qty) || qty <= 0) problems.push('sem quantidade');
+            const n = ing.nutritionalInfo || {};
+            const hasSomeNutri = ['carbs', 'proteins', 'totalFat'].some(f => {
+                const v = parseFloat(n[f]);
+                return !isNaN(v) && v > 0;
+            });
+            if (!hasSomeNutri) problems.push('sem dados nutricionais');
+            if (problems.length > 0) {
+                issues.push(`#${idx + 1}: ${problems.join(', ')}`);
+                if (firstBadIndex < 0) firstBadIndex = idx;
+                const row = document.querySelector(`[data-ing-index="${idx}"]`);
+                if (row) row.classList.add('border-red-400/50', 'bg-red-500/5');
+            }
+        });
+        if (issues.length > 0) {
+            showToast(`Corrija os ingredientes: ${issues.join(' | ')}`, 'warning', 6000);
+            return false;
+        }
         return true;
     }
     return true;
@@ -557,8 +1207,8 @@ function validateStep(step) {
 
 async function calculateResult() {
     const btn = document.getElementById('btn-next');
-    const origText = btn.innerText;
-    btn.innerText = 'Calculando...';
+    const origHtml = btn.innerHTML;
+    btn.innerHTML = '<div class="w-5 h-5 border-2 border-terracota-base border-t-transparent rounded-full animate-spin mr-2"></div> Calculando...';
     btn.disabled = true;
 
     const payload = {
@@ -575,7 +1225,9 @@ async function calculateResult() {
                 saturatedFat: parseFloat(ing.nutritionalInfo?.saturatedFat) || 0,
                 transFat: parseFloat(ing.nutritionalInfo?.transFat) || 0,
                 fiber: parseFloat(ing.nutritionalInfo?.fiber) || 0,
-                sodium: parseFloat(ing.nutritionalInfo?.sodium) || 0
+                sodium: parseFloat(ing.nutritionalInfo?.sodium) || 0,
+                totalSugars: parseFloat(ing.nutritionalInfo?.totalSugars) || 0,
+                addedSugars: parseFloat(ing.nutritionalInfo?.addedSugars) || 0,
             }
         }))
     };
@@ -603,6 +1255,13 @@ async function calculateResult() {
         state.saveTableError = '';
         state.currentIdempotencyKey = generateIdempotencyKey();
 
+        // Show calculation warnings (validation, portion, etc.)
+        if (data.calculationWarnings && data.calculationWarnings.length > 0) {
+            for (const w of data.calculationWarnings) {
+                showToast(w, 'warning');
+            }
+        }
+
         // Check for quota warning from server
         if (data.warning === 'QUOTA_EXHAUSTED') {
             state.quotaInfo = state.quotaInfo || {};
@@ -614,7 +1273,7 @@ async function calculateResult() {
         console.error(e);
         showToast('Erro ao calcular. Verifique a conexão.', 'error');
     } finally {
-        btn.innerText = origText;
+        btn.innerHTML = origHtml;
         btn.disabled = false;
     }
 }
@@ -666,7 +1325,11 @@ function renderStep3Preview(container) {
             </button>` : ''}
             <button onclick="goToStep(2)" class="px-8 py-3.5 bg-white/10 border border-white/20 text-white font-bold rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                Editar
+                Editar Ingredientes
+            </button>
+            <button onclick="goToStep(1)" class="px-8 py-3.5 bg-white/10 border border-white/20 text-terracota-textMuted font-bold rounded-lg hover:bg-white/20 hover:text-white transition-all flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Editar Produto
             </button>
         </div>
     `;
@@ -745,7 +1408,19 @@ async function finalizeTable() {
 // ---- Start New Table --------------------------------------------------------
 
 function startNewTable() {
-    state.product = { name: '', portionSize: '', portionDesc: '', allergens: '', gluten: 'Não contém glúten' };
+    state.product = {
+        name: '',
+        portionSize: '',
+        portionDesc: '',
+        allergens: '',
+        gluten: 'Não contém glúten',
+        foodForm: 'solid',
+        portionUnit: 'g',
+        allergenKeys: [],
+        customAllergens: '',
+        glutenStatus: 'gluten_free',
+        groupCode: '',
+    };
     state.ingredients = [];
     state.calculatedData = null;
     state.isFinalized = false;
@@ -758,67 +1433,92 @@ function startNewTable() {
 // ---- Shared Nutrition Table HTML Builder ------------------------------------
 
 function buildNutritionTableHtml(allData, product) {
+    const per100 = allData.per100g || allData.per100_base || {};
     const portion = allData.perPortion || allData;
     const energyKj = Math.round((portion.energy?.raw ?? 0) * 4.184);
     const transVd = portion.transFat?.vd === '' ? '**' : (portion.transFat?.vd ?? '**');
+    const totalSugarsVd = portion.totalSugars?.vd === '' ? '**' : (portion.totalSugars?.vd ?? '**');
 
     const portionSize = product.portionSize || product.portion_size || '';
     const portionDesc = product.portionDesc || product.portion_desc || '';
     const glutenText = product.gluten || product.gluten_status || '';
     const allergensText = product.allergens || '';
+    const portionUnit = product.portionUnit || product.portion_unit || 'g';
+    const baseLabel = portionUnit === 'ml' ? '100 ml' : '100 g';
 
     return `
         <div id="nutritional-table-print-area" style="max-width: 36rem; margin: 0 auto; padding: 2rem; background: #ffffff; color: #000000; border-radius: 0.75rem; border: 1px solid #e5e7eb;">
             <h3 style="font-size: 1.25rem; font-weight: 700; color: #000; border-bottom: 2px solid #000; padding-bottom: 0.5rem; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">Informação Nutricional</h3>
             <div style="margin-bottom: 1rem; font-size: 0.875rem; color: #000; font-weight: 500;">
-                <p>Porção de: <strong>${escapeHtml(portionSize)} g</strong> (${escapeHtml(portionDesc || '-')})</p>
+                <p>Porção de: <strong>${escapeHtml(portionSize)} ${portionUnit}</strong> (${escapeHtml(portionDesc || '-')})</p>
             </div>
             <table style="width: 100%; font-size: 0.875rem; margin-bottom: 1.5rem; border-collapse: collapse; color: #000; background: #fff;">
                 <thead>
                     <tr style="border-bottom: 2px solid #000;">
-                        <th style="padding: 0.25rem 0; text-align: left; font-weight: 700; color: #000; background: #fff;">Quantidade por porção</th>
-                        <th style="padding: 0.25rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;"></th>
+                        <th style="padding: 0.25rem 0; text-align: left; font-weight: 700; color: #000; background: #fff;">Nutriente</th>
+                        <th style="padding: 0.25rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${baseLabel}</th>
+                        <th style="padding: 0.25rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">Por porção</th>
                         <th style="padding: 0.25rem 0; text-align: right; font-weight: 700; color: #000; background: #fff; min-width: 60px;">% VD (*)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr style="border-bottom: 1px solid #d1d5db;">
                         <td style="padding: 0.375rem 0; color: #000; background: #fff;">Valor Energético</td>
+                        <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${per100.energy?.display ?? 0} kcal</td>
                         <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.energy?.display ?? 0} kcal = ${energyKj} kJ</td>
                         <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.energy?.vd ?? 0}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #d1d5db;">
                         <td style="padding: 0.375rem 0; color: #000; background: #fff;">Carboidratos</td>
+                        <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${per100.carbs?.display ?? 0} g</td>
                         <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.carbs?.display ?? 0} g</td>
                         <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.carbs?.vd ?? 0}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #d1d5db;">
+                        <td style="padding: 0.375rem 0 0.375rem 1rem; color: #4b5563; background: #fff;">Açúcares Totais</td>
+                        <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${per100.totalSugars?.display ?? 0} g</td>
+                        <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.totalSugars?.display ?? 0} g</td>
+                        <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${totalSugarsVd}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #d1d5db;">
+                        <td style="padding: 0.375rem 0 0.375rem 1rem; color: #4b5563; background: #fff;">Açúcares Adicionados</td>
+                        <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${per100.addedSugars?.display ?? 0} g</td>
+                        <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.addedSugars?.display ?? 0} g</td>
+                        <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.addedSugars?.vd ?? 0}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #d1d5db;">
                         <td style="padding: 0.375rem 0; color: #000; background: #fff;">Proteínas</td>
+                        <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${per100.proteins?.display ?? 0} g</td>
                         <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.proteins?.display ?? 0} g</td>
                         <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.proteins?.vd ?? 0}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #d1d5db;">
                         <td style="padding: 0.375rem 0; color: #000; background: #fff;">Gorduras Totais</td>
+                        <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${per100.totalFat?.display ?? 0} g</td>
                         <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.totalFat?.display ?? 0} g</td>
                         <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.totalFat?.vd ?? 0}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #d1d5db;">
                         <td style="padding: 0.375rem 0 0.375rem 1rem; color: #4b5563; background: #fff;">Gorduras Saturadas</td>
+                        <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${per100.saturatedFat?.display ?? 0} g</td>
                         <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.saturatedFat?.display ?? 0} g</td>
                         <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.saturatedFat?.vd ?? 0}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #d1d5db;">
                         <td style="padding: 0.375rem 0 0.375rem 1rem; color: #4b5563; background: #fff;">Gorduras Trans</td>
+                        <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${per100.transFat?.display ?? 0} g</td>
                         <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.transFat?.display ?? 0} g</td>
                         <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${transVd}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #d1d5db;">
                         <td style="padding: 0.375rem 0; color: #000; background: #fff;">Fibra Alimentar</td>
+                        <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${per100.fiber?.display ?? 0} g</td>
                         <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.fiber?.display ?? 0} g</td>
                         <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.fiber?.vd ?? 0}</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #d1d5db;">
                         <td style="padding: 0.375rem 0; color: #000; background: #fff;">Sódio</td>
+                        <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${per100.sodium?.display ?? 0} mg</td>
                         <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.sodium?.display ?? 0} mg</td>
                         <td style="padding: 0.375rem 0; text-align: right; font-weight: 700; color: #000; background: #fff;">${portion.sodium?.vd ?? 0}</td>
                     </tr>
@@ -888,6 +1588,13 @@ async function handleExcelUpload(file) {
 
         state.ingredients = state.ingredients.concat(data.ingredients);
         showToast(`${data.ingredients.length} ingredientes importados!`, 'success');
+        if (data.warnings && data.warnings.length > 0) {
+            for (const w of data.warnings) {
+                showToast(w, 'warning');
+            }
+        } else if (data.warning) {
+            showToast(data.warning, 'warning');
+        }
         renderStep2(document.getElementById('wizard-content'));
     } catch (e) {
         console.error(e);

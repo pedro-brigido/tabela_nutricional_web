@@ -9,30 +9,47 @@
 
 <h1 class="text-3xl font-heading font-bold mb-8">Minhas Tabelas</h1>
 
+<form method="get" action="{{ url_for('account.tables_list') }}" class="mb-6">
+    <div class="flex gap-3">
+        <input type="text" name="search" value="{{ request.args.get('search', '') }}" placeholder="Buscar tabelas por nome..." class="flex-1 px-4 py-2.5 bg-black/20 border border-white/10 rounded-lg text-white placeholder-white/30 focus:ring-2 focus:ring-terracota-cyan focus:border-transparent outline-none transition-all text-sm">
+        <button type="submit" class="px-5 py-2.5 bg-terracota-cyan/10 border border-terracota-cyan/30 text-terracota-cyan rounded-lg hover:bg-terracota-cyan/20 transition-colors text-sm font-medium">
+            <i class="ph ph-magnifying-glass"></i> Buscar
+        </button>
+        {% if request.args.get('search') %}
+        <a href="{{ url_for('account.tables_list') }}" class="px-4 py-2.5 border border-white/10 text-terracota-textMuted rounded-lg hover:bg-white/5 transition-colors text-sm">Limpar</a>
+        {% endif %}
+    </div>
+</form>
+
 {% if tables %}
 <div class="space-y-3 mb-8">
     {% for t in tables %}
-    <a href="{{ url_for('account.view_table', table_id=t.id) }}" class="flex items-center justify-between p-4 bg-terracota-surface border border-white/10 rounded-xl hover:border-terracota-cyan/30 hover:bg-terracota-surfaceHighlight/50 transition-all group">
+    <div class="flex items-center justify-between p-4 bg-terracota-surface border border-white/10 rounded-xl hover:border-terracota-cyan/30 hover:bg-terracota-surfaceHighlight/50 transition-all group">
         <div>
-            <p class="font-medium text-white group-hover:text-terracota-cyan transition-colors">{{ t.title }}</p>
+            <a href="{{ url_for('account.view_table', table_id=t.id) }}" class="font-medium text-white group-hover:text-terracota-cyan transition-colors">{{ t.title }}</a>
             <p class="text-xs text-terracota-textMuted mt-1">{{ t.ingredient_count }} ingredientes &middot; {{ t.created_at.strftime('%d/%m/%Y %H:%M') if t.created_at }}</p>
         </div>
         <div class="flex items-center gap-3">
+            <button onclick="deleteTable({{ t.id }})" class="opacity-0 group-hover:opacity-100 px-2 py-1 rounded border border-red-400/30 text-red-300 hover:bg-red-500/10 transition-all" aria-label="Excluir tabela {{ t.title }}">
+                <i class="ph ph-trash"></i>
+            </button>
             <span class="text-xs text-terracota-textMuted opacity-0 group-hover:opacity-100 transition-opacity">Ver tabela</span>
-            <i class="ph ph-arrow-right text-terracota-textMuted group-hover:text-terracota-cyan transition-colors"></i>
+            <a href="{{ url_for('account.view_table', table_id=t.id) }}" class="text-terracota-textMuted group-hover:text-terracota-cyan transition-colors" aria-label="Ver tabela {{ t.title }}">
+                <i class="ph ph-arrow-right"></i>
+            </a>
         </div>
-    </a>
+    </div>
     {% endfor %}
 </div>
 
 {% if pagination.pages > 1 %}
 <nav class="flex justify-center gap-2">
     {% if pagination.has_prev %}
-    <a href="{{ url_for('account.tables_list', page=pagination.prev_num) }}" class="px-4 py-2 bg-white/10 border border-white/10 rounded-lg text-sm hover:bg-white/20 transition-colors">&larr; Anterior</a>
+    <a href="{{ url_for('account.tables_list', page=pagination.prev_num, search=request.args.get('search', '')) }}" class="px-4 py-2 bg-white/10 border border-white/10 rounded-lg text-sm hover:bg-white/20 transition-colors">&larr; Anterior</a>
     {% endif %}
     <span class="px-4 py-2 text-sm text-terracota-textMuted">Página {{ pagination.page }} de {{ pagination.pages }}</span>
     {% if pagination.has_next %}
-    <a href="{{ url_for('account.tables_list', page=pagination.next_num) }}" class="px-4 py-2 bg-white/10 border border-white/10 rounded-lg text-sm hover:bg-white/20 transition-colors">Próxima &rarr;</a>
+    <a href="{{ url_for('account.tables_list', page=pagination.next_num, search=request.args.get('search', '')) }}" class="px-4 py-2 bg-white/10 border border-white/10 rounded-lg text-sm hover:bg-white/20 transition-colors">Próxima &rarr;</a>
     {% endif %}
 </nav>
 {% endif %}
@@ -48,4 +65,26 @@
     </a>
 </div>
 {% endif %}
+
+<script>
+function getCsrfToken() {
+    const el = document.querySelector('meta[name="csrf-token"]');
+    return el ? el.getAttribute('content') : '';
+}
+
+async function deleteTable(tableId) {
+    if (!window.confirm('Tem certeza que deseja excluir esta tabela?')) return;
+    const token = getCsrfToken();
+    const res = await fetch('/api/tables/' + tableId, {
+        method: 'DELETE',
+        headers: token ? { 'X-CSRFToken': token } : {},
+    });
+    if (res.ok) {
+        window.location.reload();
+        return;
+    }
+    const data = await res.json().catch(() => ({}));
+    window.alert(data.error || 'Não foi possível excluir a tabela.');
+}
+</script>
 {% endblock %}

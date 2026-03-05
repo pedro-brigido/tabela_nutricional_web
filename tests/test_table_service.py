@@ -10,6 +10,7 @@ from app.services.table_service import (
     create_table,
     delete_table,
     get_table,
+    get_versions,
     list_tables,
 )
 
@@ -142,3 +143,20 @@ def test_get_table_respects_ownership(flask_app):
         )
         assert get_table(t.id, user1.id) is not None
         assert get_table(t.id, user2.id) is None
+
+
+def test_create_table_saves_version_for_entitled_plan(flask_app):
+    with flask_app.app_context():
+        _seed_plans(db.session)
+        user = _make_user(db.session, "versioned@test.com")
+        assign_plan(user_id=user.id, plan_slug="flow_pro")
+
+        table = create_table(
+            user_id=user.id,
+            title="Versioned Table",
+            product_data={},
+            ingredients_data=[],
+            result_data={"per100g": {}, "perPortion": {}},
+        )
+        versions = get_versions(table.id, user.id)
+        assert len(versions) == 1

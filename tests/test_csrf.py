@@ -93,7 +93,10 @@ def test_api_tables_requires_csrf_header(csrf_app, csrf_client, monkeypatch):
         "title": "Tabela 1",
         "product": {"name": "Produto", "portionSize": 50, "portionDesc": "g"},
         "ingredients": [{"id": 1, "name": "Ingrediente", "quantity": 10}],
-        "calculatedData": {"perPortion": {"energy": {"raw": 0, "display": 0, "vd": 0}}},
+        "calculatedData": {
+            "per100g": {"energy": {"raw": 0, "display": 0, "vd": 0}},
+            "perPortion": {"energy": {"raw": 0, "display": 0, "vd": 0}},
+        },
         "idempotencyKey": "test-key-1",
     }
 
