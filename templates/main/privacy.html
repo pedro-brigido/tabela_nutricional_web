@@ -1,5 +1,19 @@
-{% extends "base.html" %}
+{% extends "landing/base_landing.html" %}
 {% block title %}Política de Privacidade | Terracota{% endblock %}
+{% block meta %}
+<meta name="description" content="Política de privacidade do Terracota. Como coletamos, usamos e protegemos seus dados, em conformidade com a LGPD.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ url_for('main.privacy', _external=True) }}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Terracota Compliance">
+<meta property="og:title" content="Política de Privacidade | Terracota">
+<meta property="og:description" content="Como o Terracota coleta, usa e protege seus dados pessoais (LGPD).">
+<meta property="og:url" content="{{ url_for('main.privacy', _external=True) }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Política de Privacidade | Terracota">
+<meta name="twitter:description" content="Política de privacidade e conformidade LGPD do Terracota.">
+{% endblock %}
 {% block content %}
 <div class="max-w-3xl mx-auto prose prose-invert">
     <h1 class="text-3xl font-heading font-bold mb-8">Política de Privacidade</h1>

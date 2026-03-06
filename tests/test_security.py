@@ -52,7 +52,7 @@ def test_login_rejects_open_redirect(client, monkeypatch):
 
 def test_unauthenticated_api_returns_401(client):
     resp = client.post(
-        "/api/calculate",
+        "/app/api/calculate",
         json={"product": {}, "ingredients": []},
         headers={"Accept": "application/json"},
     )

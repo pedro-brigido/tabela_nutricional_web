@@ -17,9 +17,9 @@ from app.services.table_service import (
 
 def _seed_plans(session):
     plans = [
-        Plan(slug="free", name="Free", price_brl=0, max_tables_per_month=2,
+        Plan(slug="free", name="Grátis", price_brl=0, max_tables_per_month=2,
              max_ingredients_per_table=10, display_order=0),
-        Plan(slug="flow_pro", name="Flow Pro", price_brl=79.90,
+        Plan(slug="flow_pro", name="Profissional", price_brl=79.90,
              max_tables_per_month=10, max_ingredients_per_table=80,
              has_version_history=True, display_order=2),
     ]

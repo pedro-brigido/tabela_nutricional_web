@@ -1,5 +1,19 @@
-{% extends "base.html" %}
+{% extends "landing/base_landing.html" %}
 {% block title %}Contato | Terracota{% endblock %}
+{% block meta %}
+<meta name="description" content="Entre em contato com o Terracota. Suporte para tabelas nutricionais, dúvidas sobre planos e conformidade ANVISA.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ url_for('support.contact', _external=True) }}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Terracota Compliance">
+<meta property="og:title" content="Contato | Terracota">
+<meta property="og:description" content="Fale com o time Terracota. Suporte para tabelas nutricionais e conformidade ANVISA.">
+<meta property="og:url" content="{{ url_for('support.contact', _external=True) }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Contato | Terracota">
+<meta name="twitter:description" content="Entre em contato com o Terracota para suporte técnico e dúvidas.">
+{% endblock %}
 {% block content %}
 {% set pf = prefill if prefill is defined else {} %}
 <div class="max-w-lg mx-auto">

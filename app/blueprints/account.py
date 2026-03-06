@@ -16,7 +16,7 @@ from app.services.plan_service import (
 from app.services.usage_service import get_usage, get_usage_summary
 from app.services.table_service import get_table, get_versions, list_tables
 
-account_bp = Blueprint("account", __name__, url_prefix="/account")
+account_bp = Blueprint("account", __name__, url_prefix="/app/account")
 
 
 @account_bp.route("/")

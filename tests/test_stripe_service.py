@@ -22,7 +22,7 @@ def _seed_plans():
         [
             Plan(
                 slug="free",
-                name="Free",
+                name="Grátis",
                 price_brl=0,
                 max_tables_per_month=1,
                 max_ingredients_per_table=10,
@@ -31,7 +31,7 @@ def _seed_plans():
             ),
             Plan(
                 slug="flow_start",
-                name="Flow Start",
+                name="Básico",
                 price_brl=39.90,
                 stripe_price_id="price_start_test",
                 max_tables_per_month=3,
@@ -41,7 +41,7 @@ def _seed_plans():
             ),
             Plan(
                 slug="flow_pro",
-                name="Flow Pro",
+                name="Profissional",
                 price_brl=79.90,
                 stripe_price_id="price_pro_test",
                 max_tables_per_month=10,

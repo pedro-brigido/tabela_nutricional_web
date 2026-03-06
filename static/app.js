@@ -157,7 +157,7 @@ function quotaBadgeHtml() {
 
 async function fetchQuota() {
     try {
-        const res = await fetch('/api/quota', { headers: withCsrfHeaders() });
+        const res = await fetch('/app/api/quota', { headers: withCsrfHeaders() });
         if (res.status === 401) { window.location.href = '/login'; return null; }
         if (!res.ok) return null;
         state.quotaInfo = await res.json();
@@ -167,7 +167,7 @@ async function fetchQuota() {
 
 async function fetchLatestTable() {
     try {
-        const res = await fetch('/api/tables/latest', { headers: withCsrfHeaders() });
+        const res = await fetch('/app/api/tables/latest', { headers: withCsrfHeaders() });
         if (!res.ok) return null;
         const data = await res.json();
         state.lastTable = data.table;
@@ -178,7 +178,7 @@ async function fetchLatestTable() {
 async function fetchAllergenRegistry() {
     if (state.allergenRegistry) return state.allergenRegistry;
     try {
-        const res = await fetch('/api/allergens', { headers: withCsrfHeaders() });
+        const res = await fetch('/app/api/allergens', { headers: withCsrfHeaders() });
         if (!res.ok) return null;
         const data = await res.json();
         state.allergenRegistry = data;
@@ -189,7 +189,7 @@ async function fetchAllergenRegistry() {
 async function fetchPortionGroups() {
     if (state.portionGroups) return state.portionGroups;
     try {
-        const res = await fetch('/api/portion-references', { headers: withCsrfHeaders() });
+        const res = await fetch('/app/api/portion-references', { headers: withCsrfHeaders() });
         if (!res.ok) return null;
         const data = await res.json();
         state.portionGroups = data.groups;
@@ -228,7 +228,7 @@ async function saveCurrentTable() {
     };
 
     try {
-        const res = await fetch('/api/tables', {
+        const res = await fetch('/app/api/tables', {
             method: 'POST',
             headers: withCsrfHeaders({ 'Content-Type': 'application/json' }),
             body: JSON.stringify(payload)
@@ -287,7 +287,7 @@ async function preloadDuplicateIfAny() {
     const duplicateId = params.get('duplicate');
     if (!duplicateId) return false;
     try {
-        const res = await fetch(`/api/tables/${duplicateId}`, { headers: withCsrfHeaders() });
+        const res = await fetch(`/app/api/tables/${duplicateId}`, { headers: withCsrfHeaders() });
         if (!res.ok) {
             showToast('Não foi possível carregar a tabela para duplicação.', 'warning');
             return false;
@@ -759,7 +759,18 @@ function renderStep1(container) {
         state.product.packageWeight = e.target.value;
         _recalcServingsFromPackageWeight();
         _refreshPackageFeedback();
-        renderStep1(container);
+        // Update servings field and readonly state without re-rendering (avoids focus loss)
+        const servingsInput = document.getElementById('input-servings-per-package');
+        if (servingsInput) {
+            servingsInput.value = state.product.servingsPerPackage;
+            servingsInput.readOnly = !!state.product.packageWeight;
+        }
+        const servingsHint = servingsInput?.parentElement?.querySelector('p');
+        if (servingsHint) {
+            servingsHint.textContent = state.product.packageWeight
+                ? 'Obrigatório conforme RDC 429/2020 Art. 22 — calculado automaticamente'
+                : 'Obrigatório conforme RDC 429/2020 Art. 22';
+        }
     });
     document.getElementById('input-custom-allergens')?.addEventListener('input', (e) => { state.product.customAllergens = e.target.value; _autosave(); });
 
@@ -793,14 +804,17 @@ function renderStep1(container) {
     if (groupCodeSelect) {
         groupCodeSelect.addEventListener('change', (e) => {
             state.product.groupCode = e.target.value;
-            // Auto-fill portion if group selected and portion empty
-            if (e.target.value && !state.product.portionSize && state.portionGroups) {
+            // Auto-fill portion whenever a group is selected (overwrite current values)
+            if (e.target.value && state.portionGroups) {
                 const group = state.portionGroups.find(g => g.code === e.target.value);
                 if (group) {
                     state.product.portionSize = group.portion_g;
                     state.product.portionDesc = group.household_measure;
                     document.getElementById('input-portion').value = group.portion_g;
                     document.getElementById('input-desc').value = group.household_measure;
+                    _recalcServingsFromPackageWeight();
+                    _refreshPortionFeedback();
+                    _refreshPackageFeedback();
                 }
             }
         });
@@ -873,7 +887,7 @@ let _tacoSearching = false;
 async function tacoSearch(query) {
     if (!query || query.length < 2) return [];
     try {
-        const res = await fetch(`/api/taco/search?q=${encodeURIComponent(query)}&limit=8`, { headers: withCsrfHeaders() });
+        const res = await fetch(`/app/api/taco/search?q=${encodeURIComponent(query)}&limit=8`, { headers: withCsrfHeaders() });
         if (!res.ok) return [];
         const data = await res.json();
         return data.results || [];
@@ -1739,7 +1753,7 @@ async function calculateResult() {
     };
 
     try {
-        const res = await fetch('/api/calculate', {
+        const res = await fetch('/app/api/calculate', {
             method: 'POST',
             headers: withCsrfHeaders({ 'Content-Type': 'application/json' }),
             body: JSON.stringify(payload)
@@ -2188,7 +2202,7 @@ async function handleExcelUpload(file) {
         const formData = new FormData();
         formData.append('file', file);
 
-        const res = await fetch('/api/import-excel', {
+        const res = await fetch('/app/api/import-excel', {
             method: 'POST',
             headers: withCsrfHeaders({}),
             body: formData
@@ -2545,7 +2559,7 @@ async function openTableComparison() {
     `;
 
     try {
-        const res = await fetch('/api/tables', {
+        const res = await fetch('/app/api/tables', {
             headers: withCsrfHeaders({ 'Content-Type': 'application/json' }),
         });
         if (!res.ok) throw new Error('fetch failed');
@@ -2598,7 +2612,7 @@ async function loadComparisonTable(tableId) {
     resultEl.innerHTML = '<div class="text-center py-3"><div class="w-5 h-5 border-2 border-terracota-cyan border-t-transparent rounded-full animate-spin mx-auto"></div></div>';
 
     try {
-        const res = await fetch(`/api/tables/${encodeURIComponent(tableId)}`, {
+        const res = await fetch(`/app/api/tables/${encodeURIComponent(tableId)}`, {
             headers: withCsrfHeaders({ 'Content-Type': 'application/json' }),
         });
         if (!res.ok) throw new Error('fetch failed');

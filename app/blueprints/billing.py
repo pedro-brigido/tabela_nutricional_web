@@ -26,7 +26,7 @@ from app.services.stripe_service import (
 )
 
 
-billing_bp = Blueprint("billing", __name__)
+billing_bp = Blueprint("billing", __name__, url_prefix="/app")
 
 
 @billing_bp.before_request

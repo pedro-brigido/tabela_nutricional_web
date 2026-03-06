@@ -13,7 +13,7 @@ from flask_login import login_required
 from app.extensions import csrf, limiter
 from app.decorators import require_quota
 
-calculator_bp = Blueprint("calculator", __name__, url_prefix="")
+calculator_bp = Blueprint("calculator", __name__, url_prefix="/app")
 MAX_EXCEL_FILE_SIZE = 5 * 1024 * 1024  # 5MB
 MAX_EXCEL_ROWS = 500
 

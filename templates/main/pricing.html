@@ -1,5 +1,19 @@
-{% extends "base.html" %}
+{% extends "landing/base_landing.html" %}
 {% block title %}Planos e Preços | Terracota{% endblock %}
+{% block meta %}
+<meta name="description" content="Planos e preços do Terracota: Grátis (R$0), Básico (R$39,90/mês), Profissional (R$79,90/mês), Ilimitado (R$199,90/mês). Tabelas nutricionais ANVISA. Mais barato que uma única multa.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ url_for('main.pricing', _external=True) }}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Terracota Compliance">
+<meta property="og:title" content="Planos e Preços | Terracota">
+<meta property="og:description" content="Comece grátis. Evolua para Básico, Profissional ou Ilimitado conforme sua demanda de tabelas nutricionais.">
+<meta property="og:url" content="{{ url_for('main.pricing', _external=True) }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Planos e Preços | Terracota">
+<meta name="twitter:description" content="Tabelas nutricionais ANVISA a partir de R$0/mês. Mais barato que uma multa da ANVISA.">
+{% endblock %}
 {% block content %}
 {% if bootstrap_error %}
 <div class="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-sm text-red-200">
@@ -14,7 +28,7 @@
 {% endif %}
 
 {% set cta_start = url_for('auth.register') %}
-{% set cta_unlimited = url_for('support.contact', category='billing', subject='Teste Unlimited (14 dias)', plan='flow_studio') %}
+{% set cta_unlimited = url_for('support.contact', category='billing', subject='Teste Ilimitado (14 dias)', plan='flow_studio') %}
 
 <section class="text-center mb-14">
     <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-terracota-cyan/20 bg-terracota-cyan/5 mb-6">
@@ -23,19 +37,19 @@
     </div>
 
     <h1 class="text-4xl md:text-5xl font-heading font-bold mb-4 leading-tight">
-        Tabelas nutricionais rápidas + monitoramento de normas para você não ser pego de surpresa.
+        Mais barato que <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">uma única multa</span> da ANVISA
     </h1>
     <p class="text-terracota-textMuted text-lg max-w-3xl mx-auto leading-relaxed">
-        Crie tabelas nutricionais com poucos cliques e receba resumos e alertas sobre mudanças relevantes em normas.
-        Cresça do Free ao Unlimited conforme sua demanda aumenta.
+        A menor multa por irregularidade em rótulos começa em <strong class="text-white">R$ 75.000</strong>.
+        O Terracota custa a partir de <strong class="text-terracota-cyan">R$ 39,90/mês</strong> — e já garante conformidade com RDC 429 e IN 75.
     </p>
 
     <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
         <a href="{{ cta_start }}" class="px-6 py-3 bg-terracota-cyan text-terracota-base font-semibold rounded-xl hover:bg-white transition-colors shadow-[0_0_20px_-5px_rgba(0,240,255,0.25)]">
-            Começar grátis (Free)
+            Começar grátis
         </a>
         <a href="{{ cta_unlimited }}" class="px-6 py-3 bg-terracota-surfaceHighlight border border-white/10 text-white font-semibold rounded-xl hover:bg-white/5 transition-colors">
-            Testar Unlimited por 14 dias (Studio)
+            Testar Ilimitado por 14 dias
         </a>
     </div>
 
@@ -106,7 +120,7 @@
         {% set is_studio = (p.slug == 'flow_studio') %}
 
         {% if is_free %}
-            {% set subtitle = 'Para quem quer testar sem compromisso.' %}
+            {% set subtitle = 'Para testar e conhecer a plataforma.' %}
             {% set bullets = [
                 '1 tabela/mês',
                 'Até 10 ingredientes por tabela',
@@ -116,18 +130,18 @@
             {% set cta_label = 'Começar grátis' %}
             {% set cta_href = url_for('auth.register') %}
         {% elif is_start %}
-            {% set subtitle = 'Para quem está começando a produzir com consistência.' %}
+            {% set subtitle = 'Para quem já produz e precisa de regularidade.' %}
             {% set bullets = [
                 '3 tabelas/mês',
                 'Até 25 ingredientes por tabela',
                 'Export PDF básico',
                 'Pulse incluso: newsletter + principais mudanças do mês',
             ] %}
-            {% set cta_label = 'Assinar Start' %}
-            {% set cta_href = url_for('support.contact', category='billing', subject='Assinar Start', plan='flow_start') %}
+            {% set cta_label = 'Assinar Básico' %}
+            {% set cta_href = url_for('support.contact', category='billing', subject='Assinar Básico', plan='flow_start') %}
             {% set cta_plan_slug = 'flow_start' %}
         {% elif is_pro %}
-            {% set subtitle = 'Para quem precisa de mais volume e acompanhamento por tema.' %}
+            {% set subtitle = 'O melhor custo-benefício para quem produz com frequência.' %}
             {% set bullets = [
                 '10 tabelas/mês',
                 'Até 80 ingredientes por tabela',
@@ -136,11 +150,11 @@
                 'Histórico de versões',
                 'Pulse Pro: monitoramento de até 5 temas + alertas',
             ] %}
-            {% set cta_label = 'Assinar Pro' %}
-            {% set cta_href = url_for('support.contact', category='billing', subject='Assinar Pro', plan='flow_pro') %}
+            {% set cta_label = 'Assinar Profissional' %}
+            {% set cta_href = url_for('support.contact', category='billing', subject='Assinar Profissional', plan='flow_pro') %}
             {% set cta_plan_slug = 'flow_pro' %}
         {% else %}
-            {% set subtitle = 'Para operação real: escala, padronização e monitoramento avançado.' %}
+            {% set subtitle = 'Para operação em escala: sem limites, sem preocupação.' %}
             {% set bullets = [
                 'Tabelas ilimitadas',
                 'Ingredientes ilimitados',
@@ -148,18 +162,18 @@
                 'Biblioteca de templates avançados',
                 'Pulse Advanced: monitoramento de até 15 temas + radar semanal + relatório mensal',
             ] %}
-            {% set cta_label = 'Testar Unlimited' %}
-            {% set cta_href = url_for('support.contact', category='billing', subject='Teste Unlimited (14 dias)', plan='flow_studio') %}
+            {% set cta_label = 'Testar Ilimitado' %}
+            {% set cta_href = url_for('support.contact', category='billing', subject='Teste Ilimitado (14 dias)', plan='flow_studio') %}
             {% set cta_plan_slug = 'flow_studio' %}
         {% endif %}
 
         <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6 flex flex-col {{ 'ring-2 ring-terracota-cyan/50' if is_pro else '' }}">
             {% if is_pro %}
-            <span class="self-start px-3 py-1 bg-terracota-cyan/20 text-terracota-cyan text-xs font-bold rounded-full mb-4">Popular</span>
+            <span class="self-start px-3 py-1 bg-terracota-cyan/20 text-terracota-cyan text-xs font-bold rounded-full mb-4">Melhor custo-benefício</span>
             {% endif %}
 
             <h3 class="text-lg font-heading font-bold mb-1">
-                {{ 'Terracota Flow Studio (Unlimited)' if is_studio else p.name }}
+                {{ p.name }}
             </h3>
             <p class="text-sm text-terracota-textMuted mb-4 leading-relaxed">{{ subtitle }}</p>
 
@@ -206,10 +220,10 @@
             <thead>
                 <tr class="text-left text-terracota-textMuted">
                     <th class="px-5 py-4 font-semibold">Recurso</th>
-                    <th class="px-5 py-4 font-semibold">Free</th>
-                    <th class="px-5 py-4 font-semibold">Flow Start</th>
-                    <th class="px-5 py-4 font-semibold">Flow Pro</th>
-                    <th class="px-5 py-4 font-semibold">Flow Studio</th>
+                    <th class="px-5 py-4 font-semibold">Grátis</th>
+                    <th class="px-5 py-4 font-semibold">Básico</th>
+                    <th class="px-5 py-4 font-semibold">Profissional</th>
+                    <th class="px-5 py-4 font-semibold">Ilimitado</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-white/5">
@@ -236,15 +250,15 @@
     </p>
     <div class="grid md:grid-cols-3 gap-6 mt-6">
         <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
-            <h3 class="font-semibold mb-2">Start</h3>
+            <h3 class="font-semibold mb-2">Básico</h3>
             <p class="text-sm text-terracota-textMuted">Resumos e curadoria geral.</p>
         </div>
         <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
-            <h3 class="font-semibold mb-2">Pro</h3>
+            <h3 class="font-semibold mb-2">Profissional</h3>
             <p class="text-sm text-terracota-textMuted">Monitoramento de até 5 temas + alertas.</p>
         </div>
         <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
-            <h3 class="font-semibold mb-2">Studio</h3>
+            <h3 class="font-semibold mb-2">Ilimitado</h3>
             <p class="text-sm text-terracota-textMuted">Monitoramento de até 15 temas + radar + relatório.</p>
         </div>
     </div>
@@ -256,6 +270,39 @@
         <p class="text-terracota-textMuted leading-relaxed">
             Cancele quando quiser. Sem multa. Você mantém acesso até o fim do período pago.
         </p>
+    </div>
+</section>
+
+<section class="mb-14">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="flex items-center gap-3 bg-terracota-surface border border-white/10 rounded-xl p-4">
+            <i class="ph ph-seal-check text-2xl text-terracota-cyan"></i>
+            <div>
+                <p class="text-sm font-semibold">Conformidade ANVISA</p>
+                <p class="text-xs text-terracota-textMuted">RDC 429, IN 75, RDC 26</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3 bg-terracota-surface border border-white/10 rounded-xl p-4">
+            <i class="ph ph-lock text-2xl text-terracota-cyan"></i>
+            <div>
+                <p class="text-sm font-semibold">Pagamento seguro</p>
+                <p class="text-xs text-terracota-textMuted">Processado via Stripe</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3 bg-terracota-surface border border-white/10 rounded-xl p-4">
+            <i class="ph ph-shield-check text-2xl text-terracota-cyan"></i>
+            <div>
+                <p class="text-sm font-semibold">Sem compromisso</p>
+                <p class="text-xs text-terracota-textMuted">Cancele quando quiser</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3 bg-terracota-surface border border-white/10 rounded-xl p-4">
+            <i class="ph ph-headset text-2xl text-terracota-cyan"></i>
+            <div>
+                <p class="text-sm font-semibold">Suporte humano</p>
+                <p class="text-xs text-terracota-textMuted">Resposta em até 24h</p>
+            </div>
+        </div>
     </div>
 </section>
 

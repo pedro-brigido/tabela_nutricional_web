@@ -100,11 +100,11 @@ def test_api_tables_requires_csrf_header(csrf_app, csrf_client, monkeypatch):
         "idempotencyKey": "test-key-1",
     }
 
-    resp = csrf_client.post("/api/tables", json=payload)
+    resp = csrf_client.post("/app/api/tables", json=payload)
     assert resp.status_code == 400
 
     resp = csrf_client.post(
-        "/api/tables",
+        "/app/api/tables",
         json=payload,
         headers={"X-CSRFToken": token},
     )

@@ -60,7 +60,7 @@ def init_oauth(app):
 @limiter.limit("10/minute")
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("main.index"))
+        return redirect(url_for("product.calculator"))
     if request.method == "POST":
         email = (request.form.get("email") or "").strip().lower()
         password = request.form.get("password") or ""
@@ -95,7 +95,7 @@ def login():
 
         next_url = request.args.get("next", "")
         if not _is_safe_redirect(next_url):
-            next_url = url_for("main.index")
+            next_url = url_for("product.calculator")
         return redirect(next_url)
     return render_template("login.html")
 
@@ -114,7 +114,7 @@ def logout():
 @limiter.limit("5/minute")
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for("main.index"))
+        return redirect(url_for("product.calculator"))
     if request.method == "POST":
         name = (request.form.get("name") or "").strip()[:255]
         email = (request.form.get("email") or "").strip().lower()[:255]
@@ -160,7 +160,7 @@ def register():
         if not send_welcome_email(user_name=user.name, user_email=user.email):
             logger.warning("Welcome email failed for %s", user.email)
         login_user(user)
-        return redirect(url_for("main.index"))
+        return redirect(url_for("product.calculator"))
     return render_template("register.html")
 
 
@@ -170,7 +170,7 @@ def register():
 @auth_bp.route("/auth/google")
 def google_login():
     if current_user.is_authenticated:
-        return redirect(url_for("main.index"))
+        return redirect(url_for("product.calculator"))
 
     if not current_app.config.get("GOOGLE_CLIENT_ID") or not current_app.config.get(
         "GOOGLE_CLIENT_SECRET"
@@ -232,7 +232,7 @@ def google_callback():
             user.login_count = (user.login_count or 0) + 1
             db.session.commit()
             login_user(user)
-            return redirect(url_for("main.index"))
+            return redirect(url_for("product.calculator"))
 
         # Existing account with same email — link Google OAuth
         user = db.session.query(User).filter_by(email=email).first()
@@ -247,7 +247,7 @@ def google_callback():
             user.login_count = (user.login_count or 0) + 1
             db.session.commit()
             login_user(user)
-            return redirect(url_for("main.index"))
+            return redirect(url_for("product.calculator"))
 
         # Brand-new user via Google
         user = User(
@@ -268,7 +268,7 @@ def google_callback():
             )
 
         login_user(user)
-        return redirect(url_for("main.index"))
+        return redirect(url_for("product.calculator"))
 
     except Exception:
         db.session.rollback()
@@ -287,7 +287,7 @@ def google_callback():
 @limiter.limit("3/hour")
 def forgot_password():
     if current_user.is_authenticated:
-        return redirect(url_for("main.index"))
+        return redirect(url_for("product.calculator"))
 
     if request.method == "POST":
         email = (request.form.get("email") or "").strip().lower()
@@ -376,7 +376,7 @@ def verify_email(token):
         db.session.commit()
 
     flash("E-mail verificado com sucesso!", "success")
-    return redirect(url_for("main.index"))
+    return redirect(url_for("product.calculator"))
 
 
 @auth_bp.route("/resend-verification", methods=["POST"])

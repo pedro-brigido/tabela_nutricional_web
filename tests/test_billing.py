@@ -29,7 +29,7 @@ def test_billing_routes_disabled_when_feature_off(client, flask_app):
     flask_app.config["STRIPE_ENABLED"] = False
 
     # Unauthenticated: before_request aborts with 404 (runs before @login_required)
-    response = client.get("/billing/success")
+    response = client.get("/app/billing/success")
     assert response.status_code == 404
 
     # Authenticated: still 404 because billing is disabled
@@ -37,7 +37,7 @@ def test_billing_routes_disabled_when_feature_off(client, flask_app):
         user = _make_user("disabled@test.com")
         user_id = user.id
     _login_session(client, user_id)
-    response = client.get("/billing/success")
+    response = client.get("/app/billing/success")
     assert response.status_code == 404
 
 
@@ -57,7 +57,7 @@ def test_checkout_redirects_when_enabled(client, flask_app, monkeypatch):
     )
 
     response = client.post(
-        "/billing/checkout", data={"plan_slug": "flow_pro"}, follow_redirects=False
+        "/app/billing/checkout", data={"plan_slug": "flow_pro"}, follow_redirects=False
     )
     assert response.status_code == 302
     assert "checkout.stripe.test/session" in response.location
@@ -78,10 +78,10 @@ def test_checkout_redirects_to_portal_on_existing_subscription(
     monkeypatch.setattr(billing_bp_mod, "create_checkout_session", _raise_existing)
 
     response = client.post(
-        "/billing/checkout", data={"plan_slug": "flow_pro"}, follow_redirects=False
+        "/app/billing/checkout", data={"plan_slug": "flow_pro"}, follow_redirects=False
     )
     assert response.status_code == 302
-    assert response.location.endswith("/billing/portal-redirect")
+    assert response.location.endswith("/app/billing/portal-redirect")
 
 
 def test_cancel_subscription_route_updates_status(client, flask_app, monkeypatch):
@@ -98,12 +98,12 @@ def test_cancel_subscription_route_updates_status(client, flask_app, monkeypatch
     )
 
     response = client.post(
-        "/billing/cancel-subscription",
+        "/app/billing/cancel-subscription",
         data={"action": "cancel"},
         follow_redirects=False,
     )
     assert response.status_code == 302
-    assert response.location.endswith("/account/")
+    assert response.location.endswith("/app/account/")
 
 
 def test_webhook_invalid_signature_returns_400(client, flask_app, monkeypatch):
@@ -116,5 +116,5 @@ def test_webhook_invalid_signature_returns_400(client, flask_app, monkeypatch):
         lambda payload, sig_header: (_ for _ in ()).throw(ValueError("bad sig")),
     )
 
-    response = client.post("/billing/webhook", data=b"{}")
+    response = client.post("/app/billing/webhook", data=b"{}")
     assert response.status_code == 400

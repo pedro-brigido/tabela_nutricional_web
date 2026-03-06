@@ -1,5 +1,19 @@
-{% extends "base.html" %}
+{% extends "landing/base_landing.html" %}
 {% block title %}Ajuda | Terracota{% endblock %}
+{% block meta %}
+<meta name="description" content="Central de ajuda do Terracota. Tire dúvidas sobre a calculadora de tabela nutricional, planos, exportação e conformidade ANVISA.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ url_for('support.help_page', _external=True) }}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Terracota Compliance">
+<meta property="og:title" content="Ajuda | Terracota">
+<meta property="og:description" content="Central de ajuda do Terracota. Dúvidas sobre tabela nutricional, conformidade ANVISA e planos.">
+<meta property="og:url" content="{{ url_for('support.help_page', _external=True) }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ajuda | Terracota">
+<meta name="twitter:description" content="Tire suas dúvidas sobre a calculadora de tabela nutricional Terracota.">
+{% endblock %}
 {% block content %}
 <h1 class="text-3xl font-heading font-bold mb-8">Central de Ajuda</h1>
 

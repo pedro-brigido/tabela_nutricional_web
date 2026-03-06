@@ -83,6 +83,8 @@ def create_app(config_name: str | None = None) -> "Flask":
     from app.blueprints.admin import admin_bp
     from app.blueprints.support import support_bp
     from app.blueprints.billing import billing_bp
+    from app.blueprints.product import product_bp
+    from app.blueprints.legacy import legacy_bp
 
     init_oauth(flask_app)
 
@@ -108,10 +110,22 @@ def create_app(config_name: str | None = None) -> "Flask":
     flask_app.register_blueprint(admin_bp)
     flask_app.register_blueprint(support_bp)
     flask_app.register_blueprint(billing_bp)
+    flask_app.register_blueprint(product_bp)
+    flask_app.register_blueprint(legacy_bp)
 
     @flask_app.context_processor
     def inject_billing_flags():
         return {"stripe_enabled": flask_app.config.get("STRIPE_ENABLED", False)}
+
+    @flask_app.context_processor
+    def inject_usage_context():
+        from flask_login import current_user
+
+        if current_user.is_authenticated:
+            from app.services.usage_service import get_usage_summary
+
+            return {"app_usage": get_usage_summary(current_user.id)}
+        return {"app_usage": None}
 
     # Security middleware
     from app.middleware import register_request_logging, register_security_headers

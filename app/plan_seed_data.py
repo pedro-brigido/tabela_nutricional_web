@@ -3,7 +3,7 @@
 PLANS_SEED = [
     {
         "slug": "free",
-        "name": "Free",
+        "name": "Grátis",
         "price_brl": 0,
         "max_tables_per_month": 1,
         "max_ingredients_per_table": 10,
@@ -20,7 +20,7 @@ PLANS_SEED = [
     },
     {
         "slug": "flow_start",
-        "name": "Terracota Flow Start",
+        "name": "Básico",
         "price_brl": 39.90,
         "max_tables_per_month": 3,
         "max_ingredients_per_table": 25,
@@ -37,7 +37,7 @@ PLANS_SEED = [
     },
     {
         "slug": "flow_pro",
-        "name": "Terracota Flow Pro",
+        "name": "Profissional",
         "price_brl": 79.90,
         "max_tables_per_month": 10,
         "max_ingredients_per_table": 80,
@@ -54,7 +54,7 @@ PLANS_SEED = [
     },
     {
         "slug": "flow_studio",
-        "name": "Terracota Flow Studio (Unlimited)",
+        "name": "Ilimitado",
         "price_brl": 199.90,
         "max_tables_per_month": None,
         "max_ingredients_per_table": None,

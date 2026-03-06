@@ -86,7 +86,7 @@ def _seed_plans(session):
     """Seed minimal plan data for test user creation."""
     from app.models.plan import Plan
     if not Plan.query.filter_by(slug="free").first():
-        session.add(Plan(slug="free", name="Free", price_brl=0, is_active=True))
+        session.add(Plan(slug="free", name="Grátis", price_brl=0, is_active=True))
         session.commit()
 
 
@@ -112,7 +112,7 @@ class TestTacoSearchAPI:
             user = _make_user(db.session)
             _login(client, user.id)
 
-            resp = client.get("/api/taco/search?q=farinha")
+            resp = client.get("/app/api/taco/search?q=farinha")
             assert resp.status_code == 200
             data = resp.get_json()
             assert "results" in data
@@ -126,7 +126,7 @@ class TestTacoSearchAPI:
             user = _make_user(db.session, "taco2@test.com")
             _login(client, user.id)
 
-            resp = client.get("/api/taco/search?q=arroz&limit=2")
+            resp = client.get("/app/api/taco/search?q=arroz&limit=2")
             assert resp.status_code == 200
             data = resp.get_json()
             assert len(data["results"]) <= 2
@@ -138,12 +138,12 @@ class TestTacoSearchAPI:
             user = _make_user(db.session, "taco3@test.com")
             _login(client, user.id)
 
-            resp = client.get("/api/taco/search?q=")
+            resp = client.get("/app/api/taco/search?q=")
             assert resp.status_code == 200
             data = resp.get_json()
             assert data["results"] == []
 
     def test_search_requires_login(self, client, flask_app):
         with flask_app.app_context():
-            resp = client.get("/api/taco/search?q=arroz")
+            resp = client.get("/app/api/taco/search?q=arroz")
             assert resp.status_code in (302, 401)

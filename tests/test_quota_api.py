@@ -17,12 +17,12 @@ from app.services.table_service import create_table
 def _seed_plans(session):
     plans = [
         Plan(
-            slug="free", name="Free", price_brl=0,
+            slug="free", name="Grátis", price_brl=0,
             max_tables_per_month=1, max_ingredients_per_table=10,
             display_order=0,
         ),
         Plan(
-            slug="flow_start", name="Terracota Flow Start", price_brl=39.90,
+            slug="flow_start", name="Básico", price_brl=39.90,
             max_tables_per_month=3, max_ingredients_per_table=25,
             display_order=1,
         ),
@@ -55,13 +55,13 @@ def test_quota_returns_correct_values_fresh_user(client, flask_app):
         user = _make_user(db.session, "fresh@test.com")
         _login(client, user.id)
 
-        resp = client.get("/api/quota")
+        resp = client.get("/app/api/quota")
         assert resp.status_code == 200
         data = resp.get_json()
         assert data["canCreate"] is True
         assert data["tablesCreated"] == 0
         assert data["tablesLimit"] == 1
-        assert data["planName"] == "Free"
+        assert data["planName"] == "Grátis"
         assert data["planSlug"] == "free"
 
 
@@ -77,7 +77,7 @@ def test_quota_returns_false_after_limit_reached(client, flask_app):
             product_data={}, ingredients_data=[], result_data={},
         )
 
-        resp = client.get("/api/quota")
+        resp = client.get("/app/api/quota")
         data = resp.get_json()
         assert data["canCreate"] is False
         assert data["tablesCreated"] == 1
@@ -93,7 +93,7 @@ def test_latest_table_returns_null_when_none(client, flask_app):
         user = _make_user(db.session, "empty@test.com")
         _login(client, user.id)
 
-        resp = client.get("/api/tables/latest")
+        resp = client.get("/app/api/tables/latest")
         assert resp.status_code == 200
         data = resp.get_json()
         assert data["table"] is None
@@ -114,7 +114,7 @@ def test_latest_table_returns_most_recent(client, flask_app):
             result_data={"perPortion": {"energy": {"display": "120"}}},
         )
 
-        resp = client.get("/api/tables/latest")
+        resp = client.get("/app/api/tables/latest")
         data = resp.get_json()
         assert data["table"] is not None
         assert data["table"]["title"] == "My Product"
@@ -152,7 +152,7 @@ def test_calculate_includes_warning_when_quota_exhausted(client, flask_app):
                 }
             ]
         }
-        resp = client.post("/api/calculate", json=payload)
+        resp = client.post("/app/api/calculate", json=payload)
         assert resp.status_code == 200
         data = resp.get_json()
         assert "calculatedData" in data
@@ -178,7 +178,7 @@ def test_calculate_no_warning_when_quota_available(client, flask_app):
                 }
             ]
         }
-        resp = client.post("/api/calculate", json=payload)
+        resp = client.post("/app/api/calculate", json=payload)
         assert resp.status_code == 200
         data = resp.get_json()
         assert "calculatedData" in data
@@ -204,7 +204,7 @@ def test_save_table_succeeds_within_quota(client, flask_app):
             },
             "idempotencyKey": "unique-save-key-001"
         }
-        resp = client.post("/api/tables", json=payload)
+        resp = client.post("/app/api/tables", json=payload)
         assert resp.status_code == 201
         data = resp.get_json()
         assert data["id"] is not None
@@ -233,7 +233,7 @@ def test_save_table_blocked_when_quota_exceeded(client, flask_app):
             },
             "idempotencyKey": "blocked-key-001"
         }
-        resp = client.post("/api/tables", json=payload)
+        resp = client.post("/app/api/tables", json=payload)
         assert resp.status_code == 403
         data = resp.get_json()
         assert data["code"] == "QUOTA_EXCEEDED"
@@ -255,18 +255,18 @@ def test_save_table_idempotency_no_double_count(client, flask_app):
             },
             "idempotencyKey": "idem-key-999"
         }
-        resp1 = client.post("/api/tables", json=payload)
+        resp1 = client.post("/app/api/tables", json=payload)
         assert resp1.status_code == 201
         id1 = resp1.get_json()["id"]
 
         # Same idempotency key should return the same table
-        resp2 = client.post("/api/tables", json=payload)
+        resp2 = client.post("/app/api/tables", json=payload)
         assert resp2.status_code == 201
         id2 = resp2.get_json()["id"]
         assert id1 == id2
 
         # Quota should still show 1 table created, not 2
-        resp_q = client.get("/api/quota")
+        resp_q = client.get("/app/api/quota")
         assert resp_q.get_json()["tablesCreated"] == 1
 
 
@@ -275,13 +275,13 @@ def test_save_table_idempotency_no_double_count(client, flask_app):
 
 def test_quota_requires_auth(client, flask_app):
     with flask_app.app_context():
-        resp = client.get("/api/quota")
+        resp = client.get("/app/api/quota")
         assert resp.status_code in (401, 302)  # redirect to login or 401
 
 
 def test_latest_requires_auth(client, flask_app):
     with flask_app.app_context():
-        resp = client.get("/api/tables/latest")
+        resp = client.get("/app/api/tables/latest")
         assert resp.status_code in (401, 302)
 
 
@@ -294,7 +294,7 @@ def test_calculate_rejects_non_list_ingredients(client, flask_app):
             "product": {"portionSize": 100},
             "ingredients": "not-a-list",
         }
-        resp = client.post("/api/calculate", json=payload)
+        resp = client.post("/app/api/calculate", json=payload)
         assert resp.status_code == 400
 
 
@@ -309,7 +309,7 @@ def test_calculate_rejects_invalid_portion_size(client, flask_app):
                 {"name": "Farinha", "quantity": 100, "nutritionalInfo": {"carbs": 10}}
             ],
         }
-        resp = client.post("/api/calculate", json=payload)
+        resp = client.post("/app/api/calculate", json=payload)
         assert resp.status_code == 400
 
 
@@ -328,7 +328,7 @@ def test_calculate_rejects_negative_ingredient_values(client, flask_app):
                 }
             ],
         }
-        resp = client.post("/api/calculate", json=payload)
+        resp = client.post("/app/api/calculate", json=payload)
         assert resp.status_code == 400
 
 
@@ -344,5 +344,5 @@ def test_save_table_rejects_invalid_result_shape(client, flask_app):
             "calculatedData": {"energy": 100},
             "idempotencyKey": "invalid-result-key",
         }
-        resp = client.post("/api/tables", json=payload)
+        resp = client.post("/app/api/tables", json=payload)
         assert resp.status_code == 400
