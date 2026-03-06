@@ -17,7 +17,7 @@ _PRODUCT_DATA_ALLOWED_KEYS = frozenset({
     "name", "portionSize", "portionUnit", "foodForm", "unitBase",
     "foodCategory", "description", "allergens", "allergenKeys",
     "customAllergens", "glutenStatus", "groupCode",
-    "gluten", "portionDesc",
+    "gluten", "portionDesc", "servingsPerPackage", "packageWeight",
 })
 
 

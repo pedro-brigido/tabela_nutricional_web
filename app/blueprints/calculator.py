@@ -318,6 +318,28 @@ def api_calculate():
             400,
         )
 
+    # Validate servingsPerPackage if provided
+    raw_servings = product.get("servingsPerPackage")
+    if raw_servings not in (None, ""):
+        try:
+            servings_val = int(raw_servings)
+            if servings_val < 1:
+                return jsonify({"error": "Porções por embalagem deve ser ≥ 1."}), 400
+        except (ValueError, TypeError):
+            return jsonify({"error": "Porções por embalagem deve ser um número inteiro."}), 400
+
+    # Validate packageWeight if provided
+    raw_pkg_weight = product.get("packageWeight")
+    if raw_pkg_weight not in (None, ""):
+        try:
+            pkg_weight_val = Decimal(str(raw_pkg_weight))
+            if pkg_weight_val <= 0:
+                return jsonify({"error": "Peso da embalagem deve ser positivo."}), 400
+            if pkg_weight_val < portion_size:
+                return jsonify({"error": "Peso da embalagem deve ser ≥ porção."}), 400
+        except (InvalidOperation, ValueError, TypeError):
+            return jsonify({"error": "Peso da embalagem inválido."}), 400
+
     for idx, ingredient in enumerate(ingredients):
         valid, err = _validate_ingredient(ingredient, idx)
         if not valid:
@@ -364,8 +386,19 @@ def api_calculate():
     calc_warnings = list(result.get("meta", {}).get("warnings", []))
     if portion_check.get("warning"):
         calc_warnings.append(portion_check["warning"])
+
+    # Relationship warnings from validators
+    from tabela_nutricional.validators import validate_ingredients_full
+
+    validation_result = validate_ingredients_full(ingredients)
+    calc_warnings.extend(validation_result.warnings)
+
     if calc_warnings:
         response["calculationWarnings"] = calc_warnings
+
+    # Significance info from calculation engine
+    if result.get("significanceInfo"):
+        response["significanceInfo"] = result["significanceInfo"]
 
     return jsonify(response)
 
@@ -577,7 +610,10 @@ def api_portion_references():
     """Return portion reference groups for UI dropdown."""
     from tabela_nutricional.portion_reference import list_portion_groups
 
-    return jsonify({"groups": list_portion_groups()})
+    food_form = request.args.get("food_form")
+    if food_form not in ("solid", "liquid", None):
+        food_form = None
+    return jsonify({"groups": list_portion_groups(food_form=food_form)})
 
 
 @calculator_bp.route("/api/taco/search", methods=["GET"])

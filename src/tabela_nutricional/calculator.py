@@ -284,9 +284,20 @@ def to_legacy_output(result: CalculationResult) -> dict:
                 "vd": nr.vd_display if nr.vd_display != "**" else "",
             }
         return out
+
+    significance_info = {}
+    for k, nr in result.perPortion.nutrients.items():
+        if nr.flags.is_insignificant or nr.flags.was_forced_zero:
+            significance_info[k] = {
+                "insignificant": True,
+                "basis": nr.flags.insignificance_basis or "annex_iv",
+                "notes": nr.notes,
+            }
+
     return {
         "per100g": block_to_legacy(result.per100_base),
         "perPortion": block_to_legacy(result.perPortion),
+        "significanceInfo": significance_info,
         "meta": {
             "context_echo": result.meta.context_echo,
             "warnings": result.meta.warnings,

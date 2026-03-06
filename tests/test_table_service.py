@@ -160,3 +160,27 @@ def test_create_table_saves_version_for_entitled_plan(flask_app):
         )
         versions = get_versions(table.id, user.id)
         assert len(versions) == 1
+
+
+def test_create_table_persists_servings_and_package_weight(flask_app):
+    """Regression: servingsPerPackage and packageWeight must survive sanitization."""
+    with flask_app.app_context():
+        _seed_plans(db.session)
+        user = _make_user(db.session, "persist@test.com")
+
+        table = create_table(
+            user_id=user.id,
+            title="Servings Test",
+            product_data={
+                "name": "Produto B",
+                "servingsPerPackage": "5",
+                "packageWeight": "500",
+                "portionSize": "100",
+            },
+            ingredients_data=[{"name": "Ing"}],
+            result_data={"energy": 100},
+        )
+        assert table is not None
+        saved = get_table(table.id, user.id)
+        assert saved.product_data["servingsPerPackage"] == "5"
+        assert saved.product_data["packageWeight"] == "500"
