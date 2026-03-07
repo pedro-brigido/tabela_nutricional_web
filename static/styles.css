@@ -317,6 +317,84 @@ details.faq-item[open] {
     background: linear-gradient(135deg, rgba(0, 240, 255, 0.02), transparent 60%);
 }
 
+/* --- FAQ Smooth Open/Close Animation --- */
+details.faq-item {
+    --faq-duration: 0.3s;
+}
+details.faq-item > p,
+details.faq-item > div {
+    overflow: hidden;
+}
+details.faq-item[open] > p,
+details.faq-item[open] > div:not(:first-child) {
+    animation: faqSlideDown var(--faq-duration) ease-out forwards;
+}
+@keyframes faqSlideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+        margin-top: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        max-height: 200px;
+        margin-top: 1rem;
+        transform: translateY(0);
+    }
+}
+
+/* --- Section Gradient Dividers --- */
+.section-divider {
+    position: relative;
+}
+.section-divider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08), transparent);
+    pointer-events: none;
+}
+.section-divider-y {
+    position: relative;
+}
+.section-divider-y::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08), transparent);
+    pointer-events: none;
+}
+.section-divider-y::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08), transparent);
+    pointer-events: none;
+}
+
+/* --- Subtle Noise Texture Overlay --- */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+}
+
 /* Minimal print fallback (main printing uses popup window) */
 @media print {
     .no-print,
@@ -397,7 +475,9 @@ details[open] {
     .progress-line,
     .progress-step-circle,
     .ing-nutri-panel,
-    .ing-chevron {
+    .ing-chevron,
+    details.faq-item[open] > p,
+    details.faq-item[open] > div:not(:first-child) {
         animation: none !important;
         transition: none !important;
         transform: none !important;
