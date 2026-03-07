@@ -35,7 +35,7 @@
     <!-- ============================================================
          1. HERO — What it is + Who it's for + CTA
          ============================================================ -->
-    <section class="relative min-h-[75vh] lg:min-h-[85vh] flex items-center py-20 overflow-hidden">
+    <section class="relative min-h-[75vh] lg:min-h-[85vh] flex items-center py-20 overflow-hidden hero-grid-pattern">
         <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center w-full">
             <div class="relative z-10">
                 <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-terracota-cyan/20 bg-terracota-cyan/[0.04] mb-8">
@@ -103,29 +103,30 @@
     </section>
 
     <!-- ============================================================
-         2. TRUST BAR — Regulation badges
+         2. TRUST BAR — Regulation credentials
          ============================================================ -->
-    <section class="py-8 section-divider-y bg-terracota-surface/30">
-        <div class="max-w-5xl mx-auto px-6 flex flex-wrap justify-center gap-6 md:gap-8 text-center">
-            <div class="bg-white/[0.045] border border-white/[0.1] rounded-lg px-5 py-3.5 flex flex-col items-center gap-1.5">
-                <i class="ph ph-seal-check text-lg text-terracota-cyan/85"></i>
-                <span class="block text-2xl md:text-3xl font-heading font-bold text-white">RDC 429</span>
-                <span class="text-[11px] text-terracota-textLight/90 uppercase tracking-widest">Conformidade</span>
-            </div>
-            <div class="bg-white/[0.045] border border-white/[0.1] rounded-lg px-5 py-3.5 flex flex-col items-center gap-1.5">
-                <i class="ph ph-arrows-clockwise text-lg text-terracota-cyan/85"></i>
-                <span class="block text-2xl md:text-3xl font-heading font-bold text-white">IN 75/2020</span>
-                <span class="text-[11px] text-terracota-textLight/90 uppercase tracking-widest">Arredondamento</span>
-            </div>
-            <div class="bg-white/[0.045] border border-white/[0.1] rounded-lg px-5 py-3.5 flex flex-col items-center gap-1.5">
-                <i class="ph ph-shield-warning text-lg text-terracota-cyan/85"></i>
-                <span class="block text-2xl md:text-3xl font-heading font-bold text-white">RDC 26/2015</span>
-                <span class="text-[11px] text-terracota-textLight/90 uppercase tracking-widest">Alérgenos</span>
-            </div>
-            <div class="bg-white/[0.045] border border-white/[0.1] rounded-lg px-5 py-3.5 flex flex-col items-center gap-1.5">
-                <i class="ph ph-timer text-lg text-terracota-cyan/85"></i>
-                <span class="block text-2xl md:text-3xl font-heading font-bold text-white">&lt; 5 min</span>
-                <span class="text-[11px] text-terracota-textLight/90 uppercase tracking-widest">Para gerar</span>
+    <section class="py-14 relative">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="flex flex-wrap justify-center items-center gap-x-10 gap-y-8 md:gap-x-0">
+                <div class="text-center md:px-10 lg:px-14">
+                    <span class="block text-2xl md:text-[1.75rem] font-heading font-bold text-white tracking-tight">RDC 429</span>
+                    <span class="text-[10.5px] text-terracota-textMuted uppercase tracking-[0.18em] mt-1.5 block">Rotulagem</span>
+                </div>
+                <div class="hidden md:block w-px h-10 bg-gradient-to-b from-transparent via-white/[0.1] to-transparent"></div>
+                <div class="text-center md:px-10 lg:px-14">
+                    <span class="block text-2xl md:text-[1.75rem] font-heading font-bold text-white tracking-tight">IN 75/2020</span>
+                    <span class="text-[10.5px] text-terracota-textMuted uppercase tracking-[0.18em] mt-1.5 block">Arredondamento</span>
+                </div>
+                <div class="hidden md:block w-px h-10 bg-gradient-to-b from-transparent via-white/[0.1] to-transparent"></div>
+                <div class="text-center md:px-10 lg:px-14">
+                    <span class="block text-2xl md:text-[1.75rem] font-heading font-bold text-white tracking-tight">RDC 26/2015</span>
+                    <span class="text-[10.5px] text-terracota-textMuted uppercase tracking-[0.18em] mt-1.5 block">Alérgenos</span>
+                </div>
+                <div class="hidden md:block w-px h-10 bg-gradient-to-b from-transparent via-white/[0.1] to-transparent"></div>
+                <div class="text-center md:px-10 lg:px-14">
+                    <span class="block text-2xl md:text-[1.75rem] font-heading font-bold text-terracota-cyan tracking-tight">&lt; 5 min</span>
+                    <span class="text-[10.5px] text-terracota-textMuted uppercase tracking-[0.18em] mt-1.5 block">Para gerar</span>
+                </div>
             </div>
         </div>
     </section>
@@ -133,7 +134,7 @@
     <!-- ============================================================
          3. PAIN / PROBLEM — Why you need this (before the solution)
          ============================================================ -->
-    <section id="riscos" class="py-24 relative overflow-hidden">
+    <section id="riscos" class="py-24 relative overflow-hidden section-warm-tint">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center max-w-3xl mx-auto mb-16">
                 <h3 class="text-red-300 font-semibold tracking-wider uppercase text-sm mb-3">Atenção à Conformidade</h3>
@@ -142,19 +143,19 @@
             </div>
 
             <div class="grid md:grid-cols-3 gap-6">
-                <div class="card-base card-lift bg-terracota-surface rounded-xl p-7 border border-white/[0.06] hover:border-white/[0.12] border-l-[3px] border-l-red-500/60 pain-glow-red relative">
+                <div class="card-base bg-terracota-surface rounded-xl p-7 border border-white/[0.06] hover:border-white/[0.1] border-l-[3px] border-l-red-500/60 pain-glow-red relative transition-colors">
                     <i class="ph-duotone ph-chart-pie-slice text-4xl text-red-400 mb-4 inline-block"></i>
                     <h4 class="text-4xl font-heading font-bold text-white mb-2">&gt; 60%</h4>
                     <h5 class="text-lg font-semibold mb-4 text-terracota-textLight">dos rótulos reprovam</h5>
                     <p class="text-sm text-terracota-textLight/90">A maioria dos rótulos no mercado não atende integralmente à RDC 429 e IN 75 — até erros de arredondamento configuram não conformidade.</p>
                 </div>
-                <div class="card-base card-lift bg-terracota-surface rounded-xl p-7 border border-white/[0.06] hover:border-white/[0.12] border-l-[3px] border-l-orange-500/60 pain-glow-orange relative">
+                <div class="card-base bg-terracota-surface rounded-xl p-7 border border-white/[0.06] hover:border-white/[0.1] border-l-[3px] border-l-orange-500/60 pain-glow-orange relative transition-colors">
                     <i class="ph-duotone ph-money text-4xl text-orange-400 mb-4 inline-block"></i>
                     <h4 class="text-4xl font-heading font-bold text-white mb-2">R$ 75 mil</h4>
                     <h5 class="text-lg font-semibold mb-4 text-terracota-textLight">a R$ 1,5 milhão</h5>
                     <p class="text-sm text-terracota-textLight/90">Faixa de multas por infração sanitária (Lei 6.437/77). Alérgenos não declarados podem enquadrar como infração gravíssima.</p>
                 </div>
-                <div class="card-base card-lift bg-terracota-surface rounded-xl p-7 border border-white/[0.06] hover:border-white/[0.12] border-l-[3px] border-l-yellow-500/60 pain-glow-yellow relative">
+                <div class="card-base bg-terracota-surface rounded-xl p-7 border border-white/[0.06] hover:border-white/[0.1] border-l-[3px] border-l-yellow-500/60 pain-glow-yellow relative transition-colors">
                     <i class="ph-duotone ph-warning-octagon text-4xl text-yellow-400 mb-4 inline-block"></i>
                     <h4 class="text-4xl font-heading font-bold text-white mb-2">Recall</h4>
                     <h5 class="text-lg font-semibold mb-4 text-terracota-textLight">Impacto direto na marca</h5>
@@ -162,7 +163,7 @@
                 </div>
             </div>
 
-            <div class="mt-12 bg-terracota-cyan/[0.04] border border-terracota-cyan/20 rounded-2xl p-8 md:p-10 text-center shadow-card card-accent-top">
+            <div class="mt-12 bg-terracota-cyan/[0.04] border border-terracota-cyan/20 rounded-2xl p-8 md:p-10 text-center shadow-card">
                 <p class="text-base text-terracota-textLight/90 mb-2">A boa notícia:</p>
                 <p class="text-xl md:text-2xl font-heading font-semibold text-white mb-5">Com o Terracota, sua tabela já sai conforme a legislação — <span class="text-terracota-cyan">sem precisar decorar normas.</span></p>
                 <a href="#como-funciona" class="link-accent inline-flex items-center gap-2 text-sm font-semibold transition-colors">
@@ -184,31 +185,43 @@
             </div>
 
             <div class="grid md:grid-cols-3 gap-8 relative">
-                <div class="hidden md:block absolute top-[72px] left-[16.67%] right-[16.67%] h-px bg-gradient-to-r from-terracota-cyan/20 via-terracota-cyan/40 to-terracota-cyan/20"></div>
+                <div class="hidden md:block absolute top-[60px] left-[16.67%] right-[16.67%] h-px bg-gradient-to-r from-transparent via-terracota-cyan/15 to-transparent"></div>
 
-                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 text-center relative group shadow-card shadow-card-hover hover:border-white/[0.12]">
-                    <div class="w-14 h-14 mx-auto rounded-full bg-terracota-cyan/10 border-2 border-terracota-cyan/30 flex items-center justify-center text-2xl font-heading font-bold text-terracota-cyan mb-4 relative z-10 group-hover:scale-110 transition-transform">1</div>
-                    <i class="ph-duotone ph-pencil-line text-xl text-terracota-cyan/60 block mb-4"></i>
-                    <h4 class="text-xl font-heading font-semibold mb-3">Insira os ingredientes</h4>
-                    <p class="text-terracota-textMuted leading-relaxed">
+                <div class="bg-terracota-surface/50 border border-white/[0.06] rounded-2xl p-8 relative group hover:border-white/[0.1] transition-colors h-full">
+                    <div class="flex items-center justify-between mb-5">
+                        <div class="w-10 h-10 rounded-full bg-terracota-cyan/[0.06] border-[1.5px] border-terracota-cyan/20 flex items-center justify-center">
+                            <i class="ph ph-pencil-simple text-lg text-terracota-cyan/70" aria-hidden="true"></i>
+                        </div>
+                        <span class="text-3xl font-heading font-bold text-terracota-cyan/25">01</span>
+                    </div>
+                    <h4 class="text-xl font-heading font-semibold text-white mb-3">Insira os ingredientes</h4>
+                    <p class="text-sm text-terracota-textLight/90 leading-relaxed">
                         Digite manualmente ou importe sua planilha Excel. Adicione valores por 100 g e configure a porção.
                     </p>
                 </div>
 
-                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 text-center relative group shadow-card shadow-card-hover hover:border-white/[0.12]">
-                    <div class="w-14 h-14 mx-auto rounded-full bg-terracota-cyan/10 border-2 border-terracota-cyan/30 flex items-center justify-center text-2xl font-heading font-bold text-terracota-cyan mb-4 relative z-10 group-hover:scale-110 transition-transform">2</div>
-                    <i class="ph-duotone ph-gear-fine text-xl text-terracota-cyan/60 block mb-4"></i>
-                    <h4 class="text-xl font-heading font-semibold mb-3">O Terracota calcula</h4>
-                    <p class="text-terracota-textMuted leading-relaxed">
+                <div class="bg-terracota-surface/50 border border-white/[0.06] rounded-2xl p-8 relative group hover:border-white/[0.1] transition-colors h-full">
+                    <div class="flex items-center justify-between mb-5">
+                        <div class="w-10 h-10 rounded-full bg-terracota-cyan/[0.06] border-[1.5px] border-terracota-cyan/20 flex items-center justify-center">
+                            <i class="ph ph-gear-six text-lg text-terracota-cyan/70" aria-hidden="true"></i>
+                        </div>
+                        <span class="text-3xl font-heading font-bold text-terracota-cyan/25">02</span>
+                    </div>
+                    <h4 class="text-xl font-heading font-semibold text-white mb-3">O Terracota calcula</h4>
+                    <p class="text-sm text-terracota-textLight/90 leading-relaxed">
                         Valor energético, arredondamentos da IN 75, %VD e declaração de alérgenos — tudo automático e conforme a ANVISA.
                     </p>
                 </div>
 
-                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 text-center relative group shadow-card shadow-card-hover hover:border-white/[0.12]">
-                    <div class="w-14 h-14 mx-auto rounded-full bg-terracota-cyan/10 border-2 border-terracota-cyan/30 flex items-center justify-center text-2xl font-heading font-bold text-terracota-cyan mb-4 relative z-10 group-hover:scale-110 transition-transform">3</div>
-                    <i class="ph-duotone ph-file-arrow-down text-xl text-terracota-cyan/60 block mb-4"></i>
-                    <h4 class="text-xl font-heading font-semibold mb-3">Exporte e use</h4>
-                    <p class="text-terracota-textMuted leading-relaxed">
+                <div class="bg-terracota-surface/50 border border-white/[0.06] rounded-2xl p-8 relative group hover:border-white/[0.1] transition-colors h-full">
+                    <div class="flex items-center justify-between mb-5">
+                        <div class="w-10 h-10 rounded-full bg-terracota-cyan/[0.06] border-[1.5px] border-terracota-cyan/20 flex items-center justify-center">
+                            <i class="ph ph-file-arrow-down text-lg text-terracota-cyan/70" aria-hidden="true"></i>
+                        </div>
+                        <span class="text-3xl font-heading font-bold text-terracota-cyan/25">03</span>
+                    </div>
+                    <h4 class="text-xl font-heading font-semibold text-white mb-3">Exporte e use</h4>
+                    <p class="text-sm text-terracota-textLight/90 leading-relaxed">
                         Baixe a tabela no formato regulamentado, pronta para o layout da sua embalagem. Sem retrabalho.
                     </p>
                 </div>
@@ -240,64 +253,82 @@
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-7 shadow-card shadow-card-hover hover:border-white/[0.12] group">
-                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
-                        <i class="ph-duotone ph-seal-check text-2xl"></i>
+                <div class="feature-card card-base card-lift bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 shadow-card shadow-card-hover hover:border-white/[0.14] group h-full relative">
+                    <div class="relative flex flex-col h-full">
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="feature-card-icon"><i class="ph ph-shield-check" aria-hidden="true"></i></div>
+                            <span class="feature-card-kicker">Conformidade</span>
+                        </div>
+                        <h4 class="text-xl font-heading font-semibold leading-tight text-white mb-3">Conformidade automática</h4>
+                        <p class="text-sm leading-relaxed text-terracota-textLight/90">
+                            Arredondamentos da IN 75, cálculo de %VD e valor energético conforme Atwater — todos os cálculos seguem a regulamentação vigente, automaticamente.
+                        </p>
                     </div>
-                    <h4 class="text-lg font-heading font-semibold mb-2">Conformidade automática</h4>
-                    <p class="text-terracota-textMuted leading-relaxed text-sm">
-                        Arredondamentos da IN 75, cálculo de %VD e valor energético conforme Atwater — todos os cálculos seguem a regulamentação vigente, automaticamente.
-                    </p>
                 </div>
 
-                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-7 shadow-card shadow-card-hover hover:border-white/[0.12] group">
-                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
-                        <i class="ph-duotone ph-file-xls text-2xl"></i>
+                <div class="feature-card card-base card-lift bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 shadow-card shadow-card-hover hover:border-white/[0.14] group h-full relative">
+                    <div class="relative flex flex-col h-full">
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="feature-card-icon"><i class="ph ph-file-arrow-up" aria-hidden="true"></i></div>
+                            <span class="feature-card-kicker">Importação</span>
+                        </div>
+                        <h4 class="text-xl font-heading font-semibold leading-tight text-white mb-3">Importação Excel</h4>
+                        <p class="text-sm leading-relaxed text-terracota-textLight/90">
+                            Já tem a composição em planilha? Importe direto — sem redigitar dados e sem erros de transcrição.
+                        </p>
                     </div>
-                    <h4 class="text-lg font-heading font-semibold mb-2">Importação Excel</h4>
-                    <p class="text-terracota-textMuted leading-relaxed text-sm">
-                        Já tem a composição em planilha? Importe direto — sem redigitar dados e sem erros de transcrição.
-                    </p>
                 </div>
 
-                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-7 shadow-card shadow-card-hover hover:border-white/[0.12] group">
-                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
-                        <i class="ph-duotone ph-warning-diamond text-2xl"></i>
+                <div class="feature-card card-base card-lift bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 shadow-card shadow-card-hover hover:border-white/[0.14] group h-full relative">
+                    <div class="relative flex flex-col h-full">
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="feature-card-icon"><i class="ph ph-warning-circle" aria-hidden="true"></i></div>
+                            <span class="feature-card-kicker">Alertas</span>
+                        </div>
+                        <h4 class="text-xl font-heading font-semibold leading-tight text-white mb-3">Alérgenos (RDC 26)</h4>
+                        <p class="text-sm leading-relaxed text-terracota-textLight/90">
+                            Declare alérgenos conforme a RDC 26/2015. Evite a infração que mais gera recalls no Brasil.
+                        </p>
                     </div>
-                    <h4 class="text-lg font-heading font-semibold mb-2">Alérgenos (RDC 26)</h4>
-                    <p class="text-terracota-textMuted leading-relaxed text-sm">
-                        Declare alérgenos conforme a RDC 26/2015. Evite a infração que mais gera recalls no Brasil.
-                    </p>
                 </div>
 
-                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-7 shadow-card shadow-card-hover hover:border-white/[0.12] group">
-                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
-                        <i class="ph-duotone ph-printer text-2xl"></i>
+                <div class="feature-card card-base card-lift bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 shadow-card shadow-card-hover hover:border-white/[0.14] group h-full relative">
+                    <div class="relative flex flex-col h-full">
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="feature-card-icon"><i class="ph ph-file-arrow-down" aria-hidden="true"></i></div>
+                            <span class="feature-card-kicker">Exportação</span>
+                        </div>
+                        <h4 class="text-xl font-heading font-semibold leading-tight text-white mb-3">Pronta para o rótulo</h4>
+                        <p class="text-sm leading-relaxed text-terracota-textLight/90">
+                            Exporte no formato regulamentado. Mande direto para a gráfica ou para o designer da embalagem.
+                        </p>
                     </div>
-                    <h4 class="text-lg font-heading font-semibold mb-2">Pronta para o rótulo</h4>
-                    <p class="text-terracota-textMuted leading-relaxed text-sm">
-                        Exporte no formato regulamentado. Mande direto para a gráfica ou para o designer da embalagem.
-                    </p>
                 </div>
 
-                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-7 shadow-card shadow-card-hover hover:border-white/[0.12] group">
-                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
-                        <i class="ph-duotone ph-clock-countdown text-2xl"></i>
+                <div class="feature-card card-base card-lift bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 shadow-card shadow-card-hover hover:border-white/[0.14] group h-full relative">
+                    <div class="relative flex flex-col h-full">
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="feature-card-icon"><i class="ph ph-timer" aria-hidden="true"></i></div>
+                            <span class="feature-card-kicker">Velocidade</span>
+                        </div>
+                        <h4 class="text-xl font-heading font-semibold leading-tight text-white mb-3">Minutos, não horas</h4>
+                        <p class="text-sm leading-relaxed text-terracota-textLight/90">
+                            O que levaria horas em planilha, o Terracota entrega em minutos — com precisão regulatória.
+                        </p>
                     </div>
-                    <h4 class="text-lg font-heading font-semibold mb-2">Minutos, não horas</h4>
-                    <p class="text-terracota-textMuted leading-relaxed text-sm">
-                        O que levaria horas em planilha, o Terracota entrega em minutos — com precisão regulatória.
-                    </p>
                 </div>
 
-                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-7 shadow-card shadow-card-hover hover:border-white/[0.12] group">
-                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
-                        <i class="ph-duotone ph-currency-circle-dollar text-2xl"></i>
+                <div class="feature-card card-base card-lift bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 shadow-card shadow-card-hover hover:border-white/[0.14] group h-full relative">
+                    <div class="relative flex flex-col h-full">
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="feature-card-icon"><i class="ph ph-rocket-launch" aria-hidden="true"></i></div>
+                            <span class="feature-card-kicker">Entrada</span>
+                        </div>
+                        <h4 class="text-xl font-heading font-semibold leading-tight text-white mb-3">Grátis para começar</h4>
+                        <p class="text-sm leading-relaxed text-terracota-textLight/90">
+                            Comece sem custo com 1 tabela por mês. Quando precisar de mais, é só fazer upgrade.
+                        </p>
                     </div>
-                    <h4 class="text-lg font-heading font-semibold mb-2">Grátis para começar</h4>
-                    <p class="text-terracota-textMuted leading-relaxed text-sm">
-                        Comece sem custo com 1 tabela por mês. Quando precisar de mais, é só fazer upgrade.
-                    </p>
                 </div>
             </div>
 
@@ -326,46 +357,52 @@
                 <p class="text-terracota-textMuted mt-4 text-lg">Do consultor independente à indústria de alimentos.</p>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.07] rounded-2xl p-7 relative group shadow-card shadow-card-hover hover:border-white/[0.12] overflow-hidden">
-                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
-                        <i class="ph-duotone ph-stethoscope text-2xl"></i>
+            <div class="grid gap-4 max-w-3xl mx-auto">
+                <div class="bg-terracota-surface/50 border border-white/[0.06] rounded-xl p-6 flex gap-5 items-start hover:border-white/[0.1] transition-colors group">
+                    <div class="w-11 h-11 rounded-lg bg-terracota-cyan/[0.06] border border-terracota-cyan/15 flex items-center justify-center text-terracota-cyan shrink-0 mt-0.5">
+                        <i class="ph ph-stethoscope text-xl" aria-hidden="true"></i>
                     </div>
-                    <h4 class="text-lg font-heading font-semibold mb-3">Nutricionistas e consultores</h4>
-                    <p class="text-sm text-terracota-textMuted leading-relaxed mb-4">
+                    <div>
+                    <h4 class="text-base font-heading font-semibold leading-tight text-white mb-1.5">Nutricionistas e consultores</h4>
+                    <p class="text-sm text-terracota-textLight/90 leading-relaxed mb-3">
                         Atende múltiplos clientes e precisa entregar tabelas rapidamente, sem risco de erro nos arredondamentos da IN 75.
                     </p>
                     <div class="flex flex-wrap gap-2">
-                        <span class="text-xs px-2.5 py-1 rounded-full bg-terracota-cyan/[0.14] text-terracota-textLight border border-terracota-cyan/35">Múltiplos clientes</span>
-                        <span class="text-xs px-2.5 py-1 rounded-full bg-terracota-cyan/[0.14] text-terracota-textLight border border-terracota-cyan/35">Agilidade</span>
+                        <span class="persona-tag">Múltiplos clientes</span>
+                        <span class="persona-tag">Agilidade</span>
+                    </div>
                     </div>
                 </div>
 
-                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.07] rounded-2xl p-7 relative group shadow-card shadow-card-hover hover:border-white/[0.12] overflow-hidden">
-                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
-                        <i class="ph-duotone ph-factory text-2xl"></i>
+                <div class="bg-terracota-surface/50 border border-white/[0.06] rounded-xl p-6 flex gap-5 items-start hover:border-white/[0.1] transition-colors group">
+                    <div class="w-11 h-11 rounded-lg bg-terracota-cyan/[0.06] border border-terracota-cyan/15 flex items-center justify-center text-terracota-cyan shrink-0 mt-0.5">
+                        <i class="ph ph-factory text-xl" aria-hidden="true"></i>
                     </div>
-                    <h4 class="text-lg font-heading font-semibold mb-3">Fábricas e indústrias de alimentos</h4>
-                    <p class="text-sm text-terracota-textMuted leading-relaxed mb-4">
+                    <div>
+                    <h4 class="text-base font-heading font-semibold leading-tight text-white mb-1.5">Fábricas e indústrias de alimentos</h4>
+                    <p class="text-sm text-terracota-textLight/90 leading-relaxed mb-3">
                         Produz e distribui alimentos e precisa de rótulos em conformidade com a ANVISA para evitar multas e recalls.
                     </p>
                     <div class="flex flex-wrap gap-2">
-                        <span class="text-xs px-2.5 py-1 rounded-full bg-terracota-cyan/[0.14] text-terracota-textLight border border-terracota-cyan/35">Conformidade</span>
-                        <span class="text-xs px-2.5 py-1 rounded-full bg-terracota-cyan/[0.14] text-terracota-textLight border border-terracota-cyan/35">Escala</span>
+                        <span class="persona-tag">Conformidade</span>
+                        <span class="persona-tag">Escala</span>
+                    </div>
                     </div>
                 </div>
 
-                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.07] rounded-2xl p-7 relative group shadow-card shadow-card-hover hover:border-white/[0.12] overflow-hidden">
-                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
-                        <i class="ph-duotone ph-storefront text-2xl"></i>
+                <div class="bg-terracota-surface/50 border border-white/[0.06] rounded-xl p-6 flex gap-5 items-start hover:border-white/[0.1] transition-colors group">
+                    <div class="w-11 h-11 rounded-lg bg-terracota-cyan/[0.06] border border-terracota-cyan/15 flex items-center justify-center text-terracota-cyan shrink-0 mt-0.5">
+                        <i class="ph ph-storefront text-xl" aria-hidden="true"></i>
                     </div>
-                    <h4 class="text-lg font-heading font-semibold mb-3">Marcas artesanais e startups</h4>
-                    <p class="text-sm text-terracota-textMuted leading-relaxed mb-4">
+                    <div>
+                    <h4 class="text-base font-heading font-semibold leading-tight text-white mb-1.5">Marcas artesanais e startups</h4>
+                    <p class="text-sm text-terracota-textLight/90 leading-relaxed mb-3">
                         Está lançando um produto alimentício e precisa do rótulo regulamentado para começar a vender em lojas e marketplaces.
                     </p>
                     <div class="flex flex-wrap gap-2">
-                        <span class="text-xs px-2.5 py-1 rounded-full bg-terracota-cyan/[0.14] text-terracota-textLight border border-terracota-cyan/35">Primeiro rótulo</span>
-                        <span class="text-xs px-2.5 py-1 rounded-full bg-terracota-cyan/[0.14] text-terracota-textLight border border-terracota-cyan/35">Sem experiência prévia</span>
+                        <span class="persona-tag">Primeiro rótulo</span>
+                        <span class="persona-tag">Sem experiência prévia</span>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -718,14 +755,15 @@
     <!-- ============================================================
          9. FINAL CTA — Page closer
          ============================================================ -->
-    <section class="py-28 relative section-divider bg-gradient-to-b from-transparent to-terracota-surface overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[250px] bg-terracota-cyan/[0.03] blur-[100px] rounded-full pointer-events-none"></div>
+    <section class="py-32 lg:py-40 relative section-divider overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-terracota-cyan/[0.04] blur-[150px] rounded-full pointer-events-none"></div>
+        <div class="absolute top-[55%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[250px] bg-terracota-purple/[0.03] blur-[120px] rounded-full pointer-events-none"></div>
         <div class="max-w-4xl mx-auto px-6 text-center relative">
-            <h2 class="text-3xl md:text-5xl font-heading font-bold mb-6">
+            <h2 class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-8 leading-[1.1]">
                 Sua tabela nutricional,<br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-terracota-cyan to-terracota-purpleBright">pronta e em conformidade.</span>
             </h2>
-            <p class="text-lg text-terracota-textMuted mb-10 max-w-2xl mx-auto leading-relaxed">
+            <p class="text-lg text-terracota-textMuted mb-12 max-w-2xl mx-auto leading-relaxed">
                 Crie sua conta grátis em 30 segundos e tenha sua primeira tabela nutricional conforme a ANVISA ainda hoje.
             </p>
 

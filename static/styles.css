@@ -189,6 +189,41 @@ body {
     pointer-events: none;
 }
 
+/* --- Feature Card Icon System --- */
+.feature-card-icon {
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #00f0ff;
+    border: 1px solid rgba(0, 240, 255, 0.32);
+    background: linear-gradient(145deg, rgba(0, 240, 255, 0.2), rgba(0, 240, 255, 0.06));
+    box-shadow: 0 10px 22px -14px rgba(0, 240, 255, 0.85),
+                inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.25s ease,
+                box-shadow 0.25s ease;
+}
+.feature-card-icon i {
+    font-size: 1.35rem;
+    line-height: 1;
+}
+.group:hover .feature-card-icon {
+    transform: translateY(-1px) scale(1.05);
+    border-color: rgba(0, 240, 255, 0.5);
+    box-shadow: 0 16px 30px -16px rgba(0, 240, 255, 0.95),
+                inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+.feature-card-kicker {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: rgba(167, 182, 202, 0.85);
+}
+
 /* --- Gradient Border Effect (featured pricing, CTA) --- */
 .card-gradient-border {
     position: relative;
@@ -471,6 +506,7 @@ details[open] {
     .card-lift:hover,
     .btn-cta-primary,
     .btn-cta-secondary,
+    .feature-card-icon,
     .shadow-card-hover:hover,
     .progress-line,
     .progress-step-circle,
@@ -482,4 +518,32 @@ details[open] {
         transition: none !important;
         transform: none !important;
     }
+}
+
+/* ===========================================================
+   Landing Page — Premium Design Enhancements
+   =========================================================== */
+
+/* Subtle grid pattern overlay for hero depth */
+.hero-grid-pattern {
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 64px 64px;
+}
+
+/* Warm gradient tint for urgency/warning sections */
+.section-warm-tint {
+    background: linear-gradient(180deg, rgba(239, 68, 68, 0.015) 0%, transparent 60%);
+}
+
+/* Neutral persona tags (distinct from feature accent tags) */
+.persona-tag {
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(215, 226, 242, 0.7);
+    letter-spacing: 0.015em;
 }
