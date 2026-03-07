@@ -53,9 +53,10 @@
                             cyan: '#00F0FF',
                             cyanHover: '#00C8D6',
                             purple: '#7B2CBF',
+                            purpleBright: '#B890FF',
                             text: '#FFFFFF',
-                            textLight: '#CBD5E1',
-                            textMuted: '#94A3B8',
+                            textLight: '#D7E2F2',
+                            textMuted: '#A7B6CA',
                         }
                     },
                     backgroundImage: {
@@ -77,7 +78,7 @@
     </div>
 
     <!-- Header -->
-    <header class="fixed w-full top-0 z-50 bg-terracota-base/80 backdrop-blur-xl border-b border-white/5">
+    <header class="fixed w-full top-0 z-50 bg-terracota-base/80 backdrop-blur-xl border-b border-white/[0.08]">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <a href="{{ url_for('main.index') }}" class="flex items-center gap-4 group">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-terracota-surfaceHighlight to-terracota-surface flex items-center justify-center border border-white/10 group-hover:border-terracota-cyan/50 transition-colors relative overflow-hidden">
@@ -86,7 +87,7 @@
                 </div>
                 <div class="flex flex-col">
                     <span class="text-xl font-bold tracking-tight text-white font-heading uppercase leading-none">Terracota</span>
-                    <span class="text-[10px] tracking-[0.25em] text-terracota-cyan/80 uppercase mt-1">Compliance</span>
+                    <span class="text-[11px] tracking-[0.22em] text-terracota-cyan/90 uppercase mt-1">Compliance</span>
                 </div>
             </a>
 
@@ -116,7 +117,7 @@
         </div>
 
         <!-- Mobile menu -->
-        <div id="mobile-menu" class="hidden md:hidden border-t border-white/5 bg-terracota-base/95 backdrop-blur-xl">
+        <div id="mobile-menu" class="hidden md:hidden border-t border-white/[0.08] bg-terracota-base/95 backdrop-blur-xl">
             <div class="px-6 py-4 flex flex-col gap-3">
                 {% block mobile_nav_links %}
                 <a href="{{ url_for('main.index') }}#beneficios" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">Soluções</a>
@@ -160,7 +161,7 @@
                 </div>
                 <span class="text-sm font-medium text-white tracking-widest uppercase">Terracota</span>
             </div>
-            <span class="text-xs text-terracota-textMuted">&copy; 2026 Terracota Compliance & Systems.</span>
+            <span class="text-sm text-terracota-textLight/80">&copy; 2026 Terracota Compliance & Systems.</span>
             <div class="flex items-center gap-6">
                 <a href="{{ url_for('main.index') }}#faq" class="text-terracota-textMuted hover:text-white transition-colors text-sm">FAQ</a>
                 <a href="{{ url_for('support.contact') }}" class="text-terracota-textMuted hover:text-white transition-colors text-sm">Contato</a>

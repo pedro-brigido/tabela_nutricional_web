@@ -261,7 +261,10 @@ body {
 
 /* --- Button System --- */
 .btn-cta-primary {
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.25s ease,
+                color 0.25s ease;
 }
 .btn-cta-primary:hover {
     transform: translateY(-2px);
@@ -269,15 +272,44 @@ body {
                 0 14px 35px -10px rgba(0, 0, 0, 0.4);
 }
 .btn-cta-primary:active {
-    transform: translateY(0px);
+    transform: translateY(0);
+    box-shadow: 0 0 22px -8px rgba(0, 240, 255, 0.4),
+                0 8px 20px -10px rgba(0, 0, 0, 0.5);
+}
+.btn-cta-primary:disabled,
+.btn-cta-primary[aria-disabled="true"] {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 .btn-cta-secondary {
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.25s ease,
+                border-color 0.25s ease,
+                color 0.25s ease;
 }
 .btn-cta-secondary:hover {
     transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.22);
     box-shadow: 0 8px 25px -6px rgba(0, 0, 0, 0.35);
+}
+.btn-cta-secondary:active {
+    transform: translateY(0);
+}
+
+/* Text links used as secondary CTA across the landing page */
+.link-accent {
+    color: #5cefff;
+    text-decoration: underline;
+    text-decoration-color: rgba(92, 239, 255, 0.45);
+    text-underline-offset: 0.22em;
+}
+.link-accent:hover {
+    color: #ffffff;
+    text-decoration-color: currentColor;
 }
 
 /* --- FAQ Enhance --- */
@@ -307,6 +339,7 @@ select:focus-visible,
 a:focus-visible {
     outline: 2px solid #00F0FF;
     outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.24);
 }
 
 /* ---- FAQ active-state accent ---- */
@@ -352,4 +385,21 @@ details[open] {
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-spin-slow,
+    .card-base,
+    .card-lift:hover,
+    .btn-cta-primary,
+    .btn-cta-secondary,
+    .shadow-card-hover:hover,
+    .progress-line,
+    .progress-step-circle,
+    .ing-nutri-panel,
+    .ing-chevron {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+    }
 }
