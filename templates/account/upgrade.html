@@ -8,41 +8,49 @@
 
 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
     {% for p in plans %}
-    <div class="bg-terracota-surface border {{ 'border-terracota-cyan/50' if p.slug == current_plan.slug else 'border-white/10' }} rounded-2xl p-6 flex flex-col relative">
+    {% set is_pro = (p.slug == 'flow_pro') %}
+    <div class="bg-terracota-surface border {{ 'border-terracota-cyan/50' if p.slug == current_plan.slug else 'border-white/10' }} rounded-2xl p-6 flex flex-col relative {{ 'ring-2 ring-terracota-cyan/50 border-t-2 border-t-terracota-cyan' if is_pro and p.slug != current_plan.slug else '' }}">
         {% if p.slug == current_plan.slug %}
         <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-terracota-cyan text-terracota-base text-xs font-bold rounded-full">Atual</span>
+        {% elif is_pro %}
+        <span class="self-start px-3 py-1 bg-terracota-cyan/20 text-terracota-cyan text-xs font-bold rounded-full mb-4">Melhor custo-benefício</span>
         {% endif %}
 
         <h3 class="text-lg font-heading font-bold mb-1">{{ p.name }}</h3>
-        <p class="text-2xl font-bold mb-4">
+        <p class="{{ 'text-3xl' if is_pro else 'text-2xl' }} font-bold mb-1">
             {% if p.price_brl > 0 %}
-            R$ {{ "%.2f"|format(p.price_brl) }}<span class="text-sm font-normal text-terracota-textMuted">/mês</span>
+            R$ {{ "%.2f"|format(p.price_brl)|replace('.', ',') }}<span class="text-sm font-normal text-terracota-textMuted">/mês</span>
             {% else %}
             Grátis
             {% endif %}
         </p>
 
         <ul class="space-y-2 text-sm text-terracota-textMuted flex-grow mb-6">
-            <li><i class="ph ph-check text-terracota-cyan mr-1"></i> {{ p.max_tables_per_month if p.max_tables_per_month else '&infin;' | safe }} tabelas/mês</li>
-            <li><i class="ph ph-check text-terracota-cyan mr-1"></i> {{ p.max_ingredients_per_table if p.max_ingredients_per_table else '&infin;' | safe }} ingredientes</li>
-            {% if p.has_templates %}<li><i class="ph ph-check text-terracota-cyan mr-1"></i> Templates</li>{% endif %}
-            {% if p.has_pdf_export %}<li><i class="ph ph-check text-terracota-cyan mr-1"></i> Export PDF/PNG</li>{% endif %}
-            {% if p.has_version_history %}<li><i class="ph ph-check text-terracota-cyan mr-1"></i> Histórico de versões</li>{% endif %}
-            {% if p.has_branding %}<li><i class="ph ph-check text-terracota-cyan mr-1"></i> Branding no PDF</li>{% endif %}
+            <li class="flex gap-2"><i class="ph ph-check text-terracota-cyan mt-0.5"></i><span>{{ p.max_tables_per_month if p.max_tables_per_month else 'Ilimitadas' }} tabelas/mês</span></li>
+            <li class="flex gap-2"><i class="ph ph-check text-terracota-cyan mt-0.5"></i><span>{{ p.max_ingredients_per_table if p.max_ingredients_per_table else 'Ilimitados' }} ingredientes</span></li>
+            {% if p.has_pdf_export %}<li class="flex gap-2"><i class="ph ph-check text-terracota-cyan mt-0.5"></i><span>Export PDF{% if p.has_png_export %} + PNG{% endif %}</span></li>{% endif %}
+            {% if p.has_templates %}<li class="flex gap-2"><i class="ph ph-check text-terracota-cyan mt-0.5"></i><span>Templates{% if p.has_version_history %} + histórico{% endif %}</span></li>{% endif %}
+            {% if p.has_branding %}<li class="flex gap-2"><i class="ph ph-check text-terracota-cyan mt-0.5"></i><span>Branding no PDF</span></li>{% endif %}
         </ul>
 
         {% if p.slug != current_plan.slug %}
-            {% if stripe_enabled and p.slug != 'free' %}
+            {% if p.slug == 'flow_studio' %}
+            <a href="{{ url_for('support.contact', category='billing', subject='Teste Ilimitado (14 dias)', plan='flow_studio') }}" class="block text-center px-4 py-2.5 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">
+                Falar com vendas
+            </a>
+            {% elif stripe_enabled and p.slug != 'free' %}
             <form method="post" action="{{ url_for('billing.checkout') }}" class="upgrade-checkout-form" data-target-plan-name="{{ p.name }}" data-target-plan-slug="{{ p.slug }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="plan_slug" value="{{ p.slug }}">
                 <button type="submit" class="w-full text-center px-4 py-2.5 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">
-                    Assinar agora
+                    Assinar
                 </button>
             </form>
+            {% elif p.slug == 'free' %}
+            {# Free plan - no action needed for downgrade #}
             {% else %}
             <a href="{{ url_for('support.contact') }}" class="block text-center px-4 py-2.5 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">
-                Fale conosco
+                Falar com vendas
             </a>
             {% endif %}
         {% endif %}

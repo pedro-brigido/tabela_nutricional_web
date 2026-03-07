@@ -49,15 +49,9 @@
             Começar grátis
         </a>
         <a href="{{ cta_unlimited }}" class="px-6 py-3 bg-terracota-surfaceHighlight border border-white/10 text-white font-semibold rounded-xl hover:bg-white/5 transition-colors">
-            Testar Ilimitado por 14 dias
+            Falar com vendas
         </a>
     </div>
-
-    <p class="mt-6 text-xs text-terracota-textMuted max-w-3xl mx-auto">
-        <strong class="text-white/90">Nota de transparência:</strong>
-        O Terracota Pulse ajuda você a se manter atualizado com resumos e alertas relevantes.
-        A validação final e a adequação ao seu contexto dependem do seu produto/processo.
-    </p>
 </section>
 
 <section class="mb-14">
@@ -123,9 +117,8 @@
             {% set subtitle = 'Para testar e conhecer a plataforma.' %}
             {% set bullets = [
                 '1 tabela/mês',
-                'Até 10 ingredientes por tabela',
-                'Digest Pulse (semanal/quinzenal, sem personalização)',
-                'Visualização/impressão básica',
+                'Até 10 ingredientes',
+                'Visualização e impressão',
             ] %}
             {% set cta_label = 'Começar grátis' %}
             {% set cta_href = url_for('auth.register') %}
@@ -133,24 +126,23 @@
             {% set subtitle = 'Para quem já produz e precisa de regularidade.' %}
             {% set bullets = [
                 '3 tabelas/mês',
-                'Até 25 ingredientes por tabela',
-                'Export PDF básico',
-                'Pulse incluso: newsletter + principais mudanças do mês',
+                'Até 25 ingredientes',
+                'Export PDF',
+                'Templates',
             ] %}
-            {% set cta_label = 'Assinar Básico' %}
+            {% set cta_label = 'Assinar' %}
             {% set cta_href = url_for('support.contact', category='billing', subject='Assinar Básico', plan='flow_start') %}
             {% set cta_plan_slug = 'flow_start' %}
         {% elif is_pro %}
             {% set subtitle = 'O melhor custo-benefício para quem produz com frequência.' %}
             {% set bullets = [
                 '10 tabelas/mês',
-                'Até 80 ingredientes por tabela',
-                'Templates + duplicar tabelas',
-                'Export PDF/PNG mais apresentável',
-                'Histórico de versões',
-                'Pulse Pro: monitoramento de até 5 temas + alertas',
+                'Até 80 ingredientes',
+                'Export PDF + PNG',
+                'Templates + histórico',
+                'Suporte prioritário',
             ] %}
-            {% set cta_label = 'Assinar Profissional' %}
+            {% set cta_label = 'Assinar' %}
             {% set cta_href = url_for('support.contact', category='billing', subject='Assinar Profissional', plan='flow_pro') %}
             {% set cta_plan_slug = 'flow_pro' %}
         {% else %}
@@ -158,16 +150,16 @@
             {% set bullets = [
                 'Tabelas ilimitadas',
                 'Ingredientes ilimitados',
-                'Export premium + branding no PDF (logo/rodapé)',
-                'Biblioteca de templates avançados',
-                'Pulse Advanced: monitoramento de até 15 temas + radar semanal + relatório mensal',
+                'Export premium + branding',
+                'Templates avançados',
+                'Suporte prioritário',
             ] %}
-            {% set cta_label = 'Testar Ilimitado' %}
+            {% set cta_label = 'Falar com vendas' %}
             {% set cta_href = url_for('support.contact', category='billing', subject='Teste Ilimitado (14 dias)', plan='flow_studio') %}
             {% set cta_plan_slug = 'flow_studio' %}
         {% endif %}
 
-        <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6 flex flex-col {{ 'ring-2 ring-terracota-cyan/50' if is_pro else '' }}">
+        <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6 flex flex-col {{ 'ring-2 ring-terracota-cyan/50 border-t-2 border-t-terracota-cyan' if is_pro else '' }}">
             {% if is_pro %}
             <span class="self-start px-3 py-1 bg-terracota-cyan/20 text-terracota-cyan text-xs font-bold rounded-full mb-4">Melhor custo-benefício</span>
             {% endif %}
@@ -177,9 +169,9 @@
             </h3>
             <p class="text-sm text-terracota-textMuted mb-4 leading-relaxed">{{ subtitle }}</p>
 
-            <p class="text-3xl font-bold mb-4">
+            <p class="{{ 'text-4xl' if is_pro else 'text-3xl' }} font-bold mb-1">
                 {% if p.price_brl > 0 %}
-                R$ {{ "%.2f"|format(p.price_brl) }}<span class="text-sm font-normal text-terracota-textMuted">/mês</span>
+                R$ {{ "%.2f"|format(p.price_brl)|replace('.', ',') }}<span class="text-sm font-normal text-terracota-textMuted">/mês</span>
                 {% else %}
                 R$ 0
                 {% endif %}
@@ -214,7 +206,7 @@
 </section>
 
 <section class="mb-14" id="compare">
-    <h2 class="text-2xl md:text-3xl font-heading font-bold mb-6">Comparativo (recursos × planos)</h2>
+    <h2 class="text-2xl md:text-3xl font-heading font-bold mb-6">Comparativo de planos</h2>
     <div class="overflow-x-auto bg-terracota-surface/60 border border-white/10 rounded-2xl">
         <table class="min-w-[860px] w-full text-sm">
             <thead>
@@ -222,56 +214,89 @@
                     <th class="px-5 py-4 font-semibold">Recurso</th>
                     <th class="px-5 py-4 font-semibold">Grátis</th>
                     <th class="px-5 py-4 font-semibold">Básico</th>
-                    <th class="px-5 py-4 font-semibold">Profissional</th>
+                    <th class="px-5 py-4 font-semibold text-terracota-cyan">Profissional</th>
                     <th class="px-5 py-4 font-semibold">Ilimitado</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-white/5">
-                <tr><td class="px-5 py-4">Tabelas/mês</td><td class="px-5 py-4">1</td><td class="px-5 py-4">3</td><td class="px-5 py-4">10</td><td class="px-5 py-4">&infin;</td></tr>
-                <tr><td class="px-5 py-4">Ingredientes por tabela</td><td class="px-5 py-4">10</td><td class="px-5 py-4">25</td><td class="px-5 py-4">80</td><td class="px-5 py-4">&infin;</td></tr>
-                <tr><td class="px-5 py-4">Pulse (newsletter + resumos)</td><td class="px-5 py-4">Digest</td><td class="px-5 py-4">✅</td><td class="px-5 py-4">✅</td><td class="px-5 py-4">✅</td></tr>
-                <tr><td class="px-5 py-4">Pulse: monitoramento por temas</td><td class="px-5 py-4">—</td><td class="px-5 py-4">—</td><td class="px-5 py-4">5 temas</td><td class="px-5 py-4">15 temas</td></tr>
-                <tr><td class="px-5 py-4">Alertas (quando relevante)</td><td class="px-5 py-4">—</td><td class="px-5 py-4">Básico</td><td class="px-5 py-4">✅</td><td class="px-5 py-4">Prioritário</td></tr>
-                <tr><td class="px-5 py-4">Templates e duplicar tabela</td><td class="px-5 py-4">—</td><td class="px-5 py-4">Básico</td><td class="px-5 py-4">✅</td><td class="px-5 py-4">Avançado</td></tr>
-                <tr><td class="px-5 py-4">Histórico de versões</td><td class="px-5 py-4">—</td><td class="px-5 py-4">—</td><td class="px-5 py-4">✅</td><td class="px-5 py-4">✅</td></tr>
-                <tr><td class="px-5 py-4">Export PDF</td><td class="px-5 py-4">Básico</td><td class="px-5 py-4">✅</td><td class="px-5 py-4">✅</td><td class="px-5 py-4">✅ Premium</td></tr>
-                <tr><td class="px-5 py-4">Export PNG alta qualidade</td><td class="px-5 py-4">—</td><td class="px-5 py-4">—</td><td class="px-5 py-4">✅</td><td class="px-5 py-4">✅</td></tr>
-                <tr><td class="px-5 py-4">Branding no PDF (logo/rodapé)</td><td class="px-5 py-4">—</td><td class="px-5 py-4">—</td><td class="px-5 py-4">—</td><td class="px-5 py-4">✅</td></tr>
-                <tr><td class="px-5 py-4">Suporte</td><td class="px-5 py-4">Base</td><td class="px-5 py-4">Base</td><td class="px-5 py-4">Prioritário</td><td class="px-5 py-4">Prioritário</td></tr>
+                <tr>
+                    <td class="px-5 py-4">Tabelas por mês</td>
+                    <td class="px-5 py-4">1</td>
+                    <td class="px-5 py-4">3</td>
+                    <td class="px-5 py-4">10</td>
+                    <td class="px-5 py-4">Ilimitadas</td>
+                </tr>
+                <tr>
+                    <td class="px-5 py-4">Ingredientes por tabela</td>
+                    <td class="px-5 py-4">10</td>
+                    <td class="px-5 py-4">25</td>
+                    <td class="px-5 py-4">80</td>
+                    <td class="px-5 py-4">Ilimitados</td>
+                </tr>
+                <tr>
+                    <td class="px-5 py-4">Busca TACO (autopreenchimento)</td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                </tr>
+                <tr>
+                    <td class="px-5 py-4">Validação ANVISA em tempo real</td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                </tr>
+                <tr>
+                    <td class="px-5 py-4">Export PDF</td>
+                    <td class="px-5 py-4 text-terracota-textMuted">—</td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                </tr>
+                <tr>
+                    <td class="px-5 py-4">Export PNG</td>
+                    <td class="px-5 py-4 text-terracota-textMuted">—</td>
+                    <td class="px-5 py-4 text-terracota-textMuted">—</td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                </tr>
+                <tr>
+                    <td class="px-5 py-4">Templates e duplicação</td>
+                    <td class="px-5 py-4 text-terracota-textMuted">—</td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                </tr>
+                <tr>
+                    <td class="px-5 py-4">Histórico de versões</td>
+                    <td class="px-5 py-4 text-terracota-textMuted">—</td>
+                    <td class="px-5 py-4 text-terracota-textMuted">—</td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                </tr>
+                <tr>
+                    <td class="px-5 py-4">Branding no PDF (logo)</td>
+                    <td class="px-5 py-4 text-terracota-textMuted">—</td>
+                    <td class="px-5 py-4 text-terracota-textMuted">—</td>
+                    <td class="px-5 py-4 text-terracota-textMuted">—</td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                </tr>
+                <tr>
+                    <td class="px-5 py-4">Suporte prioritário</td>
+                    <td class="px-5 py-4 text-terracota-textMuted">—</td>
+                    <td class="px-5 py-4 text-terracota-textMuted">—</td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                    <td class="px-5 py-4"><i class="ph ph-check text-terracota-cyan"></i></td>
+                </tr>
             </tbody>
         </table>
     </div>
-</section>
-
-<section class="mb-14">
-    <h2 class="text-2xl md:text-3xl font-heading font-bold mb-4">O que é o Pulse (incluso nos planos pagos)</h2>
-    <p class="text-terracota-textMuted leading-relaxed max-w-4xl">
-        <strong class="text-white/90">Terracota Pulse</strong> = newsletter + alertas (gerais e por tema) sobre mudanças relevantes em normas, com foco em impacto prático.
+    <p class="text-xs text-terracota-textMuted mt-4 text-center">
+        Todos os planos pagos incluem o <strong class="text-white/90">Terracota Pulse</strong>: alertas sobre mudanças em normas da ANVISA que impactam rótulos.
     </p>
-    <div class="grid md:grid-cols-3 gap-6 mt-6">
-        <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
-            <h3 class="font-semibold mb-2">Básico</h3>
-            <p class="text-sm text-terracota-textMuted">Resumos e curadoria geral.</p>
-        </div>
-        <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
-            <h3 class="font-semibold mb-2">Profissional</h3>
-            <p class="text-sm text-terracota-textMuted">Monitoramento de até 5 temas + alertas.</p>
-        </div>
-        <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
-            <h3 class="font-semibold mb-2">Ilimitado</h3>
-            <p class="text-sm text-terracota-textMuted">Monitoramento de até 15 temas + radar + relatório.</p>
-        </div>
-    </div>
 </section>
 
-<section class="mb-14">
-    <h2 class="text-2xl md:text-3xl font-heading font-bold mb-4">Garantia / Cancelamento</h2>
-    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
-        <p class="text-terracota-textMuted leading-relaxed">
-            Cancele quando quiser. Sem multa. Você mantém acesso até o fim do período pago.
-        </p>
-    </div>
-</section>
 
 <section class="mb-14">
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">

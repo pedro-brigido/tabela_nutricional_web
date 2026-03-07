@@ -9,63 +9,67 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Terracota Compliance">
-<meta property="og:title" content="Terracota — Tabela Nutricional ANVISA em Minutos">
-<meta property="og:description" content="Calculadora de tabela nutricional conforme ANVISA. Arredondamentos, %VD, alérgenos e valor energético automáticos. Grátis.">
+<meta property="og:title" content="Terracota — Tabela Nutricional Pronta em Minutos, em Conformidade com a ANVISA">
+<meta property="og:description" content="Gere tabelas nutricionais em conformidade com a ANVISA (RDC 429, IN 75, RDC 26) em poucos cliques. Arredondamentos, %VD, alérgenos e valor energético automáticos. Comece grátis.">
 <meta property="og:url" content="{{ url_for('main.index', _external=True) }}">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Terracota — Tabela Nutricional ANVISA em Minutos">
-<meta name="twitter:description" content="Gere tabelas nutricionais em conformidade com RDC 429/2020, IN 75/2020 e RDC 26/2015 em minutos.">
+<meta name="twitter:title" content="Terracota — Tabela Nutricional em Conformidade com a ANVISA">
+<meta name="twitter:description" content="Gere tabelas nutricionais conforme RDC 429/2020, IN 75/2020 e RDC 26/2015 em minutos. Comece grátis.">
 {% endblock %}
 
 {% block nav_links %}
 <a href="#como-funciona" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Como Funciona</a>
 <a href="#beneficios" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Benefícios</a>
 <a href="#planos" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Planos</a>
-<a href="#ajuda" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Ajuda</a>
-<a href="#contato" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Contato</a>
+<a href="#faq" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">FAQ</a>
+{% endblock %}
+
+{% block mobile_nav_links %}
+<a href="#como-funciona" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">Como Funciona</a>
+<a href="#beneficios" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">Benefícios</a>
+<a href="#planos" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">Planos</a>
+<a href="#faq" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">FAQ</a>
 {% endblock %}
 
 {% block content %}
     <!-- ============================================================
-         HERO — Pain/Benefit + CTA
+         1. HERO — What it is + Who it's for + CTA
          ============================================================ -->
-    <section class="relative min-h-[85vh] flex items-center py-20 overflow-hidden">
+    <section class="relative min-h-[75vh] lg:min-h-[85vh] flex items-center py-20 overflow-hidden">
         <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center w-full">
             <div class="relative z-10">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-terracota-cyan/20 bg-terracota-cyan/5 mb-8">
-                    <span class="w-2 h-2 rounded-full bg-terracota-cyan animate-pulse"></span>
-                    <span class="text-xs font-medium text-terracota-cyan uppercase tracking-wider">Conforme RDC 429/2020 &amp; IN 75/2020</span>
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-terracota-cyan/20 bg-terracota-cyan/[0.04] mb-8">
+                    <span class="w-1.5 h-1.5 rounded-full bg-terracota-cyan animate-pulse"></span>
+                    <span class="text-[11px] font-medium text-terracota-cyan uppercase tracking-widest">Conforme RDC 429/2020 &amp; IN 75/2020</span>
                 </div>
                 <h1 class="text-4xl sm:text-5xl md:text-6xl font-heading font-bold leading-[1.1] mb-6">
                     Tabela Nutricional<br>
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-terracota-cyan to-terracota-purple">pronta em minutos,</span><br>
-                    sem erros na ANVISA
+                    em conformidade com a ANVISA
                 </h1>
-                <p class="text-lg text-terracota-textMuted mb-10 max-w-lg leading-relaxed">
-                    Mais de <strong class="text-white">60% dos rótulos</strong> reprovam em auditoria da ANVISA.
-                    O Terracota calcula, arredonda e formata sua tabela nutricional exatamente como a legislação exige — para você focar no que importa: vender seu produto.
+                <p class="text-lg text-terracota-textMuted mb-8 max-w-lg leading-relaxed">
+                    O Terracota calcula, arredonda e formata sua tabela nutricional conforme a <strong class="text-white">RDC 429</strong> e a <strong class="text-white">IN 75</strong> — em poucos cliques. Para você focar no que importa: vender seu produto.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4">
                     {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('product.calculator') }}" class="px-8 py-4 bg-terracota-cyan text-terracota-base font-semibold rounded-xl hover:bg-white transition-colors text-center shadow-[0_0_30px_-5px_#00F0FF55]">
-                        Acessar Calculadora
+                    <a href="{{ url_for('product.calculator') }}" class="btn-cta-primary inline-flex items-center justify-center gap-2 px-9 py-4 bg-terracota-cyan text-terracota-base font-bold rounded-full hover:bg-white shadow-[0_0_30px_-5px_#00F0FF55]">
+                        <i class="ph ph-arrow-right"></i> Acessar Calculadora
                     </a>
                     {% else %}
-                    <a href="{{ url_for('auth.register') }}" class="px-8 py-4 bg-terracota-cyan text-terracota-base font-semibold rounded-xl hover:bg-white transition-colors text-center shadow-[0_0_30px_-5px_#00F0FF55]">
-                        Criar Conta Grátis
+                    <a href="{{ url_for('auth.register') }}" class="btn-cta-primary inline-flex items-center justify-center gap-2 px-9 py-4 bg-terracota-cyan text-terracota-base font-bold rounded-full hover:bg-white shadow-[0_0_30px_-5px_#00F0FF55]">
+                        <i class="ph ph-arrow-right"></i> Comece Grátis
                     </a>
                     {% endif %}
-                    <a href="#como-funciona" class="px-8 py-4 bg-terracota-surfaceHighlight border border-white/10 text-white font-semibold rounded-xl hover:bg-white/5 transition-colors text-center inline-flex justify-center items-center gap-2">
-                        Veja Como Funciona <i class="ph ph-arrow-down"></i>
+                    <a href="#como-funciona" class="btn-cta-secondary px-8 py-4 bg-terracota-surfaceHighlight border border-white/[0.12] text-white font-semibold rounded-full hover:bg-white/5 text-center inline-flex justify-center items-center gap-2">
+                        Como Funciona <i class="ph ph-arrow-down"></i>
                     </a>
                 </div>
-                <p class="text-xs text-terracota-textMuted/60 mt-4">Grátis para sempre no plano Free. Sem cartão de crédito.</p>
+                <p class="text-xs text-terracota-textMuted/60 mt-4">Grátis para sempre. Sem cartão de crédito.</p>
             </div>
 
-            <!-- Hero visual: mock nutrition table -->
             <div class="relative hidden lg:block">
                 <div class="absolute inset-0 bg-hero-glow opacity-30 animate-spin-slow" style="animation-duration: 20s;"></div>
-                <div class="relative bg-terracota-surface/50 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 shadow-2xl">
+                <div class="relative bg-terracota-surface/50 backdrop-blur-2xl border border-white/[0.08] rounded-2xl p-6 shadow-elevated">
                     <div class="flex items-center gap-2 mb-4 border-b border-white/10 pb-3">
                         <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
                         <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
@@ -90,47 +94,88 @@
                         </div>
                     </div>
                     <div class="mt-4 flex items-center gap-2">
-                        <span class="flex items-center gap-1.5 text-xs text-green-400"><i class="ph ph-seal-check text-sm"></i> ANVISA RDC 429</span>
-                        <span class="flex items-center gap-1.5 text-xs text-green-400"><i class="ph ph-seal-check text-sm"></i> IN 75/2020</span>
+                        <span class="flex items-center gap-1.5 text-xs text-terracota-cyan"><i class="ph ph-seal-check text-sm"></i> ANVISA RDC 429</span>
+                        <span class="flex items-center gap-1.5 text-xs text-terracota-cyan"><i class="ph ph-seal-check text-sm"></i> IN 75/2020</span>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 animate-bounce">
-            <span class="text-xs uppercase tracking-widest">Scroll</span>
-            <i class="ph ph-arrow-down text-terracota-cyan"></i>
-        </div>
     </section>
 
     <!-- ============================================================
-         TRUST BAR — Quick social proof
+         2. TRUST BAR — Regulation badges
          ============================================================ -->
     <section class="py-8 border-y border-white/5 bg-terracota-surface/30">
-        <div class="max-w-5xl mx-auto px-6 flex flex-wrap justify-center gap-8 md:gap-16 text-center">
-            <div>
-                <span class="block text-2xl md:text-3xl font-heading font-bold text-terracota-cyan">RDC 429</span>
-                <span class="text-xs text-terracota-textMuted uppercase tracking-wider">Conformidade</span>
+        <div class="max-w-5xl mx-auto px-6 flex flex-wrap justify-center gap-6 md:gap-8 text-center">
+            <div class="bg-white/[0.03] border border-white/[0.06] rounded-lg px-5 py-3.5 flex flex-col items-center gap-1.5">
+                <i class="ph ph-seal-check text-lg text-white/50"></i>
+                <span class="block text-2xl md:text-3xl font-heading font-bold text-white">RDC 429</span>
+                <span class="text-[10px] text-terracota-textMuted uppercase tracking-widest">Conformidade</span>
             </div>
-            <div>
+            <div class="bg-white/[0.03] border border-white/[0.06] rounded-lg px-5 py-3.5 flex flex-col items-center gap-1.5">
+                <i class="ph ph-arrows-clockwise text-lg text-white/50"></i>
                 <span class="block text-2xl md:text-3xl font-heading font-bold text-white">IN 75/2020</span>
-                <span class="text-xs text-terracota-textMuted uppercase tracking-wider">Arredondamento</span>
+                <span class="text-[10px] text-terracota-textMuted uppercase tracking-widest">Arredondamento</span>
             </div>
-            <div>
+            <div class="bg-white/[0.03] border border-white/[0.06] rounded-lg px-5 py-3.5 flex flex-col items-center gap-1.5">
+                <i class="ph ph-shield-warning text-lg text-white/50"></i>
                 <span class="block text-2xl md:text-3xl font-heading font-bold text-white">RDC 26/2015</span>
-                <span class="text-xs text-terracota-textMuted uppercase tracking-wider">Alérgenos</span>
+                <span class="text-[10px] text-terracota-textMuted uppercase tracking-widest">Alérgenos</span>
             </div>
-            <div>
-                <span class="block text-2xl md:text-3xl font-heading font-bold text-terracota-cyan">&lt; 5 min</span>
-                <span class="text-xs text-terracota-textMuted uppercase tracking-wider">Para gerar</span>
+            <div class="bg-white/[0.03] border border-white/[0.06] rounded-lg px-5 py-3.5 flex flex-col items-center gap-1.5">
+                <i class="ph ph-timer text-lg text-white/50"></i>
+                <span class="block text-2xl md:text-3xl font-heading font-bold text-white">&lt; 5 min</span>
+                <span class="text-[10px] text-terracota-textMuted uppercase tracking-widest">Para gerar</span>
             </div>
         </div>
     </section>
 
     <!-- ============================================================
-         HOW IT WORKS — 3-step visual
+         3. PAIN / PROBLEM — Why you need this (before the solution)
          ============================================================ -->
-    <section id="como-funciona" class="py-24 relative">
+    <section id="riscos" class="py-24 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h3 class="text-red-400 font-semibold tracking-wider uppercase text-sm mb-3">Atenção à Conformidade</h3>
+                <h2 class="text-3xl md:text-4xl font-heading font-bold">O custo de uma tabela fora de conformidade</h2>
+                <p class="text-terracota-textMuted mt-4 text-lg">Multas, recalls e produto parado na prateleira — riscos reais para quem não segue a legislação.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-terracota-surface rounded-xl p-7 border border-white/[0.06] border-l-[3px] border-l-red-500/60 pain-glow-red relative">
+                    <i class="ph-duotone ph-chart-pie-slice text-4xl text-red-400 mb-4 inline-block"></i>
+                    <h4 class="text-4xl font-heading font-bold text-white mb-2">&gt; 60%</h4>
+                    <h5 class="text-lg font-semibold mb-4 text-red-300">dos rótulos reprovam</h5>
+                    <p class="text-sm text-terracota-textMuted">A maioria dos rótulos no mercado não atende integralmente à RDC 429 e IN 75 — até erros de arredondamento configuram não conformidade.</p>
+                </div>
+                <div class="bg-terracota-surface rounded-xl p-7 border border-white/[0.06] border-l-[3px] border-l-orange-500/60 pain-glow-orange relative">
+                    <i class="ph-duotone ph-money text-4xl text-orange-400 mb-4 inline-block"></i>
+                    <h4 class="text-4xl font-heading font-bold text-white mb-2">R$ 75 mil</h4>
+                    <h5 class="text-lg font-semibold mb-4 text-orange-300">a R$ 1,5 milhão</h5>
+                    <p class="text-sm text-terracota-textMuted">Faixa de multas por infração sanitária (Lei 6.437/77). Alérgenos não declarados podem enquadrar como infração gravíssima.</p>
+                </div>
+                <div class="bg-terracota-surface rounded-xl p-7 border border-white/[0.06] border-l-[3px] border-l-yellow-500/60 pain-glow-yellow relative">
+                    <i class="ph-duotone ph-warning-octagon text-4xl text-yellow-400 mb-4 inline-block"></i>
+                    <h4 class="text-4xl font-heading font-bold text-white mb-2">Recall</h4>
+                    <h5 class="text-lg font-semibold mb-4 text-yellow-300">Impacto direto na marca</h5>
+                    <p class="text-sm text-terracota-textMuted">Recolhimento forçado de produtos, perda de contratos com varejistas e dano reputacional difícil de reverter.</p>
+                </div>
+            </div>
+
+            <div class="mt-12 bg-terracota-cyan/[0.04] border border-terracota-cyan/20 rounded-2xl p-8 md:p-10 text-center shadow-card card-accent-top">
+                <p class="text-base text-terracota-textMuted mb-2">A boa notícia:</p>
+                <p class="text-xl md:text-2xl font-heading font-semibold text-white mb-5">Com o Terracota, sua tabela já sai conforme a legislação — <span class="text-terracota-cyan">sem precisar decorar normas.</span></p>
+                <a href="#como-funciona" class="inline-flex items-center gap-2 text-sm text-terracota-cyan hover:text-white transition-colors font-medium">
+                    Veja como funciona <i class="ph ph-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         4. HOW IT WORKS — 3-step solution (after the problem)
+         ============================================================ -->
+    <section id="como-funciona" class="py-24 relative border-t border-white/5 bg-terracota-surface/30">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center max-w-3xl mx-auto mb-16">
                 <h3 class="text-terracota-cyan font-semibold tracking-wider uppercase text-sm mb-3">Simples de Usar</h3>
@@ -139,30 +184,29 @@
             </div>
 
             <div class="grid md:grid-cols-3 gap-8 relative">
-                <!-- Connecting line (desktop) -->
-                <div class="hidden md:block absolute top-[72px] left-[16.67%] right-[16.67%] h-px bg-gradient-to-r from-terracota-cyan/30 via-terracota-purple/30 to-terracota-cyan/30"></div>
+                <div class="hidden md:block absolute top-[72px] left-[16.67%] right-[16.67%] h-px bg-gradient-to-r from-terracota-cyan/20 via-terracota-cyan/40 to-terracota-cyan/20"></div>
 
-                <div class="bg-terracota-surface border border-white/5 rounded-2xl p-8 text-center relative group hover:border-terracota-cyan/30 transition-colors">
-                    <div class="w-14 h-14 mx-auto rounded-full bg-terracota-cyan/10 border-2 border-terracota-cyan/30 flex items-center justify-center text-2xl font-heading font-bold text-terracota-cyan mb-6 relative z-10 group-hover:scale-110 transition-transform">1</div>
-                    <i class="ph ph-upload-simple text-3xl text-terracota-cyan mb-4 block"></i>
+                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 text-center relative group shadow-card shadow-card-hover hover:border-white/[0.12]">
+                    <div class="w-14 h-14 mx-auto rounded-full bg-terracota-cyan/10 border-2 border-terracota-cyan/30 flex items-center justify-center text-2xl font-heading font-bold text-terracota-cyan mb-4 relative z-10 group-hover:scale-110 transition-transform">1</div>
+                    <i class="ph-duotone ph-pencil-line text-lg text-terracota-cyan/40 block mb-4"></i>
                     <h4 class="text-xl font-heading font-semibold mb-3">Insira os ingredientes</h4>
                     <p class="text-terracota-textMuted leading-relaxed">
                         Digite manualmente ou importe sua planilha Excel. Adicione valores por 100 g e configure a porção.
                     </p>
                 </div>
 
-                <div class="bg-terracota-surface border border-white/5 rounded-2xl p-8 text-center relative group hover:border-terracota-purple/30 transition-colors">
-                    <div class="w-14 h-14 mx-auto rounded-full bg-terracota-purple/10 border-2 border-terracota-purple/30 flex items-center justify-center text-2xl font-heading font-bold text-terracota-purple mb-6 relative z-10 group-hover:scale-110 transition-transform">2</div>
-                    <i class="ph ph-gear text-3xl text-terracota-purple mb-4 block"></i>
+                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 text-center relative group shadow-card shadow-card-hover hover:border-white/[0.12]">
+                    <div class="w-14 h-14 mx-auto rounded-full bg-terracota-cyan/10 border-2 border-terracota-cyan/30 flex items-center justify-center text-2xl font-heading font-bold text-terracota-cyan mb-4 relative z-10 group-hover:scale-110 transition-transform">2</div>
+                    <i class="ph-duotone ph-gear-fine text-lg text-terracota-cyan/40 block mb-4"></i>
                     <h4 class="text-xl font-heading font-semibold mb-3">O Terracota calcula</h4>
                     <p class="text-terracota-textMuted leading-relaxed">
                         Valor energético, arredondamentos da IN 75, %VD e declaração de alérgenos — tudo automático e conforme a ANVISA.
                     </p>
                 </div>
 
-                <div class="bg-terracota-surface border border-white/5 rounded-2xl p-8 text-center relative group hover:border-terracota-cyan/30 transition-colors">
-                    <div class="w-14 h-14 mx-auto rounded-full bg-terracota-cyan/10 border-2 border-terracota-cyan/30 flex items-center justify-center text-2xl font-heading font-bold text-terracota-cyan mb-6 relative z-10 group-hover:scale-110 transition-transform">3</div>
-                    <i class="ph ph-printer text-3xl text-terracota-cyan mb-4 block"></i>
+                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 text-center relative group shadow-card shadow-card-hover hover:border-white/[0.12]">
+                    <div class="w-14 h-14 mx-auto rounded-full bg-terracota-cyan/10 border-2 border-terracota-cyan/30 flex items-center justify-center text-2xl font-heading font-bold text-terracota-cyan mb-4 relative z-10 group-hover:scale-110 transition-transform">3</div>
+                    <i class="ph-duotone ph-file-arrow-down text-lg text-terracota-cyan/40 block mb-4"></i>
                     <h4 class="text-xl font-heading font-semibold mb-3">Exporte e use</h4>
                     <p class="text-terracota-textMuted leading-relaxed">
                         Baixe a tabela no formato regulamentado, pronta para o layout da sua embalagem. Sem retrabalho.
@@ -172,12 +216,12 @@
 
             <div class="text-center mt-12">
                 {% if current_user.is_authenticated %}
-                <a href="{{ url_for('product.calculator') }}" class="inline-flex items-center gap-2 px-8 py-4 bg-terracota-cyan text-terracota-base font-semibold rounded-xl hover:bg-white transition-colors shadow-[0_0_30px_-5px_#00F0FF55]">
+                <a href="{{ url_for('product.calculator') }}" class="btn-cta-primary inline-flex items-center gap-2 px-9 py-4 bg-terracota-cyan text-terracota-base font-bold rounded-full hover:bg-white shadow-[0_0_30px_-5px_#00F0FF55]">
                     <i class="ph ph-arrow-right"></i> Acessar Calculadora
                 </a>
                 {% else %}
-                <a href="{{ url_for('auth.register') }}" class="inline-flex items-center gap-2 px-8 py-4 bg-terracota-cyan text-terracota-base font-semibold rounded-xl hover:bg-white transition-colors shadow-[0_0_30px_-5px_#00F0FF55]">
-                    <i class="ph ph-arrow-right"></i> Experimentar Grátis
+                <a href="{{ url_for('auth.register') }}" class="btn-cta-primary inline-flex items-center gap-2 px-9 py-4 bg-terracota-cyan text-terracota-base font-bold rounded-full hover:bg-white shadow-[0_0_30px_-5px_#00F0FF55]">
+                    <i class="ph ph-arrow-right"></i> Comece Grátis
                 </a>
                 {% endif %}
             </div>
@@ -185,157 +229,157 @@
     </section>
 
     <!-- ============================================================
-         PAIN / PROBLEM — ANVISA compliance risks
+         5. BENEFITS — Value-oriented features
          ============================================================ -->
-    <section id="riscos" class="py-24 relative overflow-hidden border-t border-white/5 bg-terracota-surface/30">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h3 class="text-red-400 font-semibold tracking-wider uppercase text-sm mb-3">Você Sabia?</h3>
-                <h2 class="text-3xl md:text-4xl font-heading font-bold">Erros na tabela nutricional custam caro</h2>
-                <p class="text-terracota-textMuted mt-4 text-lg">Multas, recalls e produto parado na prateleira. A ANVISA não perdoa.</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="bg-terracota-surface rounded-2xl p-8 border border-red-500/20 relative">
-                    <div class="absolute top-0 right-0 w-20 h-20 bg-red-500/10 rounded-bl-full"></div>
-                    <i class="ph ph-chart-pie-slice text-4xl text-red-400 mb-4 inline-block"></i>
-                    <h4 class="text-4xl font-heading font-bold text-white mb-2">&gt; 60%</h4>
-                    <h5 class="text-lg font-semibold mb-4 text-red-300">dos rótulos reprovam</h5>
-                    <p class="text-sm text-terracota-textMuted">Estudos mostram que a maioria dos rótulos de alimentos apresenta inconsistências quando auditados pela ANVISA.</p>
-                </div>
-                <div class="bg-terracota-surface rounded-2xl p-8 border border-orange-500/20 relative">
-                    <div class="absolute top-0 right-0 w-20 h-20 bg-orange-500/10 rounded-bl-full"></div>
-                    <i class="ph ph-money text-4xl text-orange-400 mb-4 inline-block"></i>
-                    <h4 class="text-4xl font-heading font-bold text-white mb-2">R$ 75 mil</h4>
-                    <h5 class="text-lg font-semibold mb-4 text-orange-300">a R$ 1,5 milhão</h5>
-                    <p class="text-sm text-terracota-textMuted">Faixa de multas por infração sanitária (Lei 6.437/77). Alérgenos não declarados podem enquadrar como infração gravíssima.</p>
-                </div>
-                <div class="bg-terracota-surface rounded-2xl p-8 border border-yellow-500/20 relative">
-                    <div class="absolute top-0 right-0 w-20 h-20 bg-yellow-500/10 rounded-bl-full"></div>
-                    <i class="ph ph-warning-octagon text-4xl text-yellow-400 mb-4 inline-block"></i>
-                    <h5 class="text-lg font-semibold mb-4 text-yellow-300">Recall = marca destruída</h5>
-                    <p class="text-sm text-terracota-textMuted">Recolhimento forçado de produtos, perda de contrato com varejistas e dano reputacional que leva anos para recuperar.</p>
-                </div>
-            </div>
-
-            <div class="mt-12 bg-gradient-to-r from-terracota-cyan/5 to-terracota-purple/5 border border-terracota-cyan/20 rounded-2xl p-8 text-center">
-                <p class="text-lg text-terracota-textMuted mb-2">A boa notícia:</p>
-                <p class="text-xl font-heading font-semibold text-white">Com o Terracota, sua tabela já sai conforme a legislação — <span class="text-terracota-cyan">sem precisar decorar normas.</span></p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         BENEFITS — Value-oriented features
-         ============================================================ -->
-    <section id="beneficios" class="py-24 relative">
-        <div class="max-w-7xl mx-auto px-6">
+    <section id="beneficios" class="py-24 relative overflow-hidden border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 relative">
             <div class="text-center max-w-3xl mx-auto mb-16">
                 <h3 class="text-terracota-cyan font-semibold tracking-wider uppercase text-sm mb-3">Por Que o Terracota</h3>
                 <h2 class="text-3xl md:text-4xl font-heading font-bold">Tudo que você precisa para rotular certo</h2>
+                <p class="text-terracota-textMuted mt-4 text-lg">Funcionalidades que simplificam a rotulagem e garantem conformidade.</p>
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-terracota-surface border border-white/5 rounded-2xl p-8 hover:border-terracota-cyan/30 transition-colors group">
-                    <div class="w-14 h-14 rounded-xl bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
-                        <i class="ph ph-seal-check text-3xl"></i>
+                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-7 shadow-card shadow-card-hover hover:border-white/[0.12] group">
+                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
+                        <i class="ph-duotone ph-seal-check text-2xl"></i>
                     </div>
-                    <h4 class="text-lg font-heading font-semibold mb-3">Conformidade automática</h4>
+                    <h4 class="text-lg font-heading font-semibold mb-2">Conformidade automática</h4>
                     <p class="text-terracota-textMuted leading-relaxed text-sm">
-                        Arredondamentos da IN 75, cálculo de %VD, valor energético conforme Atwater — o motor faz tudo.
+                        Arredondamentos da IN 75, cálculo de %VD e valor energético conforme Atwater — todos os cálculos seguem a regulamentação vigente, automaticamente.
                     </p>
                 </div>
 
-                <div class="bg-terracota-surface border border-white/5 rounded-2xl p-8 hover:border-terracota-cyan/30 transition-colors group">
-                    <div class="w-14 h-14 rounded-xl bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
-                        <i class="ph ph-file-xls text-3xl"></i>
+                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-7 shadow-card shadow-card-hover hover:border-white/[0.12] group">
+                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
+                        <i class="ph-duotone ph-file-xls text-2xl"></i>
                     </div>
-                    <h4 class="text-lg font-heading font-semibold mb-3">Importação Excel</h4>
+                    <h4 class="text-lg font-heading font-semibold mb-2">Importação Excel</h4>
                     <p class="text-terracota-textMuted leading-relaxed text-sm">
                         Já tem a composição em planilha? Importe direto — sem redigitar dados e sem erros de transcrição.
                     </p>
                 </div>
 
-                <div class="bg-terracota-surface border border-white/5 rounded-2xl p-8 hover:border-terracota-cyan/30 transition-colors group">
-                    <div class="w-14 h-14 rounded-xl bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
-                        <i class="ph ph-warning-diamond text-3xl"></i>
+                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-7 shadow-card shadow-card-hover hover:border-white/[0.12] group">
+                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
+                        <i class="ph-duotone ph-warning-diamond text-2xl"></i>
                     </div>
-                    <h4 class="text-lg font-heading font-semibold mb-3">Alérgenos (RDC 26)</h4>
+                    <h4 class="text-lg font-heading font-semibold mb-2">Alérgenos (RDC 26)</h4>
                     <p class="text-terracota-textMuted leading-relaxed text-sm">
                         Declare alérgenos conforme a RDC 26/2015. Evite a infração que mais gera recalls no Brasil.
                     </p>
                 </div>
 
-                <div class="bg-terracota-surface border border-white/5 rounded-2xl p-8 hover:border-terracota-purple/30 transition-colors group">
-                    <div class="w-14 h-14 rounded-xl bg-terracota-purple/10 border border-terracota-purple/20 flex items-center justify-center text-terracota-purple mb-5 group-hover:scale-110 transition-transform">
-                        <i class="ph ph-printer text-3xl"></i>
+                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-7 shadow-card shadow-card-hover hover:border-white/[0.12] group">
+                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
+                        <i class="ph-duotone ph-printer text-2xl"></i>
                     </div>
-                    <h4 class="text-lg font-heading font-semibold mb-3">Pronta para o rótulo</h4>
+                    <h4 class="text-lg font-heading font-semibold mb-2">Pronta para o rótulo</h4>
                     <p class="text-terracota-textMuted leading-relaxed text-sm">
                         Exporte no formato regulamentado. Mande direto para a gráfica ou para o designer da embalagem.
                     </p>
                 </div>
 
-                <div class="bg-terracota-surface border border-white/5 rounded-2xl p-8 hover:border-terracota-purple/30 transition-colors group">
-                    <div class="w-14 h-14 rounded-xl bg-terracota-purple/10 border border-terracota-purple/20 flex items-center justify-center text-terracota-purple mb-5 group-hover:scale-110 transition-transform">
-                        <i class="ph ph-clock-countdown text-3xl"></i>
+                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-7 shadow-card shadow-card-hover hover:border-white/[0.12] group">
+                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
+                        <i class="ph-duotone ph-clock-countdown text-2xl"></i>
                     </div>
-                    <h4 class="text-lg font-heading font-semibold mb-3">Minutos, não horas</h4>
+                    <h4 class="text-lg font-heading font-semibold mb-2">Minutos, não horas</h4>
                     <p class="text-terracota-textMuted leading-relaxed text-sm">
-                        O que um nutricionista leva horas calculando manualmente, o Terracota entrega em minutos — com mais precisão.
+                        O que levaria horas em planilha, o Terracota entrega em minutos — com precisão regulatória.
                     </p>
                 </div>
 
-                <div class="bg-terracota-surface border border-white/5 rounded-2xl p-8 hover:border-terracota-purple/30 transition-colors group">
-                    <div class="w-14 h-14 rounded-xl bg-terracota-purple/10 border border-terracota-purple/20 flex items-center justify-center text-terracota-purple mb-5 group-hover:scale-110 transition-transform">
-                        <i class="ph ph-currency-circle-dollar text-3xl"></i>
+                <div class="card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-7 shadow-card shadow-card-hover hover:border-white/[0.12] group">
+                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
+                        <i class="ph-duotone ph-currency-circle-dollar text-2xl"></i>
                     </div>
-                    <h4 class="text-lg font-heading font-semibold mb-3">Grátis para começar</h4>
+                    <h4 class="text-lg font-heading font-semibold mb-2">Grátis para começar</h4>
                     <p class="text-terracota-textMuted leading-relaxed text-sm">
-                        O plano Grátis gera 1 tabela/mês sem custo. Quando precisar de mais, evolua para Básico, Profissional ou Ilimitado.
+                        Comece sem custo com 1 tabela por mês. Quando precisar de mais, é só fazer upgrade.
                     </p>
                 </div>
+            </div>
+
+            <div class="text-center mt-12">
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('product.calculator') }}" class="btn-cta-primary inline-flex items-center gap-2 px-9 py-4 bg-terracota-cyan text-terracota-base font-bold rounded-full hover:bg-white shadow-[0_0_30px_-5px_#00F0FF55]">
+                    <i class="ph ph-arrow-right"></i> Acessar Calculadora
+                </a>
+                {% else %}
+                <a href="#planos" class="inline-flex items-center gap-2 text-sm text-terracota-cyan hover:text-white transition-colors font-medium">
+                    Ver planos e preços <i class="ph ph-arrow-down"></i>
+                </a>
+                {% endif %}
             </div>
         </div>
     </section>
 
     <!-- ============================================================
-         CALCULATOR CTA — Demo preview
+         6. IDEAL FOR — Who benefits (honest use-case profiles)
          ============================================================ -->
-    <section id="calculadora" class="py-24 relative bg-terracota-surface/50 border-y border-white/5">
-        <div class="max-w-4xl mx-auto px-6 text-center">
-            <div class="w-20 h-20 mx-auto mb-8 rounded-2xl bg-gradient-to-br from-terracota-cyan/20 to-terracota-purple/20 flex items-center justify-center border border-white/10">
-                <i class="ph ph-calculator text-4xl text-terracota-cyan"></i>
+    <section class="py-24 relative border-t border-white/5 bg-terracota-surface/30">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h3 class="text-terracota-cyan font-semibold tracking-wider uppercase text-sm mb-3">Ideal Para</h3>
+                <h2 class="text-3xl md:text-4xl font-heading font-bold">Quem se beneficia do Terracota</h2>
+                <p class="text-terracota-textMuted mt-4 text-lg">Do consultor independente à indústria de alimentos.</p>
             </div>
-            <h2 class="text-3xl md:text-4xl font-heading font-bold mb-4">Calculadora Nutricional ANVISA</h2>
-            <p class="text-lg text-terracota-textMuted mb-4 max-w-2xl mx-auto">
-                Insira seus ingredientes, configure a porção e receba a tabela nutricional completa — com todos os arredondamentos e cálculos que a legislação exige.
-            </p>
-            <p class="text-terracota-textMuted mb-10 max-w-xl mx-auto">
-                Conformidade com RDC 429/2020, IN 75/2020 e RDC 26/2015 (alérgenos).
-            </p>
 
-            {% if current_user.is_authenticated %}
-            <a href="{{ url_for('product.calculator') }}" class="inline-flex items-center gap-2 px-10 py-4 bg-terracota-cyan text-terracota-base font-bold text-lg rounded-xl hover:bg-white transition-colors shadow-[0_0_30px_-5px_#00F0FF55]">
-                <i class="ph ph-arrow-right"></i> Abrir Calculadora
-            </a>
-            {% else %}
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="{{ url_for('auth.register') }}" class="px-10 py-4 bg-terracota-cyan text-terracota-base font-bold text-lg rounded-xl hover:bg-white transition-colors shadow-[0_0_30px_-5px_#00F0FF55]">
-                    Criar Conta Grátis
-                </a>
-                <a href="{{ url_for('auth.login') }}" class="px-10 py-4 bg-terracota-surfaceHighlight border border-white/10 text-white font-semibold text-lg rounded-xl hover:bg-white/5 transition-colors">
-                    Já tenho conta
-                </a>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card-base card-lift bg-terracota-surface border border-white/[0.07] rounded-2xl p-7 relative group shadow-card shadow-card-hover hover:border-white/[0.12] overflow-hidden">
+                    <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-terracota-cyan/40 to-transparent"></div>
+                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
+                        <i class="ph-duotone ph-stethoscope text-2xl"></i>
+                    </div>
+                    <h4 class="text-lg font-heading font-semibold mb-3">Nutricionistas e consultores</h4>
+                    <p class="text-sm text-terracota-textMuted leading-relaxed mb-4">
+                        Atende múltiplos clientes e precisa entregar tabelas rapidamente, sem risco de erro nos arredondamentos da IN 75.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-terracota-cyan/10 text-terracota-cyan border border-terracota-cyan/20">Múltiplos clientes</span>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-terracota-cyan/10 text-terracota-cyan border border-terracota-cyan/20">Agilidade</span>
+                    </div>
+                </div>
+
+                <div class="card-base card-lift bg-terracota-surface border border-white/[0.07] rounded-2xl p-7 relative group shadow-card shadow-card-hover hover:border-white/[0.12] overflow-hidden">
+                    <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-terracota-cyan/40 to-transparent"></div>
+                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
+                        <i class="ph-duotone ph-factory text-2xl"></i>
+                    </div>
+                    <h4 class="text-lg font-heading font-semibold mb-3">Fábricas e indústrias de alimentos</h4>
+                    <p class="text-sm text-terracota-textMuted leading-relaxed mb-4">
+                        Produz e distribui alimentos e precisa de rótulos em conformidade com a ANVISA para evitar multas e recalls.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-terracota-cyan/10 text-terracota-cyan border border-terracota-cyan/20">Conformidade</span>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-terracota-cyan/10 text-terracota-cyan border border-terracota-cyan/20">Escala</span>
+                    </div>
+                </div>
+
+                <div class="card-base card-lift bg-terracota-surface border border-white/[0.07] rounded-2xl p-7 relative group shadow-card shadow-card-hover hover:border-white/[0.12] overflow-hidden">
+                    <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-terracota-cyan/40 to-transparent"></div>
+                    <div class="w-12 h-12 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center text-terracota-cyan mb-5 group-hover:scale-110 transition-transform">
+                        <i class="ph-duotone ph-storefront text-2xl"></i>
+                    </div>
+                    <h4 class="text-lg font-heading font-semibold mb-3">Marcas artesanais e startups</h4>
+                    <p class="text-sm text-terracota-textMuted leading-relaxed mb-4">
+                        Está lançando um produto alimentício e precisa do rótulo regulamentado para começar a vender em lojas e marketplaces.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-terracota-cyan/10 text-terracota-cyan border border-terracota-cyan/20">Primeiro rótulo</span>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-terracota-cyan/10 text-terracota-cyan border border-terracota-cyan/20">Sem experiência prévia</span>
+                    </div>
+                </div>
             </div>
-            {% endif %}
+
         </div>
     </section>
 
     <!-- ============================================================
-         PRICING — Full plans + comparison
+         7. PRICING — Slim plan cards + trust badges
          ============================================================ -->
-    <section id="planos" class="py-24 relative">
+    <section id="planos" class="py-24 relative border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6">
 
             {% if bootstrap_error %}
@@ -350,10 +394,6 @@
             </div>
             {% endif %}
 
-            {% set cta_start = url_for('auth.register') %}
-            {% set cta_unlimited = url_for('support.contact', category='billing', subject='Teste Ilimitado (14 dias)', plan='flow_studio') %}
-
-            <!-- ROI Headline -->
             <div class="text-center max-w-3xl mx-auto mb-14">
                 <h3 class="text-terracota-cyan font-semibold tracking-wider uppercase text-sm mb-3">Planos & Preços</h3>
                 <h2 class="text-3xl md:text-4xl font-heading font-bold mb-4 leading-tight">
@@ -363,18 +403,9 @@
                     A menor multa por irregularidade em rótulos começa em <strong class="text-white">R$ 75.000</strong>.
                     O Terracota custa a partir de <strong class="text-terracota-cyan">R$ 39,90/mês</strong> — e já garante conformidade com RDC 429 e IN 75.
                 </p>
-                <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-                    <a href="{{ cta_start }}" class="px-6 py-3 bg-terracota-cyan text-terracota-base font-semibold rounded-xl hover:bg-white transition-colors shadow-[0_0_20px_-5px_rgba(0,240,255,0.25)]">
-                        Começar grátis
-                    </a>
-                    <a href="{{ cta_unlimited }}" class="px-6 py-3 bg-terracota-surfaceHighlight border border-white/10 text-white font-semibold rounded-xl hover:bg-white/5 transition-colors">
-                        Testar Ilimitado por 14 dias
-                    </a>
-                </div>
             </div>
 
-            <!-- 4 Plan Cards -->
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                 {% for p in plans %}
                 {% set is_pro = (p.slug == 'flow_pro') %}
                 {% set is_free = (p.slug == 'free') %}
@@ -386,22 +417,21 @@
                     {% set card_icon = 'ph-rocket-launch' %}
                     {% set bullets = [
                         '1 tabela/mês',
-                        'Até 10 ingredientes por tabela',
-                        'Digest Pulse (semanal/quinzenal, sem personalização)',
-                        'Visualização/impressão básica',
+                        'Até 10 ingredientes',
+                        'Visualização e impressão',
                     ] %}
-                    {% set cta_label = 'Começar grátis' %}
+                    {% set cta_label = 'Comece Grátis' %}
                     {% set cta_href = url_for('auth.register') %}
                 {% elif is_start %}
                     {% set subtitle = 'Para quem já produz e precisa de regularidade.' %}
                     {% set card_icon = 'ph-package' %}
                     {% set bullets = [
                         '3 tabelas/mês',
-                        'Até 25 ingredientes por tabela',
-                        'Export PDF básico',
-                        'Pulse incluso: newsletter + principais mudanças do mês',
+                        'Até 25 ingredientes',
+                        'Exportar PDF',
+                        'Modelos prontos',
                     ] %}
-                    {% set cta_label = 'Assinar Básico' %}
+                    {% set cta_label = 'Assinar' %}
                     {% set cta_href = url_for('support.contact', category='billing', subject='Assinar Básico', plan='flow_start') %}
                     {% set cta_plan_slug = 'flow_start' %}
                 {% elif is_pro %}
@@ -409,13 +439,12 @@
                     {% set card_icon = 'ph-star' %}
                     {% set bullets = [
                         '10 tabelas/mês',
-                        'Até 80 ingredientes por tabela',
-                        'Templates + duplicar tabelas',
-                        'Export PDF/PNG mais apresentável',
-                        'Histórico de versões',
-                        'Pulse Pro: monitoramento de até 5 temas + alertas',
+                        'Até 80 ingredientes',
+                        'Exportar PDF + PNG',
+                        'Modelos + histórico',
+                        'Suporte prioritário',
                     ] %}
-                    {% set cta_label = 'Assinar Profissional' %}
+                    {% set cta_label = 'Assinar' %}
                     {% set cta_href = url_for('support.contact', category='billing', subject='Assinar Profissional', plan='flow_pro') %}
                     {% set cta_plan_slug = 'flow_pro' %}
                 {% else %}
@@ -424,29 +453,29 @@
                     {% set bullets = [
                         'Tabelas ilimitadas',
                         'Ingredientes ilimitados',
-                        'Export premium + branding no PDF (logo/rodapé)',
-                        'Biblioteca de templates avançados',
-                        'Pulse Advanced: monitoramento de até 15 temas + radar semanal + relatório mensal',
+                        'Exportação premium + marca própria',
+                        'Modelos avançados',
+                        'Suporte prioritário',
                     ] %}
-                    {% set cta_label = 'Testar Ilimitado' %}
+                    {% set cta_label = 'Falar com vendas' %}
                     {% set cta_href = url_for('support.contact', category='billing', subject='Teste Ilimitado (14 dias)', plan='flow_studio') %}
                     {% set cta_plan_slug = 'flow_studio' %}
                 {% endif %}
 
-                <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6 flex flex-col {{ 'ring-2 ring-terracota-cyan/50' if is_pro else '' }}">
+                <div class="bg-terracota-surface border border-white/[0.08] rounded-2xl p-7 flex flex-col shadow-pricing {{ 'card-gradient-border shadow-pricing-featured ring-0 border-transparent bg-gradient-to-b from-terracota-cyan/[0.04] to-transparent' if is_pro else '' }}">
                     {% if is_pro %}
-                    <span class="self-start px-3 py-1 bg-terracota-cyan/20 text-terracota-cyan text-xs font-bold rounded-full mb-4">Melhor custo-benefício</span>
+                    <span class="self-start px-3 py-1 bg-terracota-cyan/20 text-terracota-cyan text-[11px] font-bold rounded-full mb-4 uppercase tracking-wide">Melhor custo-benefício</span>
                     {% endif %}
 
                     <div class="flex items-center gap-3 mb-1">
-                        <i class="ph {{ card_icon }} text-xl {{ 'text-terracota-cyan' if is_free or is_pro else 'text-terracota-purple' if is_studio else 'text-white/70' }}"></i>
+                        <i class="ph-duotone {{ card_icon }} text-xl text-terracota-cyan"></i>
                         <h3 class="text-lg font-heading font-bold">{{ p.name }}</h3>
                     </div>
                     <p class="text-sm text-terracota-textMuted mb-4 leading-relaxed">{{ subtitle }}</p>
 
-                    <p class="text-3xl font-bold mb-4">
+                    <p class="{{ 'text-4xl' if is_pro else 'text-3xl' }} font-bold mb-1">
                         {% if p.price_brl > 0 %}
-                        R$ {{ "%.2f"|format(p.price_brl) }}<span class="text-sm font-normal text-terracota-textMuted">/mês</span>
+                        R$ {{ "%.2f"|format(p.price_brl)|replace('.', ',') }}<span class="text-sm font-normal text-terracota-textMuted">/mês</span>
                         {% else %}
                         R$ 0
                         {% endif %}
@@ -466,12 +495,12 @@
                     <form method="post" action="{{ url_for('billing.checkout') }}" class="checkout-form" data-plan-slug="{{ cta_plan_slug }}" data-plan-name="{{ p.name }}" data-is-current="{{ 'true' if is_current else 'false' }}">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="plan_slug" value="{{ cta_plan_slug }}">
-                        <button type="submit" class="w-full text-center px-4 py-2.5 {{ 'bg-terracota-cyan text-terracota-base font-bold' if is_pro else 'bg-terracota-surfaceHighlight border border-white/10 text-white' }} rounded-xl text-sm hover:bg-white/90 transition-colors">
+                        <button type="submit" class="w-full text-center px-4 py-3 {{ 'btn-cta-primary bg-terracota-cyan text-terracota-base font-bold hover:bg-white shadow-[0_0_20px_-5px_#00F0FF44]' if is_pro else 'btn-cta-secondary bg-terracota-surfaceHighlight border border-white/[0.1] text-white hover:bg-white/5' }} rounded-full text-sm">
                             {% if is_current %}Plano Atual{% else %}{{ cta_label }}{% endif %}
                         </button>
                     </form>
                     {% else %}
-                    <a href="{{ cta_href }}" class="block text-center px-4 py-2.5 {{ 'bg-terracota-cyan text-terracota-base font-bold' if is_pro else 'bg-terracota-surfaceHighlight border border-white/10 text-white' }} rounded-xl text-sm hover:bg-white/90 transition-colors">
+                    <a href="{{ cta_href }}" class="block text-center px-4 py-3 {{ 'btn-cta-primary bg-terracota-cyan text-terracota-base font-bold hover:bg-white shadow-[0_0_20px_-5px_#00F0FF44]' if is_pro else 'btn-cta-secondary bg-terracota-surfaceHighlight border border-white/[0.1] text-white hover:bg-white/5' }} rounded-full text-sm">
                         {{ cta_label }}
                     </a>
                     {% endif %}
@@ -479,119 +508,41 @@
                 {% endfor %}
             </div>
 
-            <!-- Comparison Table -->
-            <div id="compare" class="mb-14">
-                <h3 class="text-2xl md:text-3xl font-heading font-bold mb-6">Comparativo de recursos</h3>
-                <div class="overflow-x-auto bg-terracota-surface/60 border border-white/10 rounded-2xl">
-                    <table class="min-w-[860px] w-full text-sm">
-                        <thead>
-                            <tr class="text-left text-terracota-textMuted">
-                                <th class="px-5 py-4 font-semibold">Recurso</th>
-                                <th class="px-5 py-4 font-semibold">Grátis</th>
-                                <th class="px-5 py-4 font-semibold">Básico</th>
-                                <th class="px-5 py-4 font-semibold">Profissional</th>
-                                <th class="px-5 py-4 font-semibold">Ilimitado</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-white/5">
-                            <tr><td class="px-5 py-4">Tabelas/mês</td><td class="px-5 py-4">1</td><td class="px-5 py-4">3</td><td class="px-5 py-4">10</td><td class="px-5 py-4">&infin;</td></tr>
-                            <tr><td class="px-5 py-4">Ingredientes por tabela</td><td class="px-5 py-4">10</td><td class="px-5 py-4">25</td><td class="px-5 py-4">80</td><td class="px-5 py-4">&infin;</td></tr>
-                            <tr><td class="px-5 py-4">Pulse (newsletter + resumos)</td><td class="px-5 py-4">Digest</td><td class="px-5 py-4">&#10003;</td><td class="px-5 py-4">&#10003;</td><td class="px-5 py-4">&#10003;</td></tr>
-                            <tr><td class="px-5 py-4">Pulse: monitoramento por temas</td><td class="px-5 py-4">—</td><td class="px-5 py-4">—</td><td class="px-5 py-4">5 temas</td><td class="px-5 py-4">15 temas</td></tr>
-                            <tr><td class="px-5 py-4">Alertas (quando relevante)</td><td class="px-5 py-4">—</td><td class="px-5 py-4">Básico</td><td class="px-5 py-4">&#10003;</td><td class="px-5 py-4">Prioritário</td></tr>
-                            <tr><td class="px-5 py-4">Templates e duplicar tabela</td><td class="px-5 py-4">—</td><td class="px-5 py-4">Básico</td><td class="px-5 py-4">&#10003;</td><td class="px-5 py-4">Avançado</td></tr>
-                            <tr><td class="px-5 py-4">Histórico de versões</td><td class="px-5 py-4">—</td><td class="px-5 py-4">—</td><td class="px-5 py-4">&#10003;</td><td class="px-5 py-4">&#10003;</td></tr>
-                            <tr><td class="px-5 py-4">Export PDF</td><td class="px-5 py-4">Básico</td><td class="px-5 py-4">&#10003;</td><td class="px-5 py-4">&#10003;</td><td class="px-5 py-4">&#10003; Premium</td></tr>
-                            <tr><td class="px-5 py-4">Export PNG alta qualidade</td><td class="px-5 py-4">—</td><td class="px-5 py-4">—</td><td class="px-5 py-4">&#10003;</td><td class="px-5 py-4">&#10003;</td></tr>
-                            <tr><td class="px-5 py-4">Branding no PDF (logo/rodapé)</td><td class="px-5 py-4">—</td><td class="px-5 py-4">—</td><td class="px-5 py-4">—</td><td class="px-5 py-4">&#10003;</td></tr>
-                            <tr><td class="px-5 py-4">Suporte</td><td class="px-5 py-4">Base</td><td class="px-5 py-4">Base</td><td class="px-5 py-4">Prioritário</td><td class="px-5 py-4">Prioritário</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Pulse Explainer -->
-            <div class="mb-14">
-                <h3 class="text-2xl md:text-3xl font-heading font-bold mb-4">O que é o Pulse (incluso nos planos pagos)</h3>
-                <p class="text-terracota-textMuted leading-relaxed max-w-4xl">
-                    <strong class="text-white/90">Terracota Pulse</strong> = newsletter + alertas (gerais e por tema) sobre mudanças relevantes em normas, com foco em impacto prático.
-                </p>
-                <div class="grid md:grid-cols-3 gap-6 mt-6">
-                    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
-                        <div class="flex items-center gap-2 mb-2">
-                            <i class="ph ph-newspaper text-lg text-terracota-cyan"></i>
-                            <h4 class="font-semibold">Básico</h4>
-                        </div>
-                        <p class="text-sm text-terracota-textMuted">Resumos e curadoria geral.</p>
-                    </div>
-                    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
-                        <div class="flex items-center gap-2 mb-2">
-                            <i class="ph ph-pulse text-lg text-terracota-purple"></i>
-                            <h4 class="font-semibold">Profissional</h4>
-                        </div>
-                        <p class="text-sm text-terracota-textMuted">Monitoramento de até 5 temas + alertas.</p>
-                    </div>
-                    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
-                        <div class="flex items-center gap-2 mb-2">
-                            <i class="ph ph-chart-line-up text-lg text-terracota-cyan"></i>
-                            <h4 class="font-semibold">Ilimitado</h4>
-                        </div>
-                        <p class="text-sm text-terracota-textMuted">Monitoramento de até 15 temas + radar + relatório.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Guarantee -->
-            <div class="mb-14">
-                <h3 class="text-2xl md:text-3xl font-heading font-bold mb-4">Garantia / Cancelamento</h3>
-                <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
-                    <p class="text-terracota-textMuted leading-relaxed">
-                        <i class="ph ph-shield-check text-terracota-cyan mr-1"></i>
-                        Cancele quando quiser. Sem multa. Você mantém acesso até o fim do período pago.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Trust Badges -->
-            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-14">
-                <div class="flex items-center gap-3 bg-terracota-surface border border-white/10 rounded-xl p-4">
-                    <i class="ph ph-seal-check text-2xl text-terracota-cyan"></i>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+                <div class="flex items-center gap-3 bg-white/[0.02] border border-white/[0.06] rounded-lg p-3.5">
+                    <i class="ph ph-seal-check text-xl text-terracota-cyan/70"></i>
                     <div>
-                        <p class="text-sm font-semibold">Conformidade ANVISA</p>
-                        <p class="text-xs text-terracota-textMuted">RDC 429, IN 75, RDC 26</p>
+                        <p class="text-xs font-semibold">Conformidade ANVISA</p>
+                        <p class="text-[11px] text-terracota-textMuted">RDC 429, IN 75, RDC 26</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3 bg-terracota-surface border border-white/10 rounded-xl p-4">
-                    <i class="ph ph-lock text-2xl text-terracota-cyan"></i>
+                <div class="flex items-center gap-3 bg-white/[0.02] border border-white/[0.06] rounded-lg p-3.5">
+                    <i class="ph ph-lock text-xl text-terracota-cyan/70"></i>
                     <div>
-                        <p class="text-sm font-semibold">Pagamento seguro</p>
-                        <p class="text-xs text-terracota-textMuted">Processado via Stripe</p>
+                        <p class="text-xs font-semibold">Pagamento seguro</p>
+                        <p class="text-[11px] text-terracota-textMuted">Processado via Stripe</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3 bg-terracota-surface border border-white/10 rounded-xl p-4">
-                    <i class="ph ph-shield-check text-2xl text-terracota-cyan"></i>
+                <div class="flex items-center gap-3 bg-white/[0.02] border border-white/[0.06] rounded-lg p-3.5">
+                    <i class="ph ph-shield-check text-xl text-terracota-cyan/70"></i>
                     <div>
-                        <p class="text-sm font-semibold">Sem compromisso</p>
-                        <p class="text-xs text-terracota-textMuted">Cancele quando quiser</p>
+                        <p class="text-xs font-semibold">Sem compromisso</p>
+                        <p class="text-[11px] text-terracota-textMuted">Cancele quando quiser</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3 bg-terracota-surface border border-white/10 rounded-xl p-4">
-                    <i class="ph ph-headset text-2xl text-terracota-cyan"></i>
+                <div class="flex items-center gap-3 bg-white/[0.02] border border-white/[0.06] rounded-lg p-3.5">
+                    <i class="ph ph-headset text-xl text-terracota-cyan/70"></i>
                     <div>
-                        <p class="text-sm font-semibold">Suporte humano</p>
-                        <p class="text-xs text-terracota-textMuted">Resposta em até 24h</p>
+                        <p class="text-xs font-semibold">Suporte humano</p>
+                        <p class="text-[11px] text-terracota-textMuted">Resposta em até 24h</p>
                     </div>
                 </div>
             </div>
 
             <div class="text-center">
-                <p class="text-sm text-terracota-textMuted mb-4">
-                    {% if stripe_enabled %}
-                    Pagamento online habilitado. Se preferir atendimento comercial, também podemos ativar via suporte.
-                    {% else %}
-                    Para ativar assinatura agora, fale com a equipe. Pagamento online será disponibilizado em uma etapa separada.
-                    {% endif %}
-                </p>
+                <a href="{{ url_for('main.pricing') }}" class="inline-flex items-center gap-2 text-sm text-terracota-cyan hover:text-white transition-colors font-medium">
+                    Ver comparativo completo de planos <i class="ph ph-arrow-right"></i>
+                </a>
             </div>
         </div>
     </section>
@@ -599,7 +550,7 @@
     <!-- Subscription Modal -->
     <div id="subscription-modal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeSubscriptionModal()"></div>
-        <div class="relative bg-terracota-surface border border-white/10 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl shadow-black/50">
+        <div class="relative bg-terracota-surface border border-white/[0.08] rounded-2xl p-8 max-w-md w-full mx-4 shadow-elevated">
             <button onclick="closeSubscriptionModal()" class="absolute top-4 right-4 text-terracota-textMuted hover:text-white transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
@@ -628,10 +579,10 @@
             title.textContent = 'Você já possui este plano!';
             message.textContent = `Você já está assinando o plano ${planName}. Deseja gerenciar sua assinatura ou fazer upgrade para outro plano?`;
             actions.innerHTML = `
-                <a href="{{ url_for('billing.portal_redirect') }}" class="w-full text-center px-4 py-3 bg-terracota-cyan text-terracota-base font-bold rounded-xl text-sm hover:bg-white transition-colors">
+                <a href="{{ url_for('billing.portal_redirect') }}" class="btn-cta-primary w-full text-center px-4 py-3 bg-terracota-cyan text-terracota-base font-bold rounded-full text-sm hover:bg-white">
                     Gerenciar Assinatura
                 </a>
-                <a href="{{ url_for('account.upgrade') }}" class="w-full text-center px-4 py-3 bg-terracota-surfaceHighlight border border-white/10 text-white font-medium rounded-xl text-sm hover:bg-white/5 transition-colors">
+                <a href="{{ url_for('account.upgrade') }}" class="btn-cta-secondary w-full text-center px-4 py-3 bg-terracota-surfaceHighlight border border-white/[0.1] text-white font-medium rounded-full text-sm hover:bg-white/5">
                     Ver outros planos
                 </a>
                 <button onclick="closeSubscriptionModal()" class="w-full text-center px-4 py-2 text-sm text-terracota-textMuted hover:text-white transition-colors">
@@ -644,7 +595,7 @@
             title.textContent = 'Você já possui uma assinatura ativa';
             message.textContent = `Para migrar para o plano ${planName}, recomendamos usar o Portal de Cobrança para evitar dupla cobrança.`;
             actions.innerHTML = `
-                <a href="{{ url_for('billing.portal_redirect') }}" class="w-full text-center px-4 py-3 bg-terracota-cyan text-terracota-base font-bold rounded-xl text-sm hover:bg-white transition-colors">
+                <a href="{{ url_for('billing.portal_redirect') }}" class="btn-cta-primary w-full text-center px-4 py-3 bg-terracota-cyan text-terracota-base font-bold rounded-full text-sm hover:bg-white">
                     Abrir Portal de Cobrança
                 </a>
                 <button onclick="closeSubscriptionModal()" class="w-full text-center px-4 py-2 text-sm text-terracota-textMuted hover:text-white transition-colors">
@@ -673,155 +624,73 @@
     </script>
 
     <!-- ============================================================
-         SOCIAL PROOF — Testimonials & trust
+         8. FAQ — Top objection-handling questions
          ============================================================ -->
-    <section class="py-24 relative border-t border-white/5 bg-terracota-surface/30">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h3 class="text-terracota-cyan font-semibold tracking-wider uppercase text-sm mb-3">Quem Usa</h3>
-                <h2 class="text-3xl md:text-4xl font-heading font-bold">Feito para quem produz alimentos no Brasil</h2>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-terracota-surface border border-white/10 rounded-2xl p-8">
-                    <div class="flex items-center gap-1 mb-4 text-yellow-400">
-                        <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
-                    </div>
-                    <p class="text-terracota-textLight leading-relaxed mb-6 italic">
-                        "Eu gastava meio dia calculando uma tabela no Excel e ainda ficava com medo de errar o arredondamento. Com o Terracota, faço em 5 minutos."
-                    </p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-terracota-cyan/10 flex items-center justify-center text-terracota-cyan font-bold text-sm">MR</div>
-                        <div>
-                            <p class="text-sm font-semibold">Marina R.</p>
-                            <p class="text-xs text-terracota-textMuted">Nutricionista Consultora</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-terracota-surface border border-white/10 rounded-2xl p-8">
-                    <div class="flex items-center gap-1 mb-4 text-yellow-400">
-                        <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
-                    </div>
-                    <p class="text-terracota-textLight leading-relaxed mb-6 italic">
-                        "Nosso produto quase foi barrado no recall por causa de alérgenos. Depois que migramos para o Terracota, não tivemos mais problemas."
-                    </p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-terracota-purple/10 flex items-center justify-center text-terracota-purple font-bold text-sm">CF</div>
-                        <div>
-                            <p class="text-sm font-semibold">Carlos F.</p>
-                            <p class="text-xs text-terracota-textMuted">Dono de Fábrica de Snacks</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-terracota-surface border border-white/10 rounded-2xl p-8">
-                    <div class="flex items-center gap-1 mb-4 text-yellow-400">
-                        <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph ph-star"></i>
-                    </div>
-                    <p class="text-terracota-textLight leading-relaxed mb-6 italic">
-                        "Sou nutricionista e atendo 8 clientes. O Terracota virou minha ferramenta principal — consigo entregar tabelas perfeitas muito mais rápido."
-                    </p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-terracota-cyan/10 flex items-center justify-center text-terracota-cyan font-bold text-sm">AL</div>
-                        <div>
-                            <p class="text-sm font-semibold">Ana Luiza S.</p>
-                            <p class="text-xs text-terracota-textMuted">Nutricionista — Consultoria</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         FAQ — Sales objection handling
-         ============================================================ -->
-    <section id="faq" class="py-24 relative">
+    <section id="faq" class="py-24 relative border-t border-white/5 bg-terracota-surface/30">
         <div class="max-w-3xl mx-auto px-6">
             <div class="text-center mb-16">
                 <h3 class="text-terracota-cyan font-semibold tracking-wider uppercase text-sm mb-3">Perguntas Frequentes</h3>
                 <h2 class="text-3xl md:text-4xl font-heading font-bold">Tire suas dúvidas</h2>
             </div>
 
-            <div class="space-y-3">
-                <details class="bg-terracota-surface border border-white/10 rounded-xl p-5 group" open>
+            <div class="space-y-2.5">
+                <details class="faq-item bg-terracota-surface border border-white/[0.07] rounded-xl p-6 group border-l-2 border-l-transparent open:border-l-terracota-cyan transition-all" open>
                     <summary class="cursor-pointer font-semibold flex items-center justify-between">
                         O Terracota substitui o nutricionista?
                         <i class="ph ph-caret-down text-terracota-textMuted group-open:rotate-180 transition-transform"></i>
                     </summary>
-                    <p class="text-sm text-terracota-textMuted mt-3 leading-relaxed">
-                        Não. O Terracota é uma <strong class="text-white/90">ferramenta de cálculo</strong> que automatiza a parte numérica (arredondamentos, %VD, valor energético). A análise técnica, formulação e responsabilidade legal continuam sendo do profissional habilitado.
+                    <p class="text-sm text-terracota-textMuted mt-4 leading-relaxed">
+                        Não. O Terracota é uma <strong class="text-white">ferramenta de cálculo</strong> que automatiza a parte numérica (arredondamentos, %VD, valor energético). A análise técnica, formulação e responsabilidade legal continuam sendo do profissional habilitado.
                     </p>
                 </details>
 
-                <details class="bg-terracota-surface border border-white/10 rounded-xl p-5 group">
+                <details class="faq-item bg-terracota-surface border border-white/[0.07] rounded-xl p-6 group border-l-2 border-l-transparent open:border-l-terracota-cyan transition-all">
                     <summary class="cursor-pointer font-semibold flex items-center justify-between">
                         A tabela gerada é aceita pela ANVISA?
                         <i class="ph ph-caret-down text-terracota-textMuted group-open:rotate-180 transition-transform"></i>
                     </summary>
-                    <p class="text-sm text-terracota-textMuted mt-3 leading-relaxed">
+                    <p class="text-sm text-terracota-textMuted mt-4 leading-relaxed">
                         Sim. Os cálculos e arredondamentos seguem rigorosamente a RDC 429/2020 e a IN 75/2020. A declaração de alérgenos segue a RDC 26/2015. O formato da tabela é o regulamentado pela ANVISA.
                     </p>
                 </details>
 
-                <details class="bg-terracota-surface border border-white/10 rounded-xl p-5 group">
+                <details class="faq-item bg-terracota-surface border border-white/[0.07] rounded-xl p-6 group border-l-2 border-l-transparent open:border-l-terracota-cyan transition-all">
                     <summary class="cursor-pointer font-semibold flex items-center justify-between">
                         Preciso de cartão de crédito para começar?
                         <i class="ph ph-caret-down text-terracota-textMuted group-open:rotate-180 transition-transform"></i>
                     </summary>
-                    <p class="text-sm text-terracota-textMuted mt-3 leading-relaxed">
+                    <p class="text-sm text-terracota-textMuted mt-4 leading-relaxed">
                         Não. O plano Grátis é gratuito para sempre. Você só precisa de cartão se decidir fazer upgrade para Básico, Profissional ou Ilimitado.
                     </p>
                 </details>
 
-                <details class="bg-terracota-surface border border-white/10 rounded-xl p-5 group">
-                    <summary class="cursor-pointer font-semibold flex items-center justify-between">
-                        E se eu precisar de mais de 10 tabelas por mês?
-                        <i class="ph ph-caret-down text-terracota-textMuted group-open:rotate-180 transition-transform"></i>
-                    </summary>
-                    <p class="text-sm text-terracota-textMuted mt-3 leading-relaxed">
-                        O plano Profissional permite 10 tabelas/mês. Para volume ilimitado, o plano Ilimitado não tem limite. Você pode fazer upgrade ou downgrade a qualquer momento.
-                    </p>
-                </details>
-
-                <details class="bg-terracota-surface border border-white/10 rounded-xl p-5 group">
-                    <summary class="cursor-pointer font-semibold flex items-center justify-between">
-                        Posso cancelar quando quiser?
-                        <i class="ph ph-caret-down text-terracota-textMuted group-open:rotate-180 transition-transform"></i>
-                    </summary>
-                    <p class="text-sm text-terracota-textMuted mt-3 leading-relaxed">
-                        Sim. Sem multa, sem carência. Ao cancelar, você mantém acesso até o fim do período já pago.
-                    </p>
-                </details>
-
-                <details class="bg-terracota-surface border border-white/10 rounded-xl p-5 group">
+                <details class="faq-item bg-terracota-surface border border-white/[0.07] rounded-xl p-6 group border-l-2 border-l-transparent open:border-l-terracota-cyan transition-all">
                     <summary class="cursor-pointer font-semibold flex items-center justify-between">
                         Qual a diferença entre fazer no Excel e usar o Terracota?
                         <i class="ph ph-caret-down text-terracota-textMuted group-open:rotate-180 transition-transform"></i>
                     </summary>
-                    <p class="text-sm text-terracota-textMuted mt-3 leading-relaxed">
+                    <p class="text-sm text-terracota-textMuted mt-4 leading-relaxed">
                         No Excel, você precisa implementar manualmente todas as regras de arredondamento da IN 75, os fatores de Atwater para energia, e verificar cada declaração. Com o Terracota, tudo isso é automático e auditável — reduzindo drasticamente o risco de erro humano.
                     </p>
                 </details>
 
-                <details class="bg-terracota-surface border border-white/10 rounded-xl p-5 group">
+                <details class="faq-item bg-terracota-surface border border-white/[0.07] rounded-xl p-6 group border-l-2 border-l-transparent open:border-l-terracota-cyan transition-all">
                     <summary class="cursor-pointer font-semibold flex items-center justify-between">
-                        O que conta como "tabela"?
+                        E se eu precisar de mais de 10 tabelas por mês?
                         <i class="ph ph-caret-down text-terracota-textMuted group-open:rotate-180 transition-transform"></i>
                     </summary>
-                    <p class="text-sm text-terracota-textMuted mt-3 leading-relaxed">
-                        Cada geração final conta como 1. Você pode editar rascunhos sem consumir cota — só consome ao "finalizar".
+                    <p class="text-sm text-terracota-textMuted mt-4 leading-relaxed">
+                        O plano Profissional permite 10 tabelas/mês. Para volume ilimitado, o plano Ilimitado não tem limite. Você pode fazer upgrade ou downgrade a qualquer momento.
                     </p>
                 </details>
 
-                <details class="bg-terracota-surface border border-white/10 rounded-xl p-5 group">
+                <details class="faq-item bg-terracota-surface border border-white/[0.07] rounded-xl p-6 group border-l-2 border-l-transparent open:border-l-terracota-cyan transition-all">
                     <summary class="cursor-pointer font-semibold flex items-center justify-between">
-                        Posso mudar de plano depois?
+                        Posso cancelar quando quiser?
                         <i class="ph ph-caret-down text-terracota-textMuted group-open:rotate-180 transition-transform"></i>
                     </summary>
-                    <p class="text-sm text-terracota-textMuted mt-3 leading-relaxed">
-                        Sim. Upgrade é imediato; downgrade pode valer no próximo ciclo.
+                    <p class="text-sm text-terracota-textMuted mt-4 leading-relaxed">
+                        Sim. Sem multa, sem carência. Ao cancelar, você mantém acesso até o fim do período já pago.
                     </p>
                 </details>
             </div>
@@ -829,192 +698,49 @@
     </section>
 
     <!-- ============================================================
-         HELP CENTER — Inline help
+         9. FINAL CTA — Page closer
          ============================================================ -->
-    <section id="ajuda" class="py-24 relative border-t border-white/5 bg-terracota-surface/30">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h3 class="text-terracota-cyan font-semibold tracking-wider uppercase text-sm mb-3">Central de Ajuda</h3>
-                <h2 class="text-3xl md:text-4xl font-heading font-bold">Tudo que você precisa saber</h2>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
-                    <h3 class="text-lg font-heading font-semibold mb-4">
-                        <i class="ph ph-calculator text-terracota-cyan mr-2"></i>Como usar a Calculadora
-                    </h3>
-                    <div class="space-y-3 text-sm text-terracota-textMuted">
-                        <p><strong class="text-white">1.</strong> Faça login ou crie sua conta.</p>
-                        <p><strong class="text-white">2.</strong> Preencha os dados do produto (nome, porção, alérgenos).</p>
-                        <p><strong class="text-white">3.</strong> Adicione ingredientes manualmente ou importe via Excel.</p>
-                        <p><strong class="text-white">4.</strong> Clique em "Calcular" para gerar a tabela em conformidade com a ANVISA.</p>
-                    </div>
-                </div>
-
-                <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
-                    <h3 class="text-lg font-heading font-semibold mb-4">
-                        <i class="ph ph-credit-card text-terracota-cyan mr-2"></i>Planos e Limites
-                    </h3>
-                    <div class="space-y-3 text-sm text-terracota-textMuted">
-                        <p><strong class="text-white">Grátis:</strong> 1 tabela/mês, até 10 ingredientes.</p>
-                        <p><strong class="text-white">Básico:</strong> 3 tabelas/mês, até 25 ingredientes.</p>
-                        <p><strong class="text-white">Profissional:</strong> 10 tabelas/mês, até 80 ingredientes, templates, PDF/PNG, histórico.</p>
-                        <p><strong class="text-white">Ilimitado:</strong> Sem limites, branding no PDF, Pulse avançado.</p>
-                    </div>
-                </div>
-
-                <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
-                    <h3 class="text-lg font-heading font-semibold mb-4">
-                        <i class="ph ph-user-circle text-terracota-cyan mr-2"></i>Conta e Segurança
-                    </h3>
-                    <div class="space-y-3 text-sm text-terracota-textMuted">
-                        <p><strong class="text-white">Esqueci minha senha:</strong> Use a opção "Esqueci minha senha" na tela de login.</p>
-                        <p><strong class="text-white">Alterar senha:</strong> Acesse Minha Conta > Configurações.</p>
-                        <p><strong class="text-white">Excluir conta:</strong> Acesse Minha Conta > Configurações > Zona de perigo.</p>
-                        <p><strong class="text-white">Exportar dados:</strong> Acesse Minha Conta > Configurações para exportar (LGPD).</p>
-                    </div>
-                </div>
-
-                <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
-                    <h3 class="text-lg font-heading font-semibold mb-4">
-                        <i class="ph ph-scales text-terracota-cyan mr-2"></i>Regulamentação ANVISA
-                    </h3>
-                    <div class="space-y-3 text-sm text-terracota-textMuted">
-                        <p>Nossa calculadora segue as normas <strong class="text-white">RDC 429/2020</strong> e <strong class="text-white">IN 75/2020</strong>.</p>
-                        <p>Os arredondamentos seguem o Anexo IV (insignificância) e Anexo XXII (energia).</p>
-                        <p>Para dúvidas específicas sobre regulamentação, <a href="#contato" class="text-terracota-cyan hover:underline">entre em contato</a>.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         CONTACT — Inline form
-         ============================================================ -->
-    <section id="contato" class="py-24 relative">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid lg:grid-cols-2 gap-16 items-start">
-                <!-- Left: Info -->
-                <div>
-                    <h3 class="text-terracota-cyan font-semibold tracking-wider uppercase text-sm mb-3">Contato</h3>
-                    <h2 class="text-3xl md:text-4xl font-heading font-bold mb-6">Fale conosco</h2>
-                    <p class="text-terracota-textMuted leading-relaxed mb-8">
-                        Tem alguma dúvida, sugestão ou precisa de ajuda? Preencha o formulário e nossa equipe responde em até 24h.
-                    </p>
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center">
-                                <i class="ph ph-headset text-lg text-terracota-cyan"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-semibold">Suporte humano</p>
-                                <p class="text-xs text-terracota-textMuted">Resposta em até 24h</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-terracota-purple/10 border border-terracota-purple/20 flex items-center justify-center">
-                                <i class="ph ph-shield-check text-lg text-terracota-purple"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-semibold">Seus dados protegidos</p>
-                                <p class="text-xs text-terracota-textMuted">Conforme LGPD</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-terracota-cyan/10 border border-terracota-cyan/20 flex items-center justify-center">
-                                <i class="ph ph-chats-circle text-lg text-terracota-cyan"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-semibold">Dúvidas, bugs ou sugestões</p>
-                                <p class="text-xs text-terracota-textMuted">Tudo pelo mesmo canal</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right: Form -->
-                <div class="bg-terracota-surface/80 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
-                    <form method="post" action="{{ url_for('support.contact') }}" class="space-y-4">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <div>
-                            <label class="block text-sm text-terracota-textMuted mb-1">Nome</label>
-                            <input type="text" name="name" required value="{{ current_user.name if current_user.is_authenticated else '' }}"
-                                class="w-full px-4 py-3 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-white focus:outline-none focus:border-terracota-cyan/50 transition-all">
-                        </div>
-                        <div>
-                            <label class="block text-sm text-terracota-textMuted mb-1">E-mail</label>
-                            <input type="email" name="email" required value="{{ current_user.email if current_user.is_authenticated else '' }}"
-                                class="w-full px-4 py-3 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-white focus:outline-none focus:border-terracota-cyan/50 transition-all">
-                        </div>
-                        <div class="grid sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm text-terracota-textMuted mb-1">Categoria</label>
-                                <select name="category" class="w-full px-4 py-3 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-white focus:outline-none focus:border-terracota-cyan/50 transition-all">
-                                    <option value="other">Geral</option>
-                                    <option value="billing">Planos / Cobrança</option>
-                                    <option value="bug">Reportar Problema</option>
-                                    <option value="feature">Sugestão</option>
-                                    <option value="account">Minha Conta</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm text-terracota-textMuted mb-1">Assunto</label>
-                                <input type="text" name="subject"
-                                    class="w-full px-4 py-3 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-white focus:outline-none focus:border-terracota-cyan/50 transition-all">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm text-terracota-textMuted mb-1">Mensagem</label>
-                            <textarea name="message" rows="5" required
-                                class="w-full px-4 py-3 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-white focus:outline-none focus:border-terracota-cyan/50 transition-all resize-none"></textarea>
-                        </div>
-                        <button type="submit" class="w-full px-6 py-3 bg-terracota-cyan text-terracota-base font-semibold rounded-xl hover:bg-white transition-colors">
-                            <i class="ph ph-paper-plane-tilt mr-1"></i> Enviar mensagem
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         FINAL CTA + NEWSLETTER
-         ============================================================ -->
-    <section class="py-24 relative border-t border-white/5 bg-gradient-to-b from-transparent to-terracota-surface">
+    <section class="py-28 relative border-t border-white/5 bg-gradient-to-b from-transparent to-terracota-surface">
         <div class="max-w-4xl mx-auto px-6 text-center">
             <h2 class="text-3xl md:text-5xl font-heading font-bold mb-6">
-                Pare de arriscar multas.<br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-terracota-cyan to-terracota-purple">Gere sua tabela agora.</span>
+                Sua tabela nutricional,<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-terracota-cyan to-terracota-purple">pronta e em conformidade.</span>
             </h2>
-            <p class="text-lg text-terracota-textMuted mb-10 max-w-2xl mx-auto">
-                Crie sua conta grátis em 30 segundos e tenha sua primeira tabela nutricional conforme a ANVISA antes do fim do dia.
+            <p class="text-lg text-terracota-textMuted mb-10 max-w-2xl mx-auto leading-relaxed">
+                Crie sua conta grátis em 30 segundos e tenha sua primeira tabela nutricional conforme a ANVISA ainda hoje.
             </p>
 
             {% if current_user.is_authenticated %}
-            <a href="{{ url_for('product.calculator') }}" class="inline-flex items-center gap-2 px-10 py-4 bg-terracota-cyan text-terracota-base font-bold text-lg rounded-xl hover:bg-white transition-colors shadow-[0_0_30px_-5px_#00F0FF55]">
+            <a href="{{ url_for('product.calculator') }}" class="btn-cta-primary inline-flex items-center gap-2.5 px-10 py-5 bg-terracota-cyan text-terracota-base font-bold text-lg rounded-full hover:bg-white shadow-[0_0_40px_-5px_#00F0FF55]">
                 <i class="ph ph-arrow-right"></i> Acessar Calculadora
             </a>
             {% else %}
-            <a href="{{ url_for('auth.register') }}" class="inline-flex items-center gap-2 px-10 py-4 bg-terracota-cyan text-terracota-base font-bold text-lg rounded-xl hover:bg-white transition-colors shadow-[0_0_30px_-5px_#00F0FF55]">
-                <i class="ph ph-arrow-right"></i> Criar Conta Grátis
+            <a href="{{ url_for('auth.register') }}" class="btn-cta-primary inline-flex items-center gap-2.5 px-10 py-5 bg-terracota-cyan text-terracota-base font-bold text-lg rounded-full hover:bg-white shadow-[0_0_40px_-5px_#00F0FF55]">
+                <i class="ph ph-arrow-right"></i> Comece Grátis
             </a>
             {% endif %}
+        </div>
+    </section>
 
-            <!-- Newsletter (Terracota Pulse) -->
-            <div class="mt-20 pt-12 border-t border-white/10">
-                <div class="flex items-center justify-center gap-3 mb-4">
-                    <i class="ph ph-pulse text-2xl text-terracota-purple"></i>
-                    <h3 class="text-xl font-heading font-semibold">Terracota Pulse</h3>
+    <!-- ============================================================
+         10. NEWSLETTER — Stay updated (soft capture for non-converters)
+         ============================================================ -->
+    <section class="py-16 relative border-t border-white/5">
+        <div class="max-w-2xl mx-auto px-6">
+            <div class="card-gradient-border-purple card-accent-top-purple bg-terracota-surface border border-transparent rounded-2xl p-10 md:p-12 text-center shadow-card">
+                <div class="w-12 h-12 mx-auto mb-6 rounded-lg bg-terracota-purple/10 border border-terracota-purple/20 flex items-center justify-center">
+                    <i class="ph-duotone ph-bell-ringing text-xl text-terracota-purple"></i>
                 </div>
-                <p class="text-terracota-textMuted mb-6 max-w-lg mx-auto">
-                    Receba alertas sobre mudanças em normas da ANVISA e MAPA que impactam rótulos alimentares.
+                <h3 class="text-terracota-purple font-semibold tracking-wider uppercase text-[11px] mb-3">Ainda não decidiu?</h3>
+                <h2 class="text-2xl md:text-3xl font-heading font-bold mb-4">Fique por dentro das normas que afetam seu rótulo</h2>
+                <p class="text-terracota-textMuted mb-8 max-w-lg mx-auto leading-relaxed">
+                    Receba atualizações sobre mudanças na legislação da ANVISA e MAPA, dicas práticas de rotulagem e alertas de conformidade — direto no seu e-mail, sem custo.
                 </p>
 
                 <form id="radar-form" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                    <input id="radar-email" type="email" placeholder="Seu melhor e-mail" required class="flex-grow bg-terracota-surfaceHighlight border border-white/10 rounded-xl px-5 py-3 text-white text-sm focus:outline-none focus:border-terracota-cyan/50 focus:ring-1 focus:ring-terracota-cyan/50 transition-all font-sans placeholder:text-terracota-textMuted/50">
-                    <button id="radar-btn" type="submit" class="px-6 py-3 bg-terracota-purple hover:bg-terracota-purple/80 text-white font-semibold rounded-xl transition-colors whitespace-nowrap text-sm">
-                        Assinar grátis
+                    <input id="radar-email" type="email" placeholder="Seu melhor e-mail" required class="flex-grow bg-terracota-surfaceHighlight border border-white/[0.08] rounded-full px-5 py-3 text-white text-sm focus:outline-none focus:border-terracota-purple/50 focus:ring-1 focus:ring-terracota-purple/50 transition-all font-sans placeholder:text-terracota-textMuted/50">
+                    <button id="radar-btn" type="submit" class="btn-cta-secondary px-6 py-3 bg-terracota-purple hover:bg-terracota-purple/80 text-white font-semibold rounded-full whitespace-nowrap text-sm">
+                        Receber atualizações
                     </button>
                 </form>
                 <p id="radar-msg" class="text-xs text-terracota-textMuted/50 mt-3">Sem spam. Cancele quando quiser.</p>
@@ -1024,7 +750,6 @@
 {% endblock %}
 
 {% block head %}
-<!-- Schema.org: SoftwareApplication -->
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -1061,7 +786,6 @@
     ]
 }
 </script>
-<!-- Schema.org: FAQPage -->
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -1144,7 +868,7 @@ document.getElementById('radar-form').addEventListener('submit', async function(
         msg.classList.add('text-red-400');
     } finally {
         btn.disabled = false;
-        btn.textContent = 'Ativar Radar';
+        btn.textContent = 'Receber atualizações';
     }
 });
 </script>

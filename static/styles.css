@@ -142,6 +142,149 @@ body {
     background: rgba(255, 255, 255, 0.3);
 }
 
+/* ===========================================================
+   Landing Page Component System
+   =========================================================== */
+
+/* --- Card Foundations --- */
+.card-base {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.3s ease;
+}
+
+.card-lift:hover {
+    transform: translateY(-3px);
+}
+
+/* --- Card Top Accent Line (cyan gradient) --- */
+.card-accent-top {
+    position: relative;
+    overflow: hidden;
+}
+.card-accent-top::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 8%;
+    right: 8%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.35), transparent);
+    pointer-events: none;
+}
+
+/* --- Card Top Accent Line (purple gradient) --- */
+.card-accent-top-purple {
+    position: relative;
+    overflow: hidden;
+}
+.card-accent-top-purple::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 8%;
+    right: 8%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(123, 44, 191, 0.45), transparent);
+    pointer-events: none;
+}
+
+/* --- Gradient Border Effect (featured pricing, CTA) --- */
+.card-gradient-border {
+    position: relative;
+}
+.card-gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(160deg, rgba(0, 240, 255, 0.5), rgba(123, 44, 191, 0.25), rgba(0, 240, 255, 0.06));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+/* Purple variant gradient border */
+.card-gradient-border-purple {
+    position: relative;
+}
+.card-gradient-border-purple::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(160deg, rgba(123, 44, 191, 0.5), rgba(0, 240, 255, 0.15), rgba(123, 44, 191, 0.08));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+/* --- Shadow Levels --- */
+.shadow-card {
+    box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.25),
+                0 2px 6px -2px rgba(0, 0, 0, 0.15);
+}
+.shadow-card-hover:hover {
+    box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.4),
+                0 4px 12px -4px rgba(0, 0, 0, 0.2);
+}
+.shadow-pricing {
+    box-shadow: 0 8px 30px -6px rgba(0, 0, 0, 0.35),
+                0 2px 8px -2px rgba(0, 0, 0, 0.2);
+}
+.shadow-pricing-featured {
+    box-shadow: 0 0 60px -12px rgba(0, 240, 255, 0.12),
+                0 25px 50px -12px rgba(0, 0, 0, 0.45);
+}
+.shadow-elevated {
+    box-shadow: 0 25px 65px -15px rgba(0, 0, 0, 0.5),
+                0 8px 20px -8px rgba(0, 0, 0, 0.25);
+}
+
+/* --- Pain Card Colored Accents --- */
+.pain-glow-red {
+    box-shadow: 0 4px 25px -8px rgba(239, 68, 68, 0.12),
+                0 2px 8px -2px rgba(0, 0, 0, 0.2);
+}
+.pain-glow-orange {
+    box-shadow: 0 4px 25px -8px rgba(249, 115, 22, 0.12),
+                0 2px 8px -2px rgba(0, 0, 0, 0.2);
+}
+.pain-glow-yellow {
+    box-shadow: 0 4px 25px -8px rgba(234, 179, 8, 0.12),
+                0 2px 8px -2px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Button System --- */
+.btn-cta-primary {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-cta-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 45px -5px rgba(0, 240, 255, 0.35),
+                0 14px 35px -10px rgba(0, 0, 0, 0.4);
+}
+.btn-cta-primary:active {
+    transform: translateY(0px);
+}
+
+.btn-cta-secondary {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-cta-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px -6px rgba(0, 0, 0, 0.35);
+}
+
+/* --- FAQ Enhance --- */
+details.faq-item[open] {
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.02), transparent 60%);
+}
+
 /* Minimal print fallback (main printing uses popup window) */
 @media print {
     .no-print,
@@ -164,6 +307,11 @@ select:focus-visible,
 a:focus-visible {
     outline: 2px solid #00F0FF;
     outline-offset: 2px;
+}
+
+/* ---- FAQ active-state accent ---- */
+details[open] {
+    border-left-color: #00F0FF !important;
 }
 
 /* ---- Skip to main content ---- */
