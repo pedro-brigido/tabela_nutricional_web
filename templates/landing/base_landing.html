@@ -73,13 +73,13 @@
 
     <!-- Ambient Background Glow -->
     <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-terracota-purple/10 blur-[120px] rounded-full"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-terracota-cyan/10 blur-[120px] rounded-full"></div>
+        <div class="absolute top-[-15%] left-[-12%] w-[38%] h-[38%] bg-terracota-purple/[0.06] blur-[140px] rounded-full"></div>
+        <div class="absolute bottom-[-15%] right-[-12%] w-[38%] h-[38%] bg-terracota-cyan/[0.06] blur-[140px] rounded-full"></div>
     </div>
 
     <!-- Header -->
-    <header class="fixed w-full top-0 z-50 bg-terracota-base/80 backdrop-blur-xl border-b border-white/[0.08]">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+    <header class="fixed w-full top-0 z-50 bg-terracota-base/80 backdrop-blur-xl border-b border-white/[0.06]">
+        <div class="max-w-7xl mx-auto px-6 h-[4.5rem] flex items-center justify-between">
             <a href="{{ url_for('main.index') }}" class="flex items-center gap-4 group">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-terracota-surfaceHighlight to-terracota-surface flex items-center justify-center border border-white/10 group-hover:border-terracota-cyan/50 transition-colors relative overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-terracota-cyan/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -110,8 +110,8 @@
                     <a href="{{ url_for('product.calculator') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Minha Conta</a>
                     <a href="{{ url_for('auth.logout') }}" class="px-4 py-2 rounded-lg border border-white/10 text-terracota-textMuted text-sm font-medium hover:bg-white/5 transition-colors">Sair</a>
                 {% else %}
-                    <a href="{{ url_for('auth.login') }}" class="px-5 py-2.5 rounded-lg border border-terracota-cyan/30 text-terracota-cyan text-sm font-medium hover:bg-terracota-cyan/10 transition-colors">Entrar</a>
-                    <a href="{{ url_for('auth.register') }}" class="px-5 py-2.5 rounded-lg bg-terracota-cyan text-terracota-base text-sm font-semibold hover:bg-white transition-colors">Comece Grátis</a>
+                    <a href="{{ url_for('auth.login') }}" class="px-5 py-2.5 rounded-full border border-terracota-cyan/25 text-terracota-cyan text-sm font-medium hover:bg-terracota-cyan/10 transition-colors">Entrar</a>
+                    <a href="{{ url_for('auth.register') }}" class="px-5 py-2.5 rounded-full bg-terracota-cyan text-terracota-base text-sm font-semibold hover:bg-white transition-colors shadow-[0_0_20px_-6px_#00F0FF44]">Comece Grátis</a>
                 {% endif %}
             </div>
         </div>
@@ -153,19 +153,45 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="border-t border-white/10 py-12 bg-terracota-base relative z-10">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-terracota-surfaceHighlight flex items-center justify-center border border-white/10">
-                    <span class="font-heading font-bold text-sm text-terracota-cyan">T</span>
+    <footer class="border-t border-white/[0.06] pt-16 pb-10 landing-footer relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-[1.2fr_0.8fr_0.8fr] gap-8 md:gap-10">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-terracota-surfaceHighlight flex items-center justify-center border border-white/[0.08]">
+                            <span class="font-heading font-bold text-base text-terracota-cyan">T</span>
+                        </div>
+                        <span class="text-base font-medium text-white/90 tracking-widest uppercase">Terracota</span>
+                    </div>
+                    <p class="text-sm text-terracota-textLight/55 max-w-sm leading-relaxed">
+                        Plataforma para geração de tabelas nutricionais com foco em conformidade regulatória, clareza operacional e velocidade de execução.
+                    </p>
                 </div>
-                <span class="text-sm font-medium text-white tracking-widest uppercase">Terracota</span>
+
+                <div>
+                    <p class="text-[11px] uppercase tracking-[0.18em] text-terracota-textMuted/70 mb-4 font-medium">Produto</p>
+                    <div class="flex flex-col gap-2.5">
+                        <a href="{{ url_for('main.index') }}#planos" class="text-sm text-terracota-textLight/60 hover:text-white transition-colors">Planos</a>
+                        <a href="{{ url_for('main.index') }}#faq" class="text-sm text-terracota-textLight/60 hover:text-white transition-colors">FAQ</a>
+                        <a href="{{ url_for('main.privacy') }}" class="text-sm text-terracota-textLight/60 hover:text-white transition-colors">Privacidade</a>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-[11px] uppercase tracking-[0.18em] text-terracota-textMuted/70 mb-4 font-medium">Suporte</p>
+                    <div class="flex flex-col gap-2.5">
+                        <a href="{{ url_for('main.index') }}#contato" class="text-sm text-terracota-textLight/60 hover:text-white transition-colors">Falar com suporte</a>
+                        <a href="{{ url_for('support.help_page') }}" class="text-sm text-terracota-textLight/60 hover:text-white transition-colors">Central de ajuda</a>
+                        <a href="{{ url_for('auth.login') }}" class="text-sm text-terracota-textLight/60 hover:text-white transition-colors">Entrar na conta</a>
+                    </div>
+                </div>
             </div>
-            <span class="text-sm text-terracota-textLight/80">&copy; 2026 Terracota Compliance & Systems.</span>
-            <div class="flex items-center gap-6">
-                <a href="{{ url_for('main.index') }}#faq" class="text-terracota-textMuted hover:text-white transition-colors text-sm">FAQ</a>
-                <a href="{{ url_for('support.contact') }}" class="text-terracota-textMuted hover:text-white transition-colors text-sm">Contato</a>
-                <a href="{{ url_for('main.privacy') }}" class="text-terracota-textMuted hover:text-white transition-colors text-sm">Privacidade</a>
+
+            <div class="mt-10 pt-6 landing-footer-divider"></div>
+            <div class="mt-6 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+                <span class="text-sm text-terracota-textLight/70">&copy; 2026 Terracota Compliance & Systems.</span>
+                <span class="text-xs text-terracota-textMuted/60">Desenvolvido para operações com exigência regulatória.</span>
+            </div>
             </div>
         </div>
     </footer>

@@ -280,6 +280,203 @@ body {
                 0 8px 20px -8px rgba(0, 0, 0, 0.25);
 }
 
+/* ===========================================================
+   Pricing Cards — Premium Card System
+   =========================================================== */
+
+/* Featured card — gradient border + glow + raised */
+.pricing-card-featured {
+    background: linear-gradient(180deg, rgba(0, 240, 255, 0.05) 0%, #151828 40%);
+    border: 1px solid transparent;
+    position: relative;
+    z-index: 1;
+}
+.pricing-card-featured::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(170deg, rgba(0, 240, 255, 0.55), rgba(123, 44, 191, 0.2) 50%, rgba(0, 240, 255, 0.08));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+.pricing-card-featured::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.6), transparent);
+    pointer-events: none;
+}
+
+/* Featured card keeps the same footprint as others */
+@media (min-width: 1024px) {
+    .pricing-card-featured {
+        box-shadow: 0 0 70px -15px rgba(0, 240, 255, 0.12),
+                    0 30px 60px -15px rgba(0, 0, 0, 0.45);
+    }
+}
+
+/* Featured badge pill at top */
+.pricing-featured-badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.85rem;
+    background: linear-gradient(135deg, #00F0FF, #00C8D6);
+    color: #0B0D17;
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 9999px;
+    white-space: nowrap;
+    box-shadow: 0 4px 14px -3px rgba(0, 240, 255, 0.4);
+    z-index: 2;
+}
+
+/* Plan icon — small, consistent */
+.pricing-plan-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 240, 255, 0.65);
+    background: rgba(0, 240, 255, 0.04);
+    border: 1px solid rgba(0, 240, 255, 0.12);
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+.pricing-plan-icon-featured {
+    color: #00F0FF;
+    background: rgba(0, 240, 255, 0.08);
+    border-color: rgba(0, 240, 255, 0.25);
+    box-shadow: 0 4px 12px -4px rgba(0, 240, 255, 0.3);
+}
+
+/* CTA buttons — pricing-specific */
+.pricing-cta-primary {
+    background: #00F0FF;
+    color: #0B0D17;
+    font-weight: 700;
+    box-shadow: 0 0 24px -4px rgba(0, 240, 255, 0.35),
+                0 4px 12px -4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.25s ease;
+}
+.pricing-cta-primary:hover {
+    background: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 0 36px -4px rgba(0, 240, 255, 0.45),
+                0 8px 20px -6px rgba(0, 0, 0, 0.3);
+}
+.pricing-cta-secondary {
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.25s ease,
+                border-color 0.25s ease;
+}
+.pricing-cta-secondary:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.18);
+    transform: translateY(-1px);
+}
+
+/* Non-featured pricing card internal polish */
+.pricing-card:not(.pricing-card-featured) {
+    background: linear-gradient(175deg, rgba(30, 35, 58, 0.45), rgba(21, 24, 40, 0.65));
+}
+
+/* Pricing cards keep a consistent visual size across plans */
+.pricing-grid .pricing-card {
+    min-height: 29.5rem;
+}
+
+@media (min-width: 768px) {
+    .pricing-grid .pricing-card {
+        min-height: 31rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .pricing-grid .pricing-card {
+        min-height: 32rem;
+    }
+}
+
+/* Pain section solution callout — premium treatment */
+.pain-solution-callout {
+    border: 1px solid rgba(0, 240, 255, 0.15);
+    border-radius: 1.25rem;
+    background: linear-gradient(160deg, rgba(0, 240, 255, 0.04), rgba(0, 240, 255, 0.01) 50%, transparent);
+    padding: 2.25rem 2rem;
+    box-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.4),
+                0 0 50px -30px rgba(0, 240, 255, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Footer premium treatment */
+.landing-footer {
+    background: linear-gradient(180deg, rgba(11, 13, 23, 1) 0%, rgba(8, 10, 18, 1) 100%);
+}
+.landing-footer-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04), transparent);
+}
+
+/* ===========================================================
+   Trust & Reassurance Cards
+   =========================================================== */
+
+.trust-card {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 1.1rem 1.2rem;
+    border-radius: 0.95rem;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.008));
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+.trust-card:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
+    box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.3);
+}
+
+.trust-card-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.625rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 240, 255, 0.7);
+    background: rgba(0, 240, 255, 0.05);
+    border: 1px solid rgba(0, 240, 255, 0.12);
+    font-size: 1rem;
+    flex-shrink: 0;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+.group:hover .trust-card-icon {
+    color: rgba(0, 240, 255, 0.9);
+    border-color: rgba(0, 240, 255, 0.22);
+}
+
 /* --- Pain Card Colored Accents --- */
 .pain-glow-red {
     box-shadow: 0 4px 25px -8px rgba(239, 68, 68, 0.12),
@@ -456,8 +653,8 @@ a:focus-visible {
 }
 
 /* ---- FAQ active-state accent ---- */
-details[open] {
-    border-left-color: #00F0FF !important;
+details.faq-item[open] {
+    border-color: rgba(0, 240, 255, 0.28);
 }
 
 /* ---- Skip to main content ---- */
@@ -510,6 +707,11 @@ details[open] {
     .benefit-card-icon,
     .hiw-icon-ring,
     .benefit-card-glow,
+    .pricing-cta-primary,
+    .pricing-cta-secondary,
+    .pricing-card-featured,
+    .trust-card,
+    .trust-card-icon,
     .proof-card,
     .shadow-card-hover:hover,
     .progress-line,
@@ -531,9 +733,9 @@ details[open] {
 /* Subtle grid pattern overlay for hero depth */
 .hero-grid-pattern {
     background-image:
-        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 64px 64px;
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    background-size: 72px 72px;
 }
 
 .hero-premium::before {
@@ -541,15 +743,15 @@ details[open] {
     position: absolute;
     inset: -10% 0 auto 0;
     height: 55%;
-    background: radial-gradient(ellipse at 50% 0%, rgba(0, 240, 255, 0.12), rgba(123, 44, 191, 0.08) 34%, transparent 72%);
+    background: radial-gradient(ellipse at 50% 0%, rgba(0, 240, 255, 0.09), rgba(123, 44, 191, 0.06) 36%, transparent 70%);
     pointer-events: none;
 }
 
 .hero-eyebrow {
-    color: #7defff;
-    border: 1px solid rgba(0, 240, 255, 0.3);
-    background: linear-gradient(140deg, rgba(0, 240, 255, 0.12), rgba(0, 240, 255, 0.05));
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    color: rgba(125, 239, 255, 0.92);
+    border: 1px solid rgba(0, 240, 255, 0.22);
+    background: linear-gradient(140deg, rgba(0, 240, 255, 0.08), rgba(0, 240, 255, 0.03));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .hero-microproof-item {
@@ -569,13 +771,14 @@ details[open] {
 }
 
 .hero-preview-card {
-    padding: 1.6rem;
-    border-radius: 1.15rem;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    background: linear-gradient(170deg, rgba(30, 35, 58, 0.72), rgba(21, 24, 40, 0.78));
-    backdrop-filter: blur(14px);
-    box-shadow: 0 30px 70px -18px rgba(0, 0, 0, 0.52),
-                0 0 55px -25px rgba(0, 240, 255, 0.4);
+    padding: 1.75rem;
+    border-radius: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: linear-gradient(170deg, rgba(30, 35, 58, 0.68), rgba(21, 24, 40, 0.76));
+    backdrop-filter: blur(18px);
+    box-shadow: 0 35px 80px -20px rgba(0, 0, 0, 0.55),
+                0 0 60px -25px rgba(0, 240, 255, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .hero-status-pill {
@@ -612,65 +815,244 @@ details[open] {
 }
 
 .proof-card {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 0.95rem;
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018));
-    padding: 1rem 1.05rem;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 1rem;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+    padding: 1.35rem 1.15rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+    transition: border-color 0.3s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
 }
 .proof-card:hover {
     transform: translateY(-2px);
-    border-color: rgba(0, 240, 255, 0.26);
-    box-shadow: 0 16px 30px -18px rgba(0, 0, 0, 0.48);
+    border-color: rgba(0, 240, 255, 0.18);
+    box-shadow: 0 18px 36px -18px rgba(0, 0, 0, 0.45);
 }
 .proof-card-icon {
-    width: 2.45rem;
-    height: 2.45rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 0.75rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: rgba(0, 240, 255, 0.95);
-    border: 1px solid rgba(0, 240, 255, 0.25);
-    background: rgba(0, 240, 255, 0.08);
-    margin-bottom: 0.65rem;
+    color: rgba(0, 240, 255, 0.9);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    background: linear-gradient(145deg, rgba(0, 240, 255, 0.1), rgba(0, 240, 255, 0.03));
+    margin-bottom: 0.75rem;
+    box-shadow: 0 4px 12px -6px rgba(0, 240, 255, 0.25);
 }
 .proof-card-icon i {
-    font-size: 1rem;
+    font-size: 1.05rem;
 }
 .proof-card-value {
-    font-size: 1.38rem;
-    line-height: 1.1;
+    font-size: 1.35rem;
+    line-height: 1.15;
     font-weight: 700;
     letter-spacing: -0.01em;
     font-family: 'Space Grotesk', sans-serif;
-    color: rgba(255, 255, 255, 0.98);
+    color: rgba(255, 255, 255, 0.97);
 }
 .proof-card-label {
-    margin-top: 0.34rem;
-    font-size: 0.68rem;
-    letter-spacing: 0.13em;
+    margin-top: 0.4rem;
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: rgba(167, 182, 202, 0.86);
+    color: rgba(167, 182, 202, 0.82);
+    line-height: 1.4;
+}
+
+/* ===========================================================
+   Lower Funnel — FAQ, Closing CTA, Newsletter
+   =========================================================== */
+
+.faq-side-card {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.15rem;
+    background: linear-gradient(165deg, rgba(30, 35, 58, 0.65), rgba(21, 24, 40, 0.82));
+    padding: 1.5rem;
+    box-shadow: 0 24px 50px -28px rgba(0, 0, 0, 0.55),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.faq-side-icon {
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 0.82rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.7rem;
+    color: rgba(0, 240, 255, 0.96);
+    border: 1px solid rgba(0, 240, 255, 0.34);
+    background: rgba(0, 240, 255, 0.1);
+}
+
+.faq-shell {
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 1.15rem;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01));
+    padding: 1rem;
+}
+.faq-item-premium {
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 0.9rem;
+    background: rgba(11, 13, 23, 0.42);
+    padding: 0.95rem 1rem;
+    transition: border-color 0.25s ease, background-color 0.25s ease;
+}
+.faq-item-premium:hover {
+    border-color: rgba(0, 240, 255, 0.2);
+}
+.faq-summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+.faq-summary::-webkit-details-marker {
+    display: none;
+}
+.faq-q {
+    font-size: 0.985rem;
+    line-height: 1.42;
+    font-weight: 600;
+    color: rgba(231, 238, 247, 0.98);
+}
+.faq-toggle {
+    color: rgba(167, 182, 202, 0.9);
+    font-size: 1rem;
+    transition: transform 0.25s ease, color 0.25s ease;
+}
+details[open] .faq-toggle {
+    transform: rotate(45deg);
+    color: rgba(0, 240, 255, 0.95);
+}
+.faq-answer {
+    font-size: 0.89rem;
+    line-height: 1.62;
+    color: rgba(167, 182, 202, 0.96);
+}
+
+.final-close-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 38%, rgba(0, 240, 255, 0.06), transparent 66%);
+}
+.final-close-card {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    background: linear-gradient(170deg, rgba(30, 35, 58, 0.48), rgba(11, 13, 23, 0.68));
+    backdrop-filter: blur(16px);
+    padding: 4rem 2.5rem;
+    box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.65),
+                0 0 80px -35px rgba(0, 240, 255, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+@media (min-width: 768px) {
+    .final-close-card {
+        padding: 5rem 4rem;
+    }
+}
+@media (min-width: 1024px) {
+    .final-close-card {
+        padding: 5.5rem 5rem;
+    }
+}
+.final-close-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: rgba(125, 239, 255, 0.85);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    background: rgba(0, 240, 255, 0.05);
+    border-radius: 9999px;
+    padding: 0.35rem 0.85rem;
+    margin-bottom: 1.5rem;
+}
+.final-proof-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(215, 226, 242, 0.92);
+    border-radius: 9999px;
+    padding: 0.36rem 0.72rem;
+    font-size: 0.74rem;
+}
+.final-proof-chip i {
+    color: rgba(0, 240, 255, 0.92);
+    font-size: 0.84rem;
+}
+
+.newsletter-shell {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.25rem;
+    background: linear-gradient(170deg, rgba(123, 44, 191, 0.08), rgba(21, 24, 40, 0.78) 50%);
+    padding: 2rem 1.75rem;
+    box-shadow: 0 20px 40px -22px rgba(0, 0, 0, 0.55),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.newsletter-kicker {
+    font-size: 0.69rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: rgba(184, 144, 255, 0.95);
+}
+.newsletter-icon {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(184, 144, 255, 0.95);
+    border: 1px solid rgba(184, 144, 255, 0.36);
+    background: rgba(123, 44, 191, 0.18);
 }
 
 /* Warm gradient tint for urgency/warning sections */
 .section-warm-tint {
-    background: linear-gradient(180deg, rgba(239, 68, 68, 0.015) 0%, transparent 60%);
+    background: linear-gradient(180deg, rgba(239, 68, 68, 0.025) 0%, rgba(239, 68, 68, 0.008) 40%, transparent 70%);
+}
+
+/* Trust reassurance section — premium divider area */
+.trust-reassurance-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 2rem;
+}
+
+/* How it works step card surface */
+.hiw-step {
+    padding: 2rem 1.5rem 1.75rem;
+    border-radius: 1.15rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: linear-gradient(170deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.008));
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.hiw-step:hover {
+    border-color: rgba(0, 240, 255, 0.12);
+    box-shadow: 0 12px 30px -16px rgba(0, 0, 0, 0.35);
 }
 
 /* Neutral persona tags (distinct from feature accent tags) */
 .persona-tag {
     font-size: 0.6875rem;
-    padding: 0.25rem 0.625rem;
+    padding: 0.25rem 0.65rem;
     border-radius: 9999px;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: rgba(215, 226, 242, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(215, 226, 242, 0.78);
     letter-spacing: 0.015em;
 }
 
@@ -682,9 +1064,9 @@ details[open] {
 .hiw-connector {
     background: repeating-linear-gradient(
         90deg,
-        rgba(0, 240, 255, 0.2) 0px,
-        rgba(0, 240, 255, 0.2) 6px,
-        transparent 6px,
+        rgba(0, 240, 255, 0.18) 0px,
+        rgba(0, 240, 255, 0.18) 5px,
+        transparent 5px,
         transparent 14px
     );
 }
