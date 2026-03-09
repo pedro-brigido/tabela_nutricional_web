@@ -37,6 +37,7 @@ dependencies = [
     "python-json-logger>=2",
     "pytz>=2024.1",
     "stripe>=8.0",
+    "openai>=1.30",
 ]
 
 [project.optional-dependencies]

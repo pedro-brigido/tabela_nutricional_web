@@ -85,6 +85,7 @@ def create_app(config_name: str | None = None) -> "Flask":
     from app.blueprints.billing import billing_bp
     from app.blueprints.product import product_bp
     from app.blueprints.legacy import legacy_bp
+    from app.blueprints.chat import chat_bp
 
     init_oauth(flask_app)
 
@@ -112,6 +113,7 @@ def create_app(config_name: str | None = None) -> "Flask":
     flask_app.register_blueprint(billing_bp)
     flask_app.register_blueprint(product_bp)
     flask_app.register_blueprint(legacy_bp)
+    flask_app.register_blueprint(chat_bp)
 
     @flask_app.context_processor
     def inject_billing_flags():

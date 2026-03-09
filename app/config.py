@@ -55,6 +55,14 @@ class BaseConfig:
 
     SUBSCRIBERS_DB_PATH = str(DATA_DIR / "subscribers.db")
 
+    # AI Chat (OpenAI)
+    OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+    OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
+    CHAT_MAX_HISTORY = int(os.environ.get("CHAT_MAX_HISTORY", "20"))
+    CHAT_MAX_TOKENS = int(os.environ.get("CHAT_MAX_TOKENS", "500"))
+    CHAT_SESSION_TTL_HOURS = int(os.environ.get("CHAT_SESSION_TTL_HOURS", "24"))
+    CHAT_TEMPERATURE = float(os.environ.get("CHAT_TEMPERATURE", "0.3"))
+
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True

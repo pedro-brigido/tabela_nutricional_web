@@ -390,5 +390,17 @@ def register_cli(app: Flask) -> None:
         db.session.commit()
         click.echo(f"Anonymized {count} user(s).")
 
+    @app.cli.command("cleanup-chat")
+    def cleanup_chat():
+        """Remove chat sessions older than TTL."""
+        from flask import current_app
+
+        from app.services.chat_service import ChatService
+
+        svc = ChatService()
+        ttl = current_app.config.get("CHAT_SESSION_TTL_HOURS", 24)
+        removed = svc.cleanup_expired_sessions(ttl)
+        click.echo(f"Removed {removed} expired chat session(s).")
+
 
 _PLANS_SEED = PLANS_SEED
