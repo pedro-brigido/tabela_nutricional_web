@@ -322,47 +322,46 @@ body {
     }
 }
 
-/* Featured badge pill at top */
+/* Featured badge — inline pill inside card header row */
 .pricing-featured-badge {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
-    padding: 0.3rem 0.85rem;
-    background: linear-gradient(135deg, #00F0FF, #00C8D6);
-    color: #0B0D17;
-    font-size: 0.625rem;
+    gap: 0.28rem;
+    padding: 0.22rem 0.62rem;
+    background: rgba(0, 240, 255, 0.08);
+    color: #00F0FF;
+    font-size: 0.595rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.13em;
     border-radius: 9999px;
+    border: 1px solid rgba(0, 240, 255, 0.25);
     white-space: nowrap;
-    box-shadow: 0 4px 14px -3px rgba(0, 240, 255, 0.4);
-    z-index: 2;
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-top: 0.1rem;
 }
 
-/* Plan icon — small, consistent */
+/* Plan icon — removed; replaced by inline badge + ideal-tag treatment */
 .pricing-plan-icon {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 0.5rem;
+    display: none;
+}
+
+/* "Ideal for" micro-label above plan name */
+.pricing-ideal-tag {
     display: flex;
     align-items: center;
-    justify-content: center;
-    color: rgba(0, 240, 255, 0.65);
-    background: rgba(0, 240, 255, 0.04);
-    border: 1px solid rgba(0, 240, 255, 0.12);
-    font-size: 0.95rem;
-    flex-shrink: 0;
+    gap: 0.3rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: rgba(167, 182, 202, 0.55);
+    margin-bottom: 0.38rem;
 }
-.pricing-plan-icon-featured {
-    color: #00F0FF;
-    background: rgba(0, 240, 255, 0.08);
-    border-color: rgba(0, 240, 255, 0.25);
-    box-shadow: 0 4px 12px -4px rgba(0, 240, 255, 0.3);
+.pricing-ideal-tag i {
+    font-size: 0.72rem;
+    color: rgba(0, 240, 255, 0.48);
 }
 
 /* CTA buttons — pricing-specific */
@@ -705,6 +704,8 @@ details.faq-item[open] {
     .btn-cta-secondary,
     .feature-card-icon,
     .benefit-card-icon,
+    .benefit-card-icon::before,
+    .benefit-card-icon::after,
     .hiw-icon-ring,
     .benefit-card-glow,
     .pricing-cta-primary,
@@ -815,52 +816,74 @@ details.faq-item[open] {
 }
 
 .proof-card {
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 1rem;
-    background: linear-gradient(165deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
-    padding: 1.35rem 1.15rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.15rem;
+    background: linear-gradient(155deg, rgba(0, 240, 255, 0.045) 0%, rgba(21, 24, 40, 0.65) 55%, rgba(18, 21, 36, 0.5) 100%);
+    padding: 1.85rem 1.5rem 1.6rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    position: relative;
     transition: border-color 0.3s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
 }
+.proof-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 18%;
+    right: 18%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.48), transparent);
+    pointer-events: none;
+}
 .proof-card:hover {
-    transform: translateY(-2px);
-    border-color: rgba(0, 240, 255, 0.18);
-    box-shadow: 0 18px 36px -18px rgba(0, 0, 0, 0.45);
+    transform: translateY(-4px);
+    border-color: rgba(0, 240, 255, 0.24);
+    box-shadow: 0 24px 52px -14px rgba(0, 0, 0, 0.55),
+                0 0 40px -28px rgba(0, 240, 255, 0.3);
 }
 .proof-card-icon {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 0.75rem;
+    width: 3.4rem;
+    height: 3.4rem;
+    border-radius: 1rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: rgba(0, 240, 255, 0.9);
-    border: 1px solid rgba(0, 240, 255, 0.2);
-    background: linear-gradient(145deg, rgba(0, 240, 255, 0.1), rgba(0, 240, 255, 0.03));
-    margin-bottom: 0.75rem;
-    box-shadow: 0 4px 12px -6px rgba(0, 240, 255, 0.25);
+    color: #00f0ff;
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    background: linear-gradient(145deg, rgba(0, 240, 255, 0.16), rgba(0, 240, 255, 0.04));
+    margin-bottom: 1.15rem;
+    box-shadow: 0 0 24px -8px rgba(0, 240, 255, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s ease,
+                border-color 0.25s ease;
 }
 .proof-card-icon i {
-    font-size: 1.05rem;
+    font-size: 1.5rem;
+}
+.proof-card:hover .proof-card-icon {
+    transform: translateY(-2px) scale(1.07);
+    border-color: rgba(0, 240, 255, 0.5);
+    box-shadow: 0 0 36px -6px rgba(0, 240, 255, 0.65),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 .proof-card-value {
-    font-size: 1.35rem;
+    font-size: 1.45rem;
     line-height: 1.15;
     font-weight: 700;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
     font-family: 'Space Grotesk', sans-serif;
     color: rgba(255, 255, 255, 0.97);
+    margin-bottom: 0.45rem;
 }
 .proof-card-label {
-    margin-top: 0.4rem;
-    font-size: 0.66rem;
-    letter-spacing: 0.14em;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: rgba(167, 182, 202, 0.82);
-    line-height: 1.4;
+    color: rgba(167, 182, 202, 0.78);
+    line-height: 1.5;
 }
 
 /* ===========================================================
@@ -1120,69 +1143,162 @@ details[open] .faq-toggle {
    Benefit Cards — Premium Feature Card System
    =========================================================== */
 
-/* Icon container — larger, bolder, more presence */
+/* Card accents are controlled per item for richer icon emphasis */
+.benefit-card {
+    --benefit-accent: 0, 240, 255;
+}
+.benefit-card:nth-child(2) {
+    --benefit-accent: 72, 210, 255;
+}
+.benefit-card:nth-child(3) {
+    --benefit-accent: 255, 180, 80;
+}
+.benefit-card:nth-child(4) {
+    --benefit-accent: 105, 255, 228;
+}
+.benefit-card:nth-child(5) {
+    --benefit-accent: 172, 230, 255;
+}
+.benefit-card:nth-child(6) {
+    --benefit-accent: 0, 255, 188;
+}
+
+.benefit-card-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.95rem;
+    margin-bottom: 1rem;
+}
+
+.benefit-card-title-group {
+    min-width: 0;
+}
+.benefit-card-title {
+    margin-bottom: 0;
+    transition: color 0.3s ease, text-shadow 0.35s ease;
+}
+.benefit-card:hover .benefit-card-title {
+    color: #f2ffff;
+    text-shadow: 0 0 20px rgba(var(--benefit-accent), 0.28);
+}
+
+/* Icon highlight without boxed container */
 .benefit-card-icon {
-    width: 3.5rem;
-    height: 3.5rem;
-    border-radius: 1rem;
+    position: relative;
+    width: auto;
+    height: auto;
+    border-radius: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: #00F0FF;
-    border: 1px solid rgba(0, 240, 255, 0.25);
-    background: linear-gradient(145deg, rgba(0, 240, 255, 0.15), rgba(0, 240, 255, 0.04));
-    box-shadow: 0 8px 20px -10px rgba(0, 240, 255, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    margin-bottom: 1.25rem;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 0.3s ease,
-                box-shadow 0.3s ease;
+    color: rgb(var(--benefit-accent));
+    margin: 0.1rem 0 0;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+}
+.benefit-card-icon::before {
+    content: '';
+    position: absolute;
+    inset: -0.7rem;
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(var(--benefit-accent), 0.34) 0%, rgba(var(--benefit-accent), 0.1) 45%, transparent 75%);
+    opacity: 0.62;
+    z-index: -2;
+    animation: benefit-icon-aura 3.4s ease-in-out infinite;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.benefit-card-icon::after {
+    content: '';
+    position: absolute;
+    inset: -0.48rem;
+    border: 1px solid rgba(var(--benefit-accent), 0.45);
+    border-radius: 9999px;
+    opacity: 0.48;
+    z-index: -1;
+    animation: benefit-icon-ring 3.4s ease-in-out infinite;
+    transition: opacity 0.35s ease, transform 0.35s ease, border-color 0.35s ease;
 }
 .benefit-card-icon i {
-    font-size: 1.4rem;
+    font-size: 2rem;
     line-height: 1;
-    filter: drop-shadow(0 1px 4px rgba(0, 240, 255, 0.25));
+    color: rgb(var(--benefit-accent));
+    filter: drop-shadow(0 0 10px rgba(var(--benefit-accent), 0.5))
+            drop-shadow(0 8px 18px rgba(var(--benefit-accent), 0.28));
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                filter 0.35s ease,
+                color 0.35s ease;
 }
 .group:hover .benefit-card-icon {
-    transform: translateY(-2px) scale(1.05);
-    border-color: rgba(0, 240, 255, 0.45);
-    box-shadow: 0 14px 28px -12px rgba(0, 240, 255, 0.6),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px) scale(1.03);
+}
+.group:hover .benefit-card-icon::before {
+    opacity: 1;
+    transform: scale(1.24);
+}
+.group:hover .benefit-card-icon::after {
+    opacity: 0.95;
+    border-color: rgba(var(--benefit-accent), 0.82);
+    transform: scale(1.2) rotate(11deg);
+}
+.group:hover .benefit-card-icon i {
+    transform: scale(1.12);
+    filter: drop-shadow(0 0 14px rgba(var(--benefit-accent), 0.72))
+            drop-shadow(0 12px 25px rgba(var(--benefit-accent), 0.4));
 }
 
-/* Category kicker — pill-style label */
+@keyframes benefit-icon-aura {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.62;
+    }
+    50% {
+        transform: scale(1.18);
+        opacity: 0.95;
+    }
+}
+@keyframes benefit-icon-ring {
+    0%, 100% {
+        transform: scale(0.96) rotate(0deg);
+        opacity: 0.45;
+    }
+    50% {
+        transform: scale(1.13) rotate(8deg);
+        opacity: 0.78;
+    }
+}
+
+/* Category label without pill/box */
 .benefit-card-kicker {
-    display: inline-block;
-    font-size: 0.625rem;
-    letter-spacing: 0.18em;
+    display: block;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    font-weight: 600;
-    color: rgba(0, 240, 255, 0.6);
-    background: rgba(0, 240, 255, 0.04);
-    border: 1px solid rgba(0, 240, 255, 0.1);
-    border-radius: 9999px;
-    padding: 0.2rem 0.65rem;
-    margin-bottom: 0.75rem;
-    transition: border-color 0.3s ease, color 0.3s ease;
+    font-weight: 700;
+    color: rgba(var(--benefit-accent), 0.82);
+    margin-bottom: 0.35rem;
+    text-shadow: 0 0 14px rgba(var(--benefit-accent), 0.22);
+    transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 .group:hover .benefit-card-kicker {
-    color: rgba(0, 240, 255, 0.8);
-    border-color: rgba(0, 240, 255, 0.2);
+    color: rgba(var(--benefit-accent), 1);
+    text-shadow: 0 0 20px rgba(var(--benefit-accent), 0.48);
 }
 
 /* Subtle top-left glow on hover */
 .benefit-card-glow {
     position: absolute;
-    top: -40%;
-    left: -20%;
-    width: 60%;
-    height: 60%;
-    background: radial-gradient(circle, rgba(0, 240, 255, 0.06) 0%, transparent 70%);
+    top: -52%;
+    left: -34%;
+    width: 78%;
+    height: 78%;
+    background: radial-gradient(circle, rgba(var(--benefit-accent), 0.2) 0%, rgba(var(--benefit-accent), 0.08) 40%, transparent 72%);
     border-radius: 50%;
     pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.4s ease;
+    opacity: 0.28;
+    transition: opacity 0.4s ease, transform 0.4s ease, filter 0.4s ease;
 }
 .benefit-card:hover .benefit-card-glow {
-    opacity: 1;
+    opacity: 0.82;
+    transform: translate(-2%, -1%) scale(1.08);
+    filter: blur(1px);
 }
