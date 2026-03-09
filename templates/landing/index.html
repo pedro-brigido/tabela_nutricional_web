@@ -901,43 +901,45 @@
     <!-- ============================================================
          9. FINAL CTA — Page closer
          ============================================================ -->
-    <section class="py-36 lg:py-44 relative section-divider overflow-hidden final-close-wrap">
+    <section class="py-24 lg:py-28 relative section-divider overflow-hidden final-close-wrap">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[450px] bg-terracota-cyan/[0.04] blur-[160px] rounded-full pointer-events-none"></div>
         <div class="absolute top-[58%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[280px] bg-terracota-purple/[0.03] blur-[130px] rounded-full pointer-events-none"></div>
-        <div class="max-w-5xl mx-auto px-6 relative">
-            <div class="final-close-card text-center">
-                <p class="final-close-kicker"><i class="ph ph-seal-check" aria-hidden="true"></i> Conformidade garantida</p>
-                <h2 class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-6 leading-[1.07]">
-                    Saia da incerteza regulatória.<br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-terracota-cyan to-terracota-purpleBright">Entregue rótulos com segurança.</span>
+        <div class="max-w-4xl mx-auto px-6 relative">
+            <div class="final-close-stack text-center">
+                <p class="final-close-kicker"><i class="ph ph-shield-check" aria-hidden="true"></i> Fluxo Terracota pronto para publicar</p>
+                <h2 class="final-close-title text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-5 leading-[1.08]">
+                    Sua próxima tabela nutricional pode sair hoje.<br>
+                    <span class="final-close-highlight">Com conformidade ANVISA e menos trabalho manual.</span>
                 </h2>
-                <p class="text-lg text-terracota-textLight/90 mb-10 max-w-2xl mx-auto leading-relaxed">
-                    Crie sua conta e gere sua primeira tabela conforme ANVISA hoje mesmo. Um fluxo profissional, confiável e pronto para escalar com seu negócio.
+                <p class="final-close-body text-lg text-terracota-textLight/90 mb-7 max-w-2xl mx-auto leading-relaxed">
+                    Centralize cálculo, arredondamento e exportação em um fluxo profissional para reduzir retrabalho e ganhar velocidade na operação.
                 </p>
 
                 {% if current_user.is_authenticated %}
-                <a href="{{ url_for('product.calculator') }}" class="btn-cta-primary inline-flex items-center gap-2.5 px-10 py-5 bg-terracota-cyan text-terracota-base font-bold text-lg rounded-full ring-1 ring-terracota-cyan/45 shadow-[0_0_40px_-6px_#00F0FF66]">
-                    <i class="ph ph-arrow-right"></i> Acessar Calculadora
+                <a href="{{ url_for('product.calculator') }}" class="btn-cta-primary final-close-cta inline-flex items-center gap-2.5 px-10 py-5 bg-terracota-cyan text-terracota-base font-bold text-lg rounded-full ring-1 ring-terracota-cyan/45 shadow-[0_0_34px_-8px_#00F0FF66]">
+                    <i class="ph ph-arrow-right"></i> Gerar Tabela Agora
                 </a>
                 {% else %}
-                <a href="{{ url_for('auth.register') }}" class="btn-cta-primary inline-flex items-center gap-2.5 px-10 py-5 bg-terracota-cyan text-terracota-base font-bold text-lg rounded-full ring-1 ring-terracota-cyan/45 shadow-[0_0_40px_-6px_#00F0FF66]">
+                <a href="{{ url_for('auth.register') }}" class="btn-cta-primary final-close-cta inline-flex items-center gap-2.5 px-10 py-5 bg-terracota-cyan text-terracota-base font-bold text-lg rounded-full ring-1 ring-terracota-cyan/45 shadow-[0_0_34px_-8px_#00F0FF66]">
                     <i class="ph ph-arrow-right"></i> Comece Grátis
                 </a>
                 {% endif %}
+                <p class="final-close-cta-note"><i class="ph ph-lock-open" aria-hidden="true"></i> Sem cartão no plano inicial. Cancele quando quiser.</p>
 
-                <div class="mt-7 flex flex-wrap justify-center gap-2.5">
-                    <span class="final-proof-chip"><i class="ph ph-check-circle"></i> Sem cartão</span>
-                    <span class="final-proof-chip"><i class="ph ph-check-circle"></i> Sem compromisso</span>
-                    <span class="final-proof-chip"><i class="ph ph-check-circle"></i> Cancele quando quiser</span>
+                <div class="final-proof-row">
+                    <span class="final-proof-chip"><i class="ph ph-gavel"></i> RDC 429, IN 75 e RDC 26 no motor</span>
+                    <span class="final-proof-chip"><i class="ph ph-file-pdf"></i> PDF pronto para design e impressão</span>
+                    <span class="final-proof-chip"><i class="ph ph-headset"></i> Suporte humano para casos específicos</span>
                 </div>
             </div>
+            <div class="final-news-bridge" aria-hidden="true"></div>
         </div>
     </section>
 
     <!-- ============================================================
          10. NEWSLETTER — Stay updated (soft capture for non-converters)
          ============================================================ -->
-    <section class="py-20 relative section-divider">
+    <section class="py-16 relative">
         <div class="max-w-3xl mx-auto px-6">
             <div class="newsletter-shell">
                 <div class="flex items-center gap-3 mb-4">

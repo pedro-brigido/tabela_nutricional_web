@@ -1427,57 +1427,135 @@ a:focus-visible {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(ellipse at 50% 38%, rgba(0, 240, 255, 0.06), transparent 66%);
+    background: radial-gradient(ellipse at 50% 36%, rgba(0, 240, 255, 0.05), transparent 68%);
 }
-.final-close-card {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 1.5rem;
-    background: linear-gradient(170deg, rgba(30, 35, 58, 0.48), rgba(11, 13, 23, 0.68));
-    backdrop-filter: blur(16px);
-    padding: 4rem 2.5rem;
-    box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.65),
-                0 0 80px -35px rgba(0, 240, 255, 0.18),
-                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+.final-close-stack {
+    max-width: 52rem;
+    margin: 0 auto;
+    position: relative;
 }
-@media (min-width: 768px) {
-    .final-close-card {
-        padding: 5rem 4rem;
-    }
-}
-@media (min-width: 1024px) {
-    .final-close-card {
-        padding: 5.5rem 5rem;
-    }
+.final-close-title {
+    letter-spacing: -0.022em;
+    text-wrap: balance;
+    color: rgba(244, 250, 255, 0.98);
 }
 .final-close-kicker {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.68rem;
-    letter-spacing: 0.18em;
+    font-size: 0.64rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     font-weight: 700;
-    color: rgba(125, 239, 255, 0.85);
-    border: 1px solid rgba(0, 240, 255, 0.2);
-    background: rgba(0, 240, 255, 0.05);
+    color: rgba(163, 240, 255, 0.9);
+    border: 1px solid rgba(0, 240, 255, 0.24);
+    background: rgba(0, 240, 255, 0.07);
     border-radius: 9999px;
-    padding: 0.35rem 0.85rem;
-    margin-bottom: 1.5rem;
+    padding: 0.33rem 0.8rem;
+    margin-bottom: 1.12rem;
+}
+.final-close-kicker i {
+    font-size: 0.84rem;
+}
+.final-close-highlight {
+    color: rgba(218, 246, 255, 0.96);
+    background: linear-gradient(92deg, rgba(200, 244, 255, 0.98), rgba(165, 222, 247, 0.9));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.final-close-body {
+    max-width: 54ch;
+    color: rgba(186, 202, 222, 0.93);
+    font-size: 1rem;
+    line-height: 1.58;
+}
+.final-close-cta {
+    padding: 1.02rem 2.08rem;
+    background: linear-gradient(145deg, rgba(0, 240, 255, 0.96), rgba(95, 245, 255, 0.9));
+    box-shadow: 0 18px 30px -20px rgba(0, 240, 255, 0.72),
+                0 12px 24px -18px rgba(0, 0, 0, 0.68);
+}
+.final-close-cta:hover {
+    box-shadow: 0 22px 36px -20px rgba(0, 240, 255, 0.8),
+                0 14px 28px -18px rgba(0, 0, 0, 0.72);
+}
+.final-close-cta-note {
+    margin-top: 0.8rem;
+    font-size: 0.79rem;
+    color: rgba(176, 191, 212, 0.9);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.final-close-cta-note i {
+    color: rgba(0, 240, 255, 0.9);
+    font-size: 0.86rem;
+}
+.final-proof-row {
+    margin-top: 1.12rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
 }
 .final-proof-chip {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.03);
-    color: rgba(215, 226, 242, 0.92);
+    gap: 0.4rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(217, 229, 245, 0.94);
     border-radius: 9999px;
-    padding: 0.36rem 0.72rem;
-    font-size: 0.74rem;
+    padding: 0.42rem 0.78rem;
+    font-size: 0.725rem;
+    letter-spacing: 0.008em;
 }
 .final-proof-chip i {
-    color: rgba(0, 240, 255, 0.92);
-    font-size: 0.84rem;
+    color: rgba(140, 240, 255, 0.94);
+    font-size: 0.8rem;
+}
+.final-news-bridge {
+    width: min(520px, 72%);
+    height: 1px;
+    margin: 2.3rem auto 0;
+    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.34), transparent);
+    position: relative;
+}
+.final-news-bridge::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 9999px;
+    background: rgba(0, 240, 255, 0.94);
+    box-shadow: 0 0 0 4px rgba(0, 240, 255, 0.13);
+}
+@media (max-width: 767px) {
+    .final-close-title {
+        font-size: 2.03rem;
+        line-height: 1.12;
+    }
+    .final-close-body {
+        font-size: 0.93rem;
+    }
+    .final-close-cta {
+        width: 100%;
+        justify-content: center;
+        padding: 0.95rem 1.2rem;
+        font-size: 1rem;
+    }
+    .final-proof-chip {
+        font-size: 0.7rem;
+        padding: 0.36rem 0.62rem;
+    }
+    .final-news-bridge {
+        margin-top: 1.9rem;
+        width: min(420px, 82%);
+    }
 }
 
 .newsletter-shell {
