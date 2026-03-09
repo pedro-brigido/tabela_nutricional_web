@@ -42,7 +42,7 @@ def checkout():
     plan_slug = (request.form.get("plan_slug") or "").strip()
     if not plan_slug:
         flash("Plano inválido para checkout.", "error")
-        return redirect(url_for("main.pricing"))
+        return redirect(url_for("main.index", _anchor="planos"))
 
     current_app.logger.info(
         "Checkout requested by user=%s plan=%s",
@@ -77,7 +77,7 @@ def checkout():
             "Não foi possível iniciar o checkout no momento. Tente novamente.",
             "error",
         )
-        return redirect(url_for("main.pricing"))
+        return redirect(url_for("main.index", _anchor="planos"))
     return redirect(checkout_url)
 
 
@@ -132,7 +132,7 @@ def portal_redirect():
     except Exception as exc:
         current_app.logger.exception("Falha ao criar billing portal Stripe: %s", exc)
         flash("Não foi possível abrir o portal de cobrança agora.", "error")
-        return redirect(url_for("main.pricing"))
+        return redirect(url_for("main.index", _anchor="planos"))
     return redirect(portal_url)
 
 

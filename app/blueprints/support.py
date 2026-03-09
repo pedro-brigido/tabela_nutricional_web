@@ -14,7 +14,7 @@ support_bp = Blueprint("support", __name__, url_prefix="")
 
 @support_bp.route("/help")
 def help_page():
-    return redirect(url_for("main.index") + "#ajuda")
+    return render_template("support/help.html")
 
 
 @support_bp.route("/contact", methods=["GET", "POST"])
@@ -59,7 +59,16 @@ def contact():
 
         if not name or not email or not message:
             flash("Preencha todos os campos obrigatórios.", "error")
-            return redirect(url_for("main.index") + "#contato")
+            return render_template(
+                "support/contact.html",
+                prefill={
+                    "name": name,
+                    "email": email,
+                    "category": category,
+                    "subject": subject,
+                    "message": message,
+                },
+            ), 400
 
         if current_user.is_authenticated:
             ticket = SupportTicket(
@@ -78,9 +87,9 @@ def contact():
         )
 
         flash("Mensagem enviada! Responderemos em breve.", "success")
-        return redirect(url_for("main.index") + "#contato")
+        return redirect(url_for("support.contact"))
 
-    return redirect(url_for("main.index") + "#contato")
+    return render_template("support/contact.html", prefill=_prefill_from_args())
 
 
 @support_bp.route("/support/tickets")

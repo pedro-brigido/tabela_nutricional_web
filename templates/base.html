@@ -46,7 +46,7 @@
                 </div>
             </a>
             <div class="flex items-center gap-4">
-                <a href="{{ url_for('main.pricing') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Planos</a>
+                <a href="{{ url_for('main.index', _anchor='planos') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Planos</a>
                 <a href="{{ url_for('support.help_page') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Ajuda</a>
                 <a href="{{ url_for('support.contact') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Contato</a>
                 {% if current_user.is_authenticated %}

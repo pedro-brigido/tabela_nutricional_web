@@ -78,57 +78,6 @@ def index():
     )
 
 
-@main_bp.route("/pricing")
-def pricing():
-    """Pricing page with plan comparison."""
-    from app.services.plan_service import list_plans, marketing_plans
-
-    bootstrap_warning = None
-    bootstrap_error = None
-
-    try:
-        plans = list_plans()
-    except OperationalError:
-        # Most common: migrations not applied yet (no such table: plans)
-        plans = marketing_plans()
-        bootstrap_error = (
-            "Banco ainda não inicializado. Rode `flask db upgrade` e `flask seed-plans` "
-            "para persistir os planos."
-        )
-    except Exception:
-        plans = marketing_plans()
-        bootstrap_error = (
-            "Não foi possível carregar os planos do banco agora. "
-            "Exibindo os planos padrão."
-        )
-    else:
-        if not plans:
-            plans = marketing_plans()
-            bootstrap_warning = (
-                "Planos ainda não foram carregados no banco. "
-                "Rode `flask seed-plans` para persistir."
-            )
-
-    # Provide current plan for authenticated users so the template can
-    # show duplicate-subscription warnings client-side.
-    current_plan = None
-    try:
-        from flask_login import current_user
-        if current_user.is_authenticated:
-            from app.services.plan_service import get_user_plan
-            current_plan = get_user_plan(current_user.id)
-    except Exception:
-        pass
-
-    return render_template(
-        "main/pricing.html",
-        plans=plans,
-        current_plan=current_plan,
-        bootstrap_warning=bootstrap_warning,
-        bootstrap_error=bootstrap_error,
-    )
-
-
 @main_bp.route("/privacy")
 def privacy():
     """Privacy policy (LGPD)."""
@@ -210,7 +159,6 @@ def sitemap_xml():
 
     pages = [
         {"loc": url_for("main.index", _external=True), "priority": "1.0", "changefreq": "weekly"},
-        {"loc": url_for("main.pricing", _external=True), "priority": "0.8", "changefreq": "monthly"},
         {"loc": url_for("support.help_page", _external=True), "priority": "0.6", "changefreq": "monthly"},
         {"loc": url_for("support.contact", _external=True), "priority": "0.5", "changefreq": "monthly"},
         {"loc": url_for("main.privacy", _external=True), "priority": "0.3", "changefreq": "yearly"},

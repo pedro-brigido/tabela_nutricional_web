@@ -284,136 +284,240 @@ body {
    Pricing Cards — Premium Card System
    =========================================================== */
 
-/* Featured card — gradient border + glow + raised */
-.pricing-card-featured {
-    background: linear-gradient(180deg, rgba(0, 240, 255, 0.05) 0%, #151828 40%);
-    border: 1px solid transparent;
+.pricing-grid {
     position: relative;
-    z-index: 1;
+}
+.pricing-grid::before {
+    content: '';
+    position: absolute;
+    inset: -0.8rem -0.6rem;
+    border-radius: 1.4rem;
+    pointer-events: none;
+    background: radial-gradient(120% 70% at 50% 0%, rgba(0, 240, 255, 0.07), transparent 58%);
+}
+.pricing-card {
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    background: linear-gradient(172deg, rgba(23, 28, 44, 0.82), rgba(13, 17, 29, 0.9));
+    box-shadow: 0 22px 46px -30px rgba(0, 0, 0, 0.72),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.pricing-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 12%;
+    right: 12%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+    pointer-events: none;
+}
+.pricing-card-default {
+    background: linear-gradient(172deg, rgba(22, 27, 42, 0.78), rgba(13, 17, 29, 0.88));
+}
+.pricing-card-default:hover {
+    border-color: rgba(255, 255, 255, 0.18);
+    transform: translateY(-2px);
+}
+
+/* Featured card — refined highlight, less glow */
+.pricing-card-featured {
+    border-color: rgba(0, 240, 255, 0.38);
+    background: linear-gradient(172deg, rgba(17, 35, 48, 0.9), rgba(12, 18, 31, 0.92));
+    box-shadow: 0 24px 52px -30px rgba(0, 0, 0, 0.76),
+                0 0 56px -44px rgba(0, 240, 255, 0.42),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 .pricing-card-featured::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    padding: 1px;
-    border-radius: inherit;
-    background: linear-gradient(170deg, rgba(0, 240, 255, 0.55), rgba(123, 44, 191, 0.2) 50%, rgba(0, 240, 255, 0.08));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-}
-.pricing-card-featured::after {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: 10%;
-    right: 10%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.6), transparent);
-    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.62), transparent);
 }
 
-/* Featured card keeps the same footprint as others */
-@media (min-width: 1024px) {
-    .pricing-card-featured {
-        box-shadow: 0 0 70px -15px rgba(0, 240, 255, 0.12),
-                    0 30px 60px -15px rgba(0, 0, 0, 0.45);
-    }
-}
-
-/* Featured badge — inline pill inside card header row */
 .pricing-featured-badge {
     display: inline-flex;
     align-items: center;
-    gap: 0.28rem;
-    padding: 0.22rem 0.62rem;
-    background: rgba(0, 240, 255, 0.08);
-    color: #00F0FF;
-    font-size: 0.595rem;
+    gap: 0.3rem;
+    padding: 0.24rem 0.64rem;
+    background: rgba(0, 240, 255, 0.09);
+    color: rgba(164, 241, 255, 0.97);
+    font-size: 0.58rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.13em;
+    letter-spacing: 0.12em;
     border-radius: 9999px;
-    border: 1px solid rgba(0, 240, 255, 0.25);
+    border: 1px solid rgba(0, 240, 255, 0.3);
     white-space: nowrap;
     flex-shrink: 0;
     align-self: flex-start;
-    margin-top: 0.1rem;
+    margin-top: 0.08rem;
 }
 
-/* Plan icon — removed; replaced by inline badge + ideal-tag treatment */
-.pricing-plan-icon {
-    display: none;
-}
-
-/* "Ideal for" micro-label above plan name */
 .pricing-ideal-tag {
     display: flex;
     align-items: center;
     gap: 0.3rem;
-    font-size: 0.62rem;
-    letter-spacing: 0.14em;
+    font-size: 0.61rem;
+    letter-spacing: 0.13em;
     text-transform: uppercase;
     font-weight: 600;
-    color: rgba(167, 182, 202, 0.55);
-    margin-bottom: 0.38rem;
+    color: rgba(167, 182, 202, 0.62);
+    margin-bottom: 0.36rem;
 }
 .pricing-ideal-tag i {
     font-size: 0.72rem;
-    color: rgba(0, 240, 255, 0.48);
+    color: rgba(0, 240, 255, 0.5);
+}
+.pricing-plan-name {
+    font-size: 1.38rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    color: rgba(235, 242, 251, 0.96);
+}
+.pricing-plan-name-featured {
+    color: rgba(244, 251, 255, 0.99);
 }
 
-/* CTA buttons — pricing-specific */
+.pricing-price-block {
+    margin-bottom: 0.88rem;
+}
+.pricing-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.18rem;
+}
+.pricing-currency {
+    font-size: 0.74rem;
+    color: rgba(170, 187, 211, 0.76);
+    font-weight: 600;
+}
+.pricing-price-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.35rem;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: rgba(235, 242, 251, 0.96);
+    font-weight: 700;
+}
+.pricing-price-value-featured {
+    color: #fff;
+}
+.pricing-period {
+    font-size: 0.72rem;
+    color: rgba(163, 180, 204, 0.68);
+    font-weight: 600;
+}
+.pricing-price-free {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.22rem;
+    line-height: 1;
+    letter-spacing: -0.018em;
+    color: rgba(236, 243, 252, 0.97);
+    font-weight: 700;
+}
+.pricing-price-note {
+    margin-top: 0.16rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: rgba(164, 181, 205, 0.7);
+}
+.pricing-subtitle {
+    font-size: 0.79rem;
+    color: rgba(169, 185, 208, 0.86);
+    margin-bottom: 1rem;
+    line-height: 1.56;
+}
+.pricing-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    margin-bottom: 1rem;
+}
+.pricing-divider-featured {
+    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.3), transparent);
+}
+
+.pricing-feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.52rem;
+}
+.pricing-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.8rem;
+    color: rgba(208, 220, 238, 0.9);
+    line-height: 1.4;
+}
+.pricing-feature-icon {
+    color: rgba(125, 239, 255, 0.62);
+    font-size: 0.87rem;
+    flex-shrink: 0;
+}
+.pricing-feature-icon-featured {
+    color: rgba(125, 239, 255, 0.9);
+}
+
+.pricing-cta {
+    border-radius: 0.82rem;
+}
 .pricing-cta-primary {
-    background: #00F0FF;
+    background: linear-gradient(145deg, rgba(0, 240, 255, 0.97), rgba(94, 245, 255, 0.88));
     color: #0B0D17;
     font-weight: 700;
-    box-shadow: 0 0 24px -4px rgba(0, 240, 255, 0.35),
-                0 4px 12px -4px rgba(0, 0, 0, 0.2);
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-                background-color 0.25s ease;
+    border: 1px solid rgba(0, 240, 255, 0.45);
+    box-shadow: 0 18px 28px -20px rgba(0, 240, 255, 0.7);
 }
 .pricing-cta-primary:hover {
-    background: #fff;
     transform: translateY(-1px);
-    box-shadow: 0 0 36px -4px rgba(0, 240, 255, 0.45),
-                0 8px 20px -6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 22px 34px -20px rgba(0, 240, 255, 0.82);
 }
 .pricing-cta-secondary {
-    background: rgba(255, 255, 255, 0.04);
-    color: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-                background-color 0.25s ease,
-                border-color 0.25s ease;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+    color: rgba(228, 237, 248, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 .pricing-cta-secondary:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.18);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.05));
+    border-color: rgba(255, 255, 255, 0.3);
     transform: translateY(-1px);
-}
-
-/* Non-featured pricing card internal polish */
-.pricing-card:not(.pricing-card-featured) {
-    background: linear-gradient(175deg, rgba(30, 35, 58, 0.45), rgba(21, 24, 40, 0.65));
 }
 
 /* Pricing cards keep a consistent visual size across plans */
 .pricing-grid .pricing-card {
-    min-height: 29.5rem;
+    min-height: 30rem;
 }
-
 @media (min-width: 768px) {
     .pricing-grid .pricing-card {
         min-height: 31rem;
     }
 }
-
 @media (min-width: 1024px) {
     .pricing-grid .pricing-card {
-        min-height: 32rem;
+        min-height: 31.6rem;
+    }
+}
+@media (max-width: 767px) {
+    .pricing-grid::before {
+        inset: -0.5rem -0.25rem;
+    }
+    .pricing-grid .pricing-card {
+        min-height: auto;
+    }
+    .pricing-card {
+        border-radius: 1rem;
+    }
+    .pricing-price-value,
+    .pricing-price-free {
+        font-size: 2.05rem;
+    }
+    .trust-reassurance-section {
+        padding: 1rem 0.9rem;
+    }
+    .trust-reassurance-title {
+        font-size: 1.05rem;
     }
 }
 
@@ -674,39 +778,150 @@ body {
    Trust & Reassurance Cards
    =========================================================== */
 
+.trust-reassurance-section {
+    margin-top: 0.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.2rem;
+    background: linear-gradient(170deg, rgba(18, 23, 38, 0.84), rgba(11, 14, 24, 0.9));
+    padding: 1.25rem;
+    box-shadow: 0 26px 52px -38px rgba(0, 0, 0, 0.75),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+.trust-reassurance-head {
+    margin-bottom: 1.1rem;
+}
+.trust-reassurance-kicker {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.64rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: rgba(156, 178, 206, 0.86);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 9999px;
+    padding: 0.3rem 0.7rem;
+    margin-bottom: 0.6rem;
+}
+.trust-reassurance-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    line-height: 1.3;
+    font-weight: 600;
+    color: rgba(238, 244, 252, 0.98);
+}
+
+.trust-grid {
+    gap: 0.72rem;
+}
 .trust-card {
     display: flex;
-    align-items: center;
-    gap: 0.875rem;
-    padding: 1.1rem 1.2rem;
-    border-radius: 0.95rem;
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.008));
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    align-items: flex-start;
+    gap: 0.74rem;
+    padding: 0.92rem 0.95rem;
+    border-radius: 0.92rem;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.1);
     transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
 }
 .trust-card:hover {
-    border-color: rgba(255, 255, 255, 0.12);
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
-    box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.3);
+    border-color: rgba(0, 240, 255, 0.24);
+    background: linear-gradient(160deg, rgba(0, 240, 255, 0.05), rgba(255, 255, 255, 0.015));
+    box-shadow: 0 14px 30px -22px rgba(0, 240, 255, 0.22);
 }
 
 .trust-card-icon {
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 0.625rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(0, 240, 255, 0.7);
-    background: rgba(0, 240, 255, 0.05);
-    border: 1px solid rgba(0, 240, 255, 0.12);
-    font-size: 1rem;
+    color: rgba(146, 238, 255, 0.92);
+    background: linear-gradient(145deg, rgba(0, 240, 255, 0.16), rgba(0, 240, 255, 0.05));
+    border: 1px solid rgba(0, 240, 255, 0.26);
+    font-size: 0.92rem;
     flex-shrink: 0;
-    transition: color 0.3s ease, border-color 0.3s ease;
+    margin-top: 0.05rem;
+    transition: color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
 }
 .group:hover .trust-card-icon {
-    color: rgba(0, 240, 255, 0.9);
-    border-color: rgba(0, 240, 255, 0.22);
+    color: rgba(167, 243, 255, 0.98);
+    border-color: rgba(0, 240, 255, 0.4);
+    transform: translateY(-1px);
+}
+.trust-card-title {
+    font-size: 0.79rem;
+    font-weight: 600;
+    color: rgba(236, 243, 252, 0.98);
+    margin-bottom: 0.15rem;
+    line-height: 1.35;
+}
+.trust-card-copy {
+    font-size: 0.72rem;
+    color: rgba(174, 190, 212, 0.86);
+    line-height: 1.45;
+}
+
+.trust-reassurance-foot {
+    margin-top: 0.95rem;
+}
+.pricing-compare-kicker {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: rgba(155, 178, 205, 0.86);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 9999px;
+    padding: 0.28rem 0.68rem;
+    margin-bottom: 0.74rem;
+}
+.pricing-compare-shell {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    background: linear-gradient(170deg, rgba(14, 18, 30, 0.86), rgba(11, 14, 23, 0.92));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+.pricing-compare-table {
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.78rem;
+}
+.pricing-compare-table thead th {
+    padding: 0.9rem 0.95rem;
+    font-size: 0.66rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: rgba(165, 181, 203, 0.82);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.01);
+}
+.pricing-compare-table thead th:first-child {
+    color: rgba(216, 228, 244, 0.95);
+}
+.pricing-compare-table tbody td {
+    padding: 0.82rem 0.95rem;
+    color: rgba(204, 218, 236, 0.9);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    line-height: 1.38;
+}
+.pricing-compare-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.pricing-compare-table tbody td:first-child {
+    color: rgba(228, 236, 248, 0.97);
+    font-weight: 600;
+    min-width: 12rem;
+}
+.pricing-compare-table .is-featured {
+    color: rgba(169, 241, 255, 0.98);
+    font-weight: 600;
 }
 
 /* --- Button System --- */
@@ -1247,6 +1462,128 @@ a:focus-visible {
 .faq-side-proof i {
     color: rgba(125, 239, 255, 0.9);
 }
+.faq-contact-modal {
+    display: none;
+}
+.faq-contact-modal:not(.hidden) {
+    display: flex;
+}
+.faq-contact-overlay {
+    background: rgba(2, 5, 12, 0.74);
+    backdrop-filter: blur(5px);
+}
+.faq-contact-panel {
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 1.2rem;
+    background: linear-gradient(168deg, rgba(19, 26, 43, 0.96), rgba(10, 14, 24, 0.95));
+    padding: 1.35rem 1.35rem 1.25rem;
+    box-shadow: 0 34px 70px -34px rgba(0, 0, 0, 0.82),
+                inset 0 1px 0 rgba(255, 255, 255, 0.07),
+                0 0 0 1px rgba(0, 240, 255, 0.07);
+}
+.faq-contact-close {
+    position: absolute;
+    top: 0.88rem;
+    right: 0.88rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(189, 203, 223, 0.92);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.22s ease, color 0.22s ease, background-color 0.22s ease;
+}
+.faq-contact-close:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: rgba(245, 250, 255, 0.98);
+    background: rgba(255, 255, 255, 0.06);
+}
+.faq-contact-kicker {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid rgba(0, 240, 255, 0.28);
+    background: rgba(0, 240, 255, 0.08);
+    color: rgba(149, 240, 255, 0.95);
+    border-radius: 9999px;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.64rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+.faq-contact-title {
+    margin-top: 0.72rem;
+    font-size: 1.28rem;
+    line-height: 1.24;
+    font-weight: 700;
+    color: rgba(242, 249, 255, 0.98);
+    letter-spacing: -0.012em;
+}
+.faq-contact-copy {
+    margin-top: 0.48rem;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    color: rgba(176, 192, 213, 0.95);
+    max-width: 60ch;
+}
+.faq-contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.74rem;
+}
+.faq-contact-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+.faq-contact-field span {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgba(182, 197, 218, 0.9);
+}
+.faq-contact-input {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0.82rem;
+    background: rgba(8, 12, 21, 0.72);
+    color: rgba(241, 247, 255, 0.98);
+    font-size: 0.88rem;
+    line-height: 1.4;
+    padding: 0.66rem 0.82rem;
+    transition: border-color 0.22s ease, box-shadow 0.22s ease, background-color 0.22s ease;
+}
+.faq-contact-input::placeholder {
+    color: rgba(145, 162, 186, 0.86);
+}
+.faq-contact-input:focus-visible {
+    outline: none;
+    border-color: rgba(0, 240, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.14);
+    background: rgba(8, 12, 21, 0.92);
+}
+.faq-contact-textarea {
+    resize: vertical;
+    min-height: 7.3rem;
+}
+.faq-contact-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.56rem;
+    margin-top: 0.22rem;
+}
+.faq-contact-proof {
+    margin-top: 0.24rem;
+    font-size: 0.74rem;
+    color: rgba(168, 184, 206, 0.92);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.34rem;
+}
+.faq-contact-proof i {
+    color: rgba(133, 240, 255, 0.93);
+}
 
 .faq-shell {
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1407,6 +1744,15 @@ a:focus-visible {
     .faq-side-proof {
         font-size: 0.75rem;
     }
+    .faq-contact-panel {
+        padding: 1.15rem 1.05rem 1.05rem;
+    }
+    .faq-contact-title {
+        font-size: 1.13rem;
+    }
+    .faq-contact-input {
+        font-size: 0.85rem;
+    }
 }
 @media (max-width: 540px) {
     .faq-side-card {
@@ -1558,31 +1904,115 @@ a:focus-visible {
     }
 }
 
+.newsletter-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 0%, rgba(0, 240, 255, 0.04), transparent 64%);
+}
 .newsletter-shell {
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 1.25rem;
-    background: linear-gradient(170deg, rgba(123, 44, 191, 0.08), rgba(21, 24, 40, 0.78) 50%);
-    padding: 2rem 1.75rem;
-    box-shadow: 0 20px 40px -22px rgba(0, 0, 0, 0.55),
-                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.3rem;
+    background: linear-gradient(170deg, rgba(20, 26, 42, 0.86), rgba(11, 15, 27, 0.9));
+    padding: 1.85rem 1.55rem;
+    box-shadow: 0 24px 48px -30px rgba(0, 0, 0, 0.68),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.newsletter-shell::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 14%;
+    right: 14%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.38), transparent);
+    pointer-events: none;
+}
+.newsletter-head {
+    display: block;
+    margin-bottom: 0.8rem;
 }
 .newsletter-kicker {
-    font-size: 0.69rem;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.64rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     font-weight: 700;
-    color: rgba(184, 144, 255, 0.95);
+    color: rgba(148, 239, 255, 0.92);
+    margin-bottom: 0.42rem;
+    border: 1px solid rgba(0, 240, 255, 0.26);
+    background: rgba(0, 240, 255, 0.07);
+    border-radius: 9999px;
+    padding: 0.31rem 0.72rem;
 }
-.newsletter-icon {
-    width: 2.4rem;
-    height: 2.4rem;
-    border-radius: 0.75rem;
+.newsletter-title {
+    line-height: 1.18;
+    letter-spacing: -0.015em;
+}
+.newsletter-copy {
+    max-width: 64ch;
+    color: rgba(182, 198, 219, 0.92);
+}
+.newsletter-form {
+    margin-bottom: 0.82rem;
+}
+.newsletter-input {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+}
+.newsletter-input:focus {
+    outline: none;
+    border-color: rgba(0, 240, 255, 0.5);
+    box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.26);
+}
+.newsletter-cta {
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+    color: rgba(229, 237, 248, 0.96);
+}
+.newsletter-cta:hover {
+    border-color: rgba(0, 240, 255, 0.3);
+    background: linear-gradient(160deg, rgba(0, 240, 255, 0.14), rgba(255, 255, 255, 0.04));
+}
+.newsletter-proof-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+.newsletter-proof-chip {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    color: rgba(184, 144, 255, 0.95);
-    border: 1px solid rgba(184, 144, 255, 0.36);
-    background: rgba(123, 44, 191, 0.18);
+    gap: 0.32rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(208, 221, 239, 0.9);
+    border-radius: 9999px;
+    padding: 0.3rem 0.58rem;
+    font-size: 0.69rem;
+}
+.newsletter-proof-chip i {
+    color: rgba(125, 239, 255, 0.92);
+    font-size: 0.78rem;
+}
+.newsletter-msg {
+    margin-top: 0.72rem;
+    color: rgba(164, 181, 205, 0.85);
+}
+@media (max-width: 767px) {
+    .newsletter-shell {
+        padding: 1.35rem 1.05rem;
+        border-radius: 1.05rem;
+    }
+    .newsletter-title {
+        font-size: 1.35rem;
+    }
+    .newsletter-proof-chip {
+        font-size: 0.66rem;
+        padding: 0.27rem 0.5rem;
+    }
 }
 
 /* Warm gradient tint for urgency/warning sections */
@@ -1590,11 +2020,7 @@ a:focus-visible {
     background: linear-gradient(180deg, rgba(239, 68, 68, 0.025) 0%, rgba(239, 68, 68, 0.008) 40%, transparent 70%);
 }
 
-/* Trust reassurance section — premium divider area */
-.trust-reassurance-section {
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-    padding-top: 2rem;
-}
+/* Trust reassurance section styles are defined in the pricing block */
 
 /* ===========================================================
    How It Works — Premium Step Timeline

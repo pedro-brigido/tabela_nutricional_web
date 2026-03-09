@@ -21,7 +21,7 @@ Status geral após correções:
 - Auth: sessão + OAuth Google.
 
 ### Rotas principais mapeadas
-- Público: `/`, `/pricing`, `/privacy`, `/help`, `/contact`
+- Público: `/`, `/privacy`, `/help`, `/contact` (planos e comparativo ficam na landing `/#planos`)
 - Auth: `/login`, `/register`, `/logout`, `/forgot-password`, `/reset-password/<token>`
 - Conta: `/account/`, `/account/usage`, `/account/settings`, `/account/upgrade`
 - Calculadora/API: `/api/calculate`, `/api/import-excel`, `/api/tables`
@@ -153,7 +153,7 @@ Status geral após correções:
 | Fluxo | Status | Notas |
 |---|---|---|
 | Home (`/`) | OK | navegação principal funcional |
-| Pricing (`/pricing`) | OK | com fonte única de seed compartilhada |
+| Pricing (landing `/#planos`) | OK | com fonte única de seed compartilhada |
 | Login/Registro | OK | sem regressão observada por testes |
 | Calculadora → calcular | OK | endpoint funcional |
 | Calculadora → salvar tabela | OK | save automático + botão manual |

@@ -115,7 +115,7 @@ Assinaturas podem ser atribuídas manualmente via admin e também via Stripe (Ch
 ## Rotas principais
 
 - **/** — Landing
-- **/pricing** — Planos e preços
+- **/#planos** — Seção de planos e comparação simplificada na landing
 - **/health** — Health check (inclui status do banco)
 - **/login**, **/register**, **/logout** — Auth
 - **/forgot-password**, **/reset-password/<token>** — Redefinição de senha

@@ -487,6 +487,10 @@
          ============================================================ -->
     <section id="planos" class="py-32 relative section-divider">
         <div class="max-w-7xl mx-auto px-6">
+            {% set free_plan = (plans | selectattr('slug', 'equalto', 'free') | list | first) %}
+            {% set start_plan = (plans | selectattr('slug', 'equalto', 'flow_start') | list | first) %}
+            {% set pro_plan = (plans | selectattr('slug', 'equalto', 'flow_pro') | list | first) %}
+            {% set studio_plan = (plans | selectattr('slug', 'equalto', 'flow_studio') | list | first) %}
 
             {% if bootstrap_error %}
             <div class="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-sm text-red-200">
@@ -501,17 +505,16 @@
             {% endif %}
 
             <div class="text-center max-w-3xl mx-auto mb-16">
-                <h3 class="text-terracota-cyan font-semibold tracking-wider uppercase text-sm mb-3">Planos & Preços</h3>
+                <h3 class="text-terracota-cyan font-semibold tracking-wider uppercase text-sm mb-3">Planos Terracota</h3>
                 <h2 class="text-3xl md:text-4xl font-heading font-bold mb-4 leading-tight">
-                    Mais barato que <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">uma única multa</span> da ANVISA
+                    Conformidade profissional por uma fração do risco regulatório
                 </h2>
                 <p class="text-terracota-textMuted text-lg leading-relaxed max-w-2xl mx-auto">
-                    A menor multa por irregularidade em rótulos começa em <strong class="text-white">R$ 75.000</strong>.
-                    O Terracota custa a partir de <strong class="text-terracota-cyan">R$ 39,90/mês</strong> — e já garante conformidade.
+                    Escolha o plano pelo seu volume de produção e mantenha cálculo, regras da ANVISA e exportação no mesmo fluxo operacional.
                 </p>
             </div>
 
-            <div class="pricing-grid grid md:grid-cols-2 lg:grid-cols-4 gap-5 mb-16 items-stretch">
+            <div class="pricing-grid grid md:grid-cols-2 lg:grid-cols-4 gap-5 mb-12 md:mb-14 items-stretch">
                 {% for p in plans %}
                 {% set is_pro = (p.slug == 'flow_pro') %}
                 {% set is_free = (p.slug == 'free') %}
@@ -519,9 +522,9 @@
                 {% set is_studio = (p.slug == 'flow_studio') %}
 
                 {% if is_free %}
-                    {% set display_name = 'Grátis' %}
-                    {% set ideal_for = 'Testar a plataforma' %}
-                    {% set subtitle = 'Acesse as funcionalidades essenciais sem custo. Ideal para conhecer a ferramenta.' %}
+                    {% set display_name = 'Essencial' %}
+                    {% set ideal_for = 'Entrada sem risco' %}
+                    {% set subtitle = 'Valide seu fluxo com os recursos essenciais antes de escalar.' %}
                     {% set bullets = [
                         '1 tabela por mês',
                         'Até 10 ingredientes',
@@ -572,45 +575,46 @@
                     {% set cta_plan_slug = 'flow_studio' %}
                 {% endif %}
 
-                <div class="pricing-card card-base rounded-2xl flex flex-col h-full shadow-pricing transition-all relative {{ 'pricing-card-featured' if is_pro else 'bg-terracota-surface border border-white/[0.07] hover:border-white/[0.14]' }}">
+                <div class="pricing-card card-base rounded-2xl flex flex-col h-full shadow-pricing transition-all relative {{ 'pricing-card-featured' if is_pro else 'pricing-card-default' }}">
                     <div class="p-6 flex flex-col flex-grow">
                         <!-- Plan header -->
                         <div class="flex items-start justify-between gap-3 mb-5">
                             <div>
                                 <p class="pricing-ideal-tag"><i class="ph ph-user-circle" aria-hidden="true"></i>{{ ideal_for }}</p>
-                                <h3 class="text-[1.4rem] font-heading font-bold leading-tight tracking-tight {{ 'text-white' if is_pro else 'text-terracota-textLight' }}">{{ display_name }}</h3>
+                                <h3 class="pricing-plan-name {{ 'pricing-plan-name-featured' if is_pro else '' }}">{{ display_name }}</h3>
                             </div>
                             {% if is_pro %}
                             <span class="pricing-featured-badge" aria-label="Plano mais popular">
                                 <i class="ph-fill ph-star text-[9px]" aria-hidden="true"></i>
-                                Popular
+                                Mais escolhido
                             </span>
                             {% endif %}
                         </div>
 
                         <!-- Price block -->
-                        <div class="mb-4">
+                        <div class="pricing-price-block">
                             {% if p.price_brl > 0 %}
-                            <div class="flex items-baseline gap-1">
-                                <span class="text-xs font-medium {{ 'text-terracota-textLight/70' if is_pro else 'text-terracota-textMuted' }} self-start mt-2">R$</span>
-                                <span class="text-[2.4rem] {{ 'text-white' if is_pro else 'text-terracota-textLight' }} font-heading font-bold leading-none tracking-tight">{{ "%.2f"|format(p.price_brl)|replace('.', ',') }}</span>
-                                <span class="text-xs font-medium {{ 'text-terracota-textLight/60' if is_pro else 'text-terracota-textMuted/70' }}">/mês</span>
+                            <div class="pricing-price-row">
+                                <span class="pricing-currency">R$</span>
+                                <span class="pricing-price-value {{ 'pricing-price-value-featured' if is_pro else '' }}">{{ "%.2f"|format(p.price_brl)|replace('.', ',') }}</span>
+                                <span class="pricing-period">/mês</span>
                             </div>
                             {% else %}
-                            <span class="text-[2.4rem] font-heading font-bold leading-none text-terracota-textLight tracking-tight">Grátis</span>
+                            <span class="pricing-price-free">Grátis</span>
+                            <p class="pricing-price-note">para começar</p>
                             {% endif %}
                         </div>
 
-                        <p class="text-[0.78rem] {{ 'text-terracota-textLight/75' if is_pro else 'text-terracota-textMuted/80' }} mb-5 leading-relaxed">{{ subtitle }}</p>
+                        <p class="pricing-subtitle">{{ subtitle }}</p>
 
                         <!-- Divider -->
-                        <div class="h-px bg-gradient-to-r from-transparent {{ 'via-terracota-cyan/20' if is_pro else 'via-white/[0.07]' }} to-transparent mb-5"></div>
+                        <div class="pricing-divider {{ 'pricing-divider-featured' if is_pro else '' }}"></div>
 
                         <!-- Feature list -->
-                        <ul class="space-y-2.5 text-[0.8rem] {{ 'text-terracota-textLight/90' if is_pro else 'text-terracota-textMuted' }} flex-grow mb-7">
+                        <ul class="pricing-feature-list flex-grow mb-7">
                             {% for b in bullets %}
-                            <li class="flex items-center gap-2.5">
-                                <i class="ph-fill ph-check-circle text-sm {{ 'text-terracota-cyan' if is_pro else 'text-terracota-cyan/55' }} shrink-0"></i>
+                            <li class="pricing-feature-item">
+                                <i class="ph-fill ph-check-circle pricing-feature-icon {{ 'pricing-feature-icon-featured' if is_pro else '' }}"></i>
                                 <span>{{ b }}</span>
                             </li>
                             {% endfor %}
@@ -622,12 +626,12 @@
                         <form method="post" action="{{ url_for('billing.checkout') }}" class="checkout-form mt-auto" data-plan-slug="{{ cta_plan_slug }}" data-plan-name="{{ p.name }}" data-is-current="{{ 'true' if is_current else 'false' }}">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="plan_slug" value="{{ cta_plan_slug }}">
-                            <button type="submit" class="w-full text-center px-4 py-3.5 rounded-xl text-sm font-semibold transition-all {{ 'pricing-cta-primary' if is_pro else 'pricing-cta-secondary' }}">
+                            <button type="submit" class="pricing-cta w-full text-center px-4 py-3.5 rounded-xl text-sm font-semibold transition-all {{ 'pricing-cta-primary' if is_pro else 'pricing-cta-secondary' }}">
                                 {% if is_current %}Plano Atual{% else %}{{ cta_label }}{% endif %}
                             </button>
                         </form>
                         {% else %}
-                        <a href="{{ cta_href }}" class="block text-center px-4 py-3.5 rounded-xl text-sm font-semibold transition-all mt-auto {{ 'pricing-cta-primary' if is_pro else 'pricing-cta-secondary' }}">
+                        <a href="{{ cta_href }}" class="pricing-cta block text-center px-4 py-3.5 rounded-xl text-sm font-semibold transition-all mt-auto {{ 'pricing-cta-primary' if is_pro else 'pricing-cta-secondary' }}">
                             {{ cta_label }}
                         </a>
                         {% endif %}
@@ -638,57 +642,127 @@
 
             <!-- ── Trust & Reassurance Bar ── -->
             <div class="trust-reassurance-section relative">
-                <div class="text-center mb-8">
-                    <p class="text-[11px] font-semibold text-terracota-textMuted/60 uppercase tracking-[0.2em]">Compra segura e sem risco</p>
+                <div class="trust-reassurance-head text-center mb-8">
+                    <p class="trust-reassurance-kicker">Decisão segura</p>
+                    <h3 class="trust-reassurance-title">Assine com segurança operacional e financeira</h3>
                 </div>
 
-                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="trust-card group">
+                <div class="trust-grid grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <article class="trust-card group">
                         <div class="trust-card-icon">
-                            <i class="ph-duotone ph-seal-check" aria-hidden="true"></i>
+                            <i class="ph ph-seal-check" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <p class="text-[0.8rem] font-semibold text-white mb-0.5">Conformidade ANVISA</p>
-                            <p class="text-[0.72rem] text-terracota-textLight/60 leading-relaxed">RDC 429, IN 75 e RDC 26</p>
+                            <p class="trust-card-title">Conformidade regulatória</p>
+                            <p class="trust-card-copy">RDC 429, IN 75 e RDC 26 aplicadas no fluxo.</p>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="trust-card group">
+                    <article class="trust-card group">
                         <div class="trust-card-icon">
-                            <i class="ph-duotone ph-lock-key" aria-hidden="true"></i>
+                            <i class="ph ph-lock-key" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <p class="text-[0.8rem] font-semibold text-white mb-0.5">Pagamento 100% seguro</p>
-                            <p class="text-[0.72rem] text-terracota-textLight/60 leading-relaxed">Criptografia via Stripe</p>
+                            <p class="trust-card-title">Pagamento seguro</p>
+                            <p class="trust-card-copy">Cobrança e proteção de dados via Stripe.</p>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="trust-card group">
+                    <article class="trust-card group">
                         <div class="trust-card-icon">
-                            <i class="ph-duotone ph-arrow-counter-clockwise" aria-hidden="true"></i>
+                            <i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <p class="text-[0.8rem] font-semibold text-white mb-0.5">Cancele quando quiser</p>
-                            <p class="text-[0.72rem] text-terracota-textLight/60 leading-relaxed">Sem multa, sem carência</p>
+                            <p class="trust-card-title">Sem compromisso rígido</p>
+                            <p class="trust-card-copy">Cancele quando quiser, sem multa ou carência.</p>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="trust-card group">
+                    <article class="trust-card group">
                         <div class="trust-card-icon">
-                            <i class="ph-duotone ph-headset" aria-hidden="true"></i>
+                            <i class="ph ph-headset" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <p class="text-[0.8rem] font-semibold text-white mb-0.5">Suporte humano real</p>
-                            <p class="text-[0.72rem] text-terracota-textLight/60 leading-relaxed">Resposta em até 24 h</p>
+                            <p class="trust-card-title">Suporte humano real</p>
+                            <p class="trust-card-copy">Resposta em até 24h úteis para seu cenário.</p>
                         </div>
+                    </article>
+                </div>
+
+                <div class="trust-reassurance-foot text-center mt-8">
+                    <p class="pricing-compare-kicker">Comparativo simplificado</p>
+                    <div class="pricing-compare-shell overflow-x-auto" id="comparativo-planos">
+                        <table class="pricing-compare-table min-w-[820px] w-full">
+                            <thead>
+                                <tr>
+                                    <th>Recurso</th>
+                                    <th>Essencial</th>
+                                    <th>Start</th>
+                                    <th class="is-featured">Pro</th>
+                                    <th>Studio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Preço mensal</td>
+                                    <td>{% if free_plan and free_plan.price_brl == 0 %}Grátis{% else %}—{% endif %}</td>
+                                    <td>{% if start_plan %}R$ {{ "%.2f"|format(start_plan.price_brl)|replace('.', ',') }}{% else %}—{% endif %}</td>
+                                    <td class="is-featured">{% if pro_plan %}R$ {{ "%.2f"|format(pro_plan.price_brl)|replace('.', ',') }}{% else %}—{% endif %}</td>
+                                    <td>{% if studio_plan %}R$ {{ "%.2f"|format(studio_plan.price_brl)|replace('.', ',') }}{% else %}—{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>Tabelas por mês</td>
+                                    <td>{% if free_plan %}{{ free_plan.max_tables_per_month }}{% else %}—{% endif %}</td>
+                                    <td>{% if start_plan %}{{ start_plan.max_tables_per_month }}{% else %}—{% endif %}</td>
+                                    <td class="is-featured">{% if pro_plan %}{{ pro_plan.max_tables_per_month }}{% else %}—{% endif %}</td>
+                                    <td>{% if studio_plan and studio_plan.max_tables_per_month is none %}Ilimitadas{% elif studio_plan %}{{ studio_plan.max_tables_per_month }}{% else %}—{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>Ingredientes por tabela</td>
+                                    <td>{% if free_plan %}{{ free_plan.max_ingredients_per_table }}{% else %}—{% endif %}</td>
+                                    <td>{% if start_plan %}{{ start_plan.max_ingredients_per_table }}{% else %}—{% endif %}</td>
+                                    <td class="is-featured">{% if pro_plan %}{{ pro_plan.max_ingredients_per_table }}{% else %}—{% endif %}</td>
+                                    <td>{% if studio_plan and studio_plan.max_ingredients_per_table is none %}Ilimitados{% elif studio_plan %}{{ studio_plan.max_ingredients_per_table }}{% else %}—{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>Templates prontos</td>
+                                    <td>{% if free_plan and free_plan.has_templates %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if start_plan and start_plan.has_templates %}Sim{% else %}—{% endif %}</td>
+                                    <td class="is-featured">{% if pro_plan and pro_plan.has_templates %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if studio_plan and studio_plan.has_templates %}Sim{% else %}—{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>Exportação PDF</td>
+                                    <td>{% if free_plan and free_plan.has_pdf_export %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if start_plan and start_plan.has_pdf_export %}Sim{% else %}—{% endif %}</td>
+                                    <td class="is-featured">{% if pro_plan and pro_plan.has_pdf_export %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if studio_plan and studio_plan.has_pdf_export %}Sim{% else %}—{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>Exportação PNG</td>
+                                    <td>{% if free_plan and free_plan.has_png_export %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if start_plan and start_plan.has_png_export %}Sim{% else %}—{% endif %}</td>
+                                    <td class="is-featured">{% if pro_plan and pro_plan.has_png_export %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if studio_plan and studio_plan.has_png_export %}Sim{% else %}—{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>Histórico de versões</td>
+                                    <td>{% if free_plan and free_plan.has_version_history %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if start_plan and start_plan.has_version_history %}Sim{% else %}—{% endif %}</td>
+                                    <td class="is-featured">{% if pro_plan and pro_plan.has_version_history %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if studio_plan and studio_plan.has_version_history %}Sim{% else %}—{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>Branding no PDF</td>
+                                    <td>{% if free_plan and free_plan.has_branding %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if start_plan and start_plan.has_branding %}Sim{% else %}—{% endif %}</td>
+                                    <td class="is-featured">{% if pro_plan and pro_plan.has_branding %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if studio_plan and studio_plan.has_branding %}Sim{% else %}—{% endif %}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </div>
-
-            <div class="text-center mt-10">
-                <a href="{{ url_for('main.pricing') }}" class="link-accent inline-flex items-center gap-2 text-sm font-semibold transition-colors">
-                    Ver comparativo completo de planos <i class="ph ph-arrow-right"></i>
-                </a>
             </div>
         </div>
     </section>
@@ -790,11 +864,15 @@
                                 Validamos enquadramento regulatório, limite ideal de plano e fluxo de publicação antes do rótulo ir para produção.
                             </p>
                             <div class="faq-side-ctas">
-                                <a href="{{ url_for('support.contact', category='other', subject='Dúvida sobre conformidade', source='faq') }}" class="faq-cta-primary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm">
+                                <a
+                                    href="{{ url_for('support.contact', category='other', subject='Dúvida sobre conformidade', source='faq') }}"
+                                    class="faq-cta-primary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm"
+                                    data-faq-contact-trigger
+                                >
                                     <i class="ph ph-chat-circle-text"></i> Falar com especialista
                                 </a>
                                 <a href="{{ url_for('support.help_page') }}" class="faq-cta-secondary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm">
-                                    <i class="ph ph-book-open-text"></i> Explorar central de ajuda
+                                    <i class="ph ph-book-open-text"></i> Ver central de ajuda completa
                                 </a>
                             </div>
                             <p class="faq-side-proof"><i class="ph ph-clock" aria-hidden="true"></i>Resposta humana em até 24h úteis.</p>
@@ -898,6 +976,72 @@
         </div>
     </section>
 
+    <!-- FAQ Contact Modal -->
+    <div id="faq-contact-modal" class="faq-contact-modal fixed inset-0 z-[10000] hidden items-center justify-center px-4">
+        <div class="faq-contact-overlay absolute inset-0" data-faq-contact-close></div>
+        <div class="faq-contact-panel relative w-full max-w-xl">
+            <button type="button" class="faq-contact-close" aria-label="Fechar contato" data-faq-contact-close>
+                <i class="ph ph-x"></i>
+            </button>
+            <p class="faq-contact-kicker">Suporte humano</p>
+            <h3 class="faq-contact-title">Fale com um especialista agora</h3>
+            <p class="faq-contact-copy">
+                Envie seu cenário e retornamos com orientação prática para enquadramento regulatório e fluxo de publicação.
+            </p>
+
+            <form method="post" action="{{ url_for('support.contact') }}" class="faq-contact-form mt-5">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="category" value="other">
+                <input type="hidden" name="subject" value="Dúvida sobre conformidade (FAQ)">
+
+                <div class="grid sm:grid-cols-2 gap-3">
+                    <label class="faq-contact-field">
+                        <span>Nome</span>
+                        <input
+                            type="text"
+                            name="name"
+                            required
+                            value="{{ current_user.name if current_user.is_authenticated else '' }}"
+                            class="faq-contact-input"
+                        >
+                    </label>
+                    <label class="faq-contact-field">
+                        <span>E-mail</span>
+                        <input
+                            type="email"
+                            name="email"
+                            required
+                            value="{{ current_user.email if current_user.is_authenticated else '' }}"
+                            class="faq-contact-input"
+                        >
+                    </label>
+                </div>
+
+                <label class="faq-contact-field">
+                    <span>Mensagem</span>
+                    <textarea
+                        id="faq-contact-message"
+                        name="message"
+                        rows="4"
+                        required
+                        class="faq-contact-input faq-contact-textarea"
+                        placeholder="Ex.: Tenho 12 SKUs com variação de porção e preciso validar o fluxo para publicação."
+                    ></textarea>
+                </label>
+
+                <div class="faq-contact-actions">
+                    <button type="submit" class="faq-cta-primary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm">
+                        <i class="ph ph-paper-plane-tilt"></i> Enviar para especialista
+                    </button>
+                    <a href="{{ url_for('support.contact', category='other', subject='Dúvida sobre conformidade', source='faq') }}" class="faq-cta-secondary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm">
+                        Abrir formulário completo
+                    </a>
+                </div>
+                <p class="faq-contact-proof"><i class="ph ph-clock"></i>Resposta em até 24h úteis.</p>
+            </form>
+        </div>
+    </div>
+
     <!-- ============================================================
          9. FINAL CTA — Page closer
          ============================================================ -->
@@ -939,25 +1083,31 @@
     <!-- ============================================================
          10. NEWSLETTER — Stay updated (soft capture for non-converters)
          ============================================================ -->
-    <section class="py-16 relative">
-        <div class="max-w-3xl mx-auto px-6">
+    <section class="py-14 relative newsletter-wrap">
+        <div class="max-w-4xl mx-auto px-6">
             <div class="newsletter-shell">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="newsletter-icon"><i class="ph ph-bell-ringing"></i></div>
-                    <p class="newsletter-kicker">Radar regulatório (opcional)</p>
+                <div class="newsletter-head">
+                    <div>
+                        <p class="newsletter-kicker">Radar regulatório</p>
+                        <h2 class="newsletter-title text-2xl md:text-3xl font-heading font-bold text-white">Atualizações ANVISA e MAPA sem ruído</h2>
+                    </div>
                 </div>
-                <h2 class="text-2xl md:text-3xl font-heading font-bold mb-3 text-white">Receba mudanças de normas sem ruído</h2>
-                <p class="text-terracota-textLight/85 mb-6 leading-relaxed">
-                    Atualizações objetivas sobre ANVISA e MAPA, com orientação prática para manter seu rótulo atualizado. Conteúdo curto, direto e útil.
+                <p class="newsletter-copy text-terracota-textLight/85 mb-6 leading-relaxed">
+                    Receba mudanças relevantes com orientação prática para manter seus rótulos atualizados, sem boletins longos ou conteúdo genérico.
                 </p>
 
-                <form id="radar-form" class="flex flex-col sm:flex-row gap-3">
-                    <input id="radar-email" type="email" placeholder="Seu melhor e-mail" required class="flex-grow bg-terracota-surfaceHighlight border border-white/[0.14] rounded-full px-5 py-3 text-white text-sm focus:outline-none focus:border-terracota-purpleBright/60 focus:ring-1 focus:ring-terracota-purpleBright/40 transition-all font-sans placeholder:text-terracota-textMuted/75">
-                    <button id="radar-btn" type="submit" class="btn-cta-secondary px-6 py-3 bg-terracota-surfaceHighlight border border-white/[0.16] hover:border-terracota-purpleBright/40 text-white font-semibold rounded-full whitespace-nowrap text-sm">
+                <form id="radar-form" class="newsletter-form flex flex-col sm:flex-row gap-3">
+                    <input id="radar-email" type="email" placeholder="Seu melhor e-mail" required class="newsletter-input flex-grow rounded-full px-5 py-3 text-white text-sm transition-all font-sans placeholder:text-terracota-textMuted/75">
+                    <button id="radar-btn" type="submit" class="newsletter-cta btn-cta-secondary px-6 py-3 text-white font-semibold rounded-full whitespace-nowrap text-sm">
                         Receber atualizações
                     </button>
                 </form>
-                <p id="radar-msg" class="text-xs text-terracota-textMuted/85 mt-3">Sem spam. Cancele quando quiser.</p>
+                <div class="newsletter-proof-row" aria-hidden="true">
+                    <span class="newsletter-proof-chip"><i class="ph ph-check-circle"></i> Conteúdo objetivo</span>
+                    <span class="newsletter-proof-chip"><i class="ph ph-check-circle"></i> Sem spam</span>
+                    <span class="newsletter-proof-chip"><i class="ph ph-check-circle"></i> Cancele com 1 clique</span>
+                </div>
+                <p id="radar-msg" class="newsletter-msg text-xs text-terracota-textMuted/85 mt-3">Sem spam. Cancele quando quiser.</p>
             </div>
         </div>
     </section>
@@ -1068,6 +1218,37 @@
 
 {% block scripts %}
 <script>
+const faqContactTrigger = document.querySelector('[data-faq-contact-trigger]');
+const faqContactModal = document.getElementById('faq-contact-modal');
+const faqContactMessage = document.getElementById('faq-contact-message');
+
+if (faqContactTrigger && faqContactModal) {
+    const closeFaqContactModal = () => {
+        faqContactModal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+    };
+    const openFaqContactModal = () => {
+        faqContactModal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+        setTimeout(() => faqContactMessage?.focus(), 40);
+    };
+
+    faqContactTrigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        openFaqContactModal();
+    });
+
+    faqContactModal.querySelectorAll('[data-faq-contact-close]').forEach(function(el) {
+        el.addEventListener('click', closeFaqContactModal);
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !faqContactModal.classList.contains('hidden')) {
+            closeFaqContactModal();
+        }
+    });
+}
+
 document.getElementById('radar-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const email = document.getElementById('radar-email').value.trim();

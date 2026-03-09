@@ -1,16 +1,17 @@
 from app.models.plan import Plan
 
 
-def test_pricing_shows_marketing_when_no_plans(client):
-    resp = client.get("/pricing")
+def test_pricing_comparison_is_in_landing_when_no_plans(client):
+    resp = client.get("/")
     assert resp.status_code == 200
     text = resp.data.decode("utf-8")
     assert "Planos ainda não foram carregados no banco" in text
-    assert "Profissional" in text
-    assert "Testar Ilimitado" in text
+    assert "Comparativo simplificado" in text
+    assert "Branding no PDF" in text
+    assert "Essencial" in text
 
 
-def test_pricing_uses_db_plans_when_present(client, db_session):
+def test_landing_uses_db_plans_when_present(client, db_session):
     db_session.add_all(
         [
             Plan(
@@ -74,9 +75,13 @@ def test_pricing_uses_db_plans_when_present(client, db_session):
     )
     db_session.commit()
 
-    resp = client.get("/pricing")
+    resp = client.get("/")
     assert resp.status_code == 200
     text = resp.data.decode("utf-8")
     assert "Planos ainda não foram carregados no banco" not in text
-    assert "Ilimitado" in text
+    assert "Studio" in text
 
+
+def test_old_pricing_page_removed(client):
+    resp = client.get("/pricing")
+    assert resp.status_code == 404
