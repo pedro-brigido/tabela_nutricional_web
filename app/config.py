@@ -12,6 +12,8 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
 class BaseConfig:
+    _TRUE_VALUES = {"1", "true", "yes", "sim", "on"}
+
     SECRET_KEY = os.environ.get("SECRET_KEY", "change-me-in-production")
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DATABASE_URL", f"sqlite:///{DATA_DIR / 'app.db'}"
@@ -54,6 +56,41 @@ class BaseConfig:
     RATELIMIT_DEFAULT = "200/hour"
 
     SUBSCRIBERS_DB_PATH = str(DATA_DIR / "subscribers.db")
+
+    OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "").strip()
+    _chatbot_enabled_raw = os.environ.get("CHATBOT_ENABLED")
+    if _chatbot_enabled_raw is None or not _chatbot_enabled_raw.strip():
+        CHATBOT_ENABLED = bool(OPENAI_API_KEY)
+    else:
+        CHATBOT_ENABLED = _chatbot_enabled_raw.strip().lower() in _TRUE_VALUES
+    CHATBOT_MODEL = os.environ.get("CHATBOT_MODEL", "gpt-4o-mini").strip()
+    CHATBOT_FALLBACK_MODEL = os.environ.get(
+        "CHATBOT_FALLBACK_MODEL", "gpt-5-mini"
+    ).strip()
+    CHATBOT_EMBEDDING_MODEL = os.environ.get(
+        "CHATBOT_EMBEDDING_MODEL", "text-embedding-3-small"
+    ).strip()
+    CHATBOT_MODERATION_MODEL = os.environ.get(
+        "CHATBOT_MODERATION_MODEL", "omni-moderation-latest"
+    ).strip()
+    CHATBOT_COOKIE_NAME = os.environ.get(
+        "CHATBOT_COOKIE_NAME", "terracota_chat_anon"
+    ).strip()
+    CHATBOT_ANON_RETENTION_DAYS = int(
+        os.environ.get("CHATBOT_ANON_RETENTION_DAYS", "30")
+    )
+    CHATBOT_AUTH_RETENTION_DAYS = int(
+        os.environ.get("CHATBOT_AUTH_RETENTION_DAYS", "180")
+    )
+    CHATBOT_MAX_TURNS_BEFORE_SUMMARY = int(
+        os.environ.get("CHATBOT_MAX_TURNS_BEFORE_SUMMARY", "6")
+    )
+    CHATBOT_OPENAI_TIMEOUT_SECONDS = int(
+        os.environ.get("CHATBOT_OPENAI_TIMEOUT_SECONDS", "20")
+    )
+    CHATBOT_OPENAI_COOLDOWN_SECONDS = int(
+        os.environ.get("CHATBOT_OPENAI_COOLDOWN_SECONDS", "180")
+    )
 
 
 class DevelopmentConfig(BaseConfig):

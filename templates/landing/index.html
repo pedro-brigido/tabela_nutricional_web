@@ -855,27 +855,80 @@
             </div>
 
             <div class="faq-objection-wrap">
-                <div class="grid lg:grid-cols-[0.92fr_1.08fr] gap-6 xl:gap-8 items-start">
-                    <div class="order-2 lg:order-1 lg:sticky lg:top-28">
+                <div class="faq-objection-grid grid lg:grid-cols-2 gap-6 xl:gap-8 items-stretch">
+                    <div class="faq-support-column order-2 lg:order-1">
                         <div id="contato" class="faq-side-card">
                             <p class="faq-side-kicker">Suporte humano</p>
                             <h4 class="text-xl font-heading font-semibold text-white mb-2">Seu caso não cabe no padrão?</h4>
                             <p class="text-sm text-terracota-textLight/90 leading-relaxed mb-5">
                                 Validamos enquadramento regulatório, limite ideal de plano e fluxo de publicação antes do rótulo ir para produção.
                             </p>
-                            <div class="faq-side-ctas">
-                                <a
-                                    href="{{ url_for('support.contact', category='other', subject='Dúvida sobre conformidade', source='faq') }}"
-                                    class="faq-cta-primary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm"
-                                    data-faq-contact-trigger
-                                >
-                                    <i class="ph ph-chat-circle-text"></i> Falar com especialista
-                                </a>
-                                <a href="{{ url_for('support.help_page') }}" class="faq-cta-secondary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm">
-                                    <i class="ph ph-book-open-text"></i> Ver central de ajuda completa
-                                </a>
+                            <div class="faq-side-inline-shell">
+                                <p class="faq-side-inline-kicker">Envio rápido por e-mail</p>
+                                <form id="faq-inline-contact-form" method="post" action="{{ url_for('support.contact') }}" class="faq-side-inline-form">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="category" value="other">
+                                    <input type="hidden" name="subject" value="Dúvida sobre conformidade (FAQ inline)">
+                                    <input type="hidden" name="source" value="faq-inline">
+                                    <input id="faq-inline-conversation-id" type="hidden" name="conversation_id" value="">
+
+                                    <div class="faq-side-inline-grid">
+                                        <label class="faq-side-inline-field">
+                                            <span>Nome</span>
+                                            <input
+                                                type="text"
+                                                name="name"
+                                                required
+                                                value="{{ current_user.name if current_user.is_authenticated else '' }}"
+                                                class="faq-contact-input faq-side-inline-input"
+                                            >
+                                        </label>
+                                        <label class="faq-side-inline-field">
+                                            <span>E-mail</span>
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                required
+                                                value="{{ current_user.email if current_user.is_authenticated else '' }}"
+                                                class="faq-contact-input faq-side-inline-input"
+                                            >
+                                        </label>
+                                    </div>
+
+                                    <label class="faq-side-inline-field">
+                                        <span>Mensagem</span>
+                                        <textarea
+                                            id="faq-inline-contact-message"
+                                            name="message"
+                                            rows="3"
+                                            required
+                                            class="faq-contact-input faq-side-inline-textarea"
+                                            placeholder="Ex.: Tenho 12 SKUs com variação de porção e preciso validar o fluxo antes da publicação."
+                                        ></textarea>
+                                    </label>
+
+                                    <div class="faq-side-inline-actions">
+                                        <button type="submit" class="faq-cta-primary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm">
+                                            <i class="ph ph-paper-plane-tilt"></i> Enviar e-mail
+                                        </button>
+                                        <button type="button" class="faq-cta-secondary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm" data-faq-contact-trigger>
+                                            <i class="ph ph-arrows-out-simple"></i> Abrir formulário completo
+                                        </button>
+                                    </div>
+                                    <div id="faq-inline-contact-status" class="faq-side-inline-status hidden" aria-live="polite"></div>
+                                </form>
                             </div>
+
                             <p class="faq-side-proof"><i class="ph ph-clock" aria-hidden="true"></i>Resposta humana em até 24h úteis.</p>
+                            {% if chatbot_enabled %}
+                            <a
+                                href="{{ url_for('support.contact', category='other', subject='Ajuda via chatbot IA', source='faq-chatbot') }}"
+                                class="faq-cta-secondary faq-side-ai-cta inline-flex items-center justify-center gap-2 px-6 py-3 text-sm"
+                                data-chatbot-trigger
+                            >
+                                <i class="ph ph-sparkle"></i> Abrir assistente IA
+                            </a>
+                            {% endif %}
                         </div>
                     </div>
 
@@ -985,14 +1038,17 @@
             </button>
             <p class="faq-contact-kicker">Suporte humano</p>
             <h3 class="faq-contact-title">Fale com um especialista agora</h3>
-            <p class="faq-contact-copy">
+            <p id="faq-contact-context" class="faq-contact-copy">
                 Envie seu cenário e retornamos com orientação prática para enquadramento regulatório e fluxo de publicação.
             </p>
+            <div id="faq-contact-status" class="faq-contact-status hidden" aria-live="polite"></div>
 
-            <form method="post" action="{{ url_for('support.contact') }}" class="faq-contact-form mt-5">
+            <form id="faq-contact-form" method="post" action="{{ url_for('support.contact') }}" class="faq-contact-form mt-5">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <input type="hidden" name="category" value="other">
-                <input type="hidden" name="subject" value="Dúvida sobre conformidade (FAQ)">
+                <input id="faq-contact-category" type="hidden" name="category" value="other">
+                <input id="faq-contact-subject" type="hidden" name="subject" value="Dúvida sobre conformidade (FAQ)">
+                <input id="faq-contact-source" type="hidden" name="source" value="faq">
+                <input id="faq-contact-conversation-id" type="hidden" name="conversation_id" value="">
 
                 <div class="grid sm:grid-cols-2 gap-3">
                     <label class="faq-contact-field">
@@ -1041,6 +1097,64 @@
             </form>
         </div>
     </div>
+
+    {% if chatbot_enabled %}
+    <div id="faq-chatbot-modal" class="chatbot-modal fixed inset-0 z-[10000] hidden" aria-hidden="true">
+        <div class="chatbot-overlay absolute inset-0" data-chatbot-close></div>
+        <section class="chatbot-panel" role="dialog" aria-modal="true" aria-labelledby="chatbot-title">
+            <div class="chatbot-header">
+                <div class="chatbot-header-copy">
+                    <p class="chatbot-kicker"><i class="ph ph-sparkle" aria-hidden="true"></i> Especialista IA</p>
+                    <h3 id="chatbot-title" class="chatbot-title">Assistente Terracota</h3>
+                    <p class="chatbot-disclaimer">Pergunte sobre produto, cobrança, exportação e funcionamento do Terracota.</p>
+                </div>
+                <div class="chatbot-header-actions">
+                    <button type="button" class="chatbot-close" aria-label="Fechar assistente IA" data-chatbot-close>
+                        <i class="ph ph-x"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="chatbot-messages" class="chatbot-messages" aria-live="polite"></div>
+
+            <form id="chatbot-form" class="chatbot-form">
+                <label class="sr-only" for="chatbot-input">Sua pergunta</label>
+                <div class="chatbot-input-shell">
+                    <textarea
+                        id="chatbot-input"
+                        class="chatbot-input"
+                        rows="1"
+                        maxlength="1200"
+                        placeholder="Pergunte sobre planos, conformidade, exportação ou cobrança"
+                        required
+                    ></textarea>
+                    <button id="chatbot-send" type="submit" class="chatbot-send-btn" aria-label="Enviar pergunta">
+                        <i class="ph ph-paper-plane-tilt"></i>
+                        <span data-chatbot-send-label>Enviar</span>
+                    </button>
+                </div>
+                <div id="chatbot-error" class="chatbot-error hidden"></div>
+            </form>
+        </section>
+    </div>
+    <button
+        type="button"
+        id="chatbot-floating-launcher"
+        class="chatbot-launcher"
+        data-chatbot-trigger
+        data-chatbot-launcher
+        aria-controls="faq-chatbot-modal"
+        aria-expanded="false"
+    >
+        <span class="chatbot-launcher-icon" aria-hidden="true">
+            <i class="ph ph-sparkle"></i>
+        </span>
+        <span class="chatbot-launcher-copy">
+            <span class="chatbot-launcher-kicker">Assistente IA</span>
+            <span id="chatbot-launcher-label" class="chatbot-launcher-label">Tire dúvidas sem sair da página</span>
+        </span>
+    </button>
+    {% endif %}
 
     <!-- ============================================================
          9. FINAL CTA — Page closer
@@ -1218,24 +1332,107 @@
 
 {% block scripts %}
 <script>
-const faqContactTrigger = document.querySelector('[data-faq-contact-trigger]');
+const faqContactTriggers = Array.from(document.querySelectorAll('[data-faq-contact-trigger]'));
 const faqContactModal = document.getElementById('faq-contact-modal');
+const faqContactForm = document.getElementById('faq-contact-form');
 const faqContactMessage = document.getElementById('faq-contact-message');
+const faqContactStatus = document.getElementById('faq-contact-status');
+const faqContactContext = document.getElementById('faq-contact-context');
+const faqContactCategory = document.getElementById('faq-contact-category');
+const faqContactSubject = document.getElementById('faq-contact-subject');
+const faqContactSource = document.getElementById('faq-contact-source');
+const faqContactConversationId = document.getElementById('faq-contact-conversation-id');
+const faqInlineContactForm = document.getElementById('faq-inline-contact-form');
+const faqInlineContactMessage = document.getElementById('faq-inline-contact-message');
+const faqInlineContactStatus = document.getElementById('faq-inline-contact-status');
+const faqInlineConversationId = document.getElementById('faq-inline-conversation-id');
+const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+const faqContactDefaults = {
+    category: 'other',
+    subject: 'Dúvida sobre conformidade (FAQ)',
+    source: 'faq',
+    conversationId: '',
+    context: 'Envie seu cenário e retornamos com orientação prática para enquadramento regulatório e fluxo de publicação.',
+    message: '',
+};
+let openFaqContactModal = null;
+let closeFaqContactModal = null;
 
-if (faqContactTrigger && faqContactModal) {
-    const closeFaqContactModal = () => {
+function postJson(url, body, extraHeaders = {}) {
+    return fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRFToken': csrfToken,
+            'X-Requested-With': 'fetch',
+            ...extraHeaders,
+        },
+        body: JSON.stringify(body),
+    }).then(async (res) => {
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            const error = new Error(data.error || 'Falha ao processar a solicitação.');
+            error.payload = data;
+            throw error;
+        }
+        return data;
+    });
+}
+
+function faqContactSetStatus(message, tone = '') {
+    if (!faqContactStatus) return;
+    faqContactStatus.classList.remove('hidden', 'is-success', 'is-error');
+    if (!message) {
+        faqContactStatus.textContent = '';
+        faqContactStatus.classList.add('hidden');
+        return;
+    }
+    if (tone) {
+        faqContactStatus.classList.add(`is-${tone}`);
+    }
+    faqContactStatus.textContent = message;
+}
+
+function faqInlineSetStatus(message, tone = '') {
+    if (!faqInlineContactStatus) return;
+    faqInlineContactStatus.classList.remove('hidden', 'is-success', 'is-error');
+    if (!message) {
+        faqInlineContactStatus.textContent = '';
+        faqInlineContactStatus.classList.add('hidden');
+        return;
+    }
+    if (tone) {
+        faqInlineContactStatus.classList.add(`is-${tone}`);
+    }
+    faqInlineContactStatus.textContent = message;
+}
+
+if (faqContactModal && faqContactForm) {
+    closeFaqContactModal = () => {
         faqContactModal.classList.add('hidden');
         document.body.classList.remove('overflow-hidden');
+        faqContactSetStatus('');
     };
-    const openFaqContactModal = () => {
+    openFaqContactModal = (options = {}) => {
+        const state = { ...faqContactDefaults, ...options };
+        if (faqContactCategory) faqContactCategory.value = state.category || faqContactDefaults.category;
+        if (faqContactSubject) faqContactSubject.value = state.subject || faqContactDefaults.subject;
+        if (faqContactSource) faqContactSource.value = state.source || faqContactDefaults.source;
+        if (faqContactConversationId) faqContactConversationId.value = state.conversationId || '';
+        if (faqContactContext) faqContactContext.textContent = state.context || faqContactDefaults.context;
+        if (faqContactMessage) faqContactMessage.value = state.message || '';
+        faqContactSetStatus('');
         faqContactModal.classList.remove('hidden');
         document.body.classList.add('overflow-hidden');
         setTimeout(() => faqContactMessage?.focus(), 40);
     };
 
-    faqContactTrigger.addEventListener('click', function(e) {
-        e.preventDefault();
-        openFaqContactModal();
+    faqContactTriggers.forEach((trigger) => {
+        trigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            openFaqContactModal();
+        });
     });
 
     faqContactModal.querySelectorAll('[data-faq-contact-close]').forEach(function(el) {
@@ -1247,7 +1444,445 @@ if (faqContactTrigger && faqContactModal) {
             closeFaqContactModal();
         }
     });
+
+    faqContactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const submitButton = faqContactForm.querySelector('button[type="submit"]');
+        const previousText = submitButton?.innerHTML;
+        const payload = Object.fromEntries(new FormData(faqContactForm).entries());
+
+        faqContactSetStatus('');
+        if (submitButton) {
+            submitButton.setAttribute('disabled', 'disabled');
+            submitButton.innerHTML = '<i class="ph ph-spinner-gap animate-spin"></i> Enviando...';
+        }
+
+        try {
+            const data = await postJson('{{ url_for("support.contact") }}', payload);
+            faqContactSetStatus(data.message || 'Mensagem enviada com sucesso.', 'success');
+            if (faqContactMessage) {
+                faqContactMessage.value = '';
+            }
+        } catch (error) {
+            faqContactSetStatus(
+                error.message || 'Não foi possível enviar sua mensagem agora.',
+                'error'
+            );
+        } finally {
+            if (submitButton) {
+                submitButton.removeAttribute('disabled');
+                submitButton.innerHTML = previousText || 'Enviar para especialista';
+            }
+        }
+    });
 }
+
+if (faqInlineContactForm) {
+    faqInlineContactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const submitButton = faqInlineContactForm.querySelector('button[type="submit"]');
+        const previousText = submitButton?.innerHTML;
+        const payload = Object.fromEntries(new FormData(faqInlineContactForm).entries());
+
+        faqInlineSetStatus('');
+        if (submitButton) {
+            submitButton.setAttribute('disabled', 'disabled');
+            submitButton.innerHTML = '<i class="ph ph-spinner-gap animate-spin"></i> Enviando...';
+        }
+
+        try {
+            const data = await postJson('{{ url_for("support.contact") }}', payload);
+            faqInlineSetStatus(data.message || 'Mensagem enviada com sucesso.', 'success');
+            if (faqInlineContactMessage) {
+                faqInlineContactMessage.value = '';
+            }
+            if (faqInlineConversationId) {
+                faqInlineConversationId.value = '';
+            }
+        } catch (error) {
+            faqInlineSetStatus(
+                error.message || 'Não foi possível enviar sua mensagem agora.',
+                'error'
+            );
+        } finally {
+            if (submitButton) {
+                submitButton.removeAttribute('disabled');
+                submitButton.innerHTML = previousText || 'Enviar e-mail';
+            }
+        }
+    });
+}
+
+function escapeHtml(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+{% if chatbot_enabled %}
+const chatbotTriggers = Array.from(document.querySelectorAll('[data-chatbot-trigger]'));
+const chatbotLauncher = document.querySelector('[data-chatbot-launcher]');
+const chatbotLauncherLabel = document.getElementById('chatbot-launcher-label');
+const chatbotModal = document.getElementById('faq-chatbot-modal');
+const chatbotMessages = document.getElementById('chatbot-messages');
+const chatbotForm = document.getElementById('chatbot-form');
+const chatbotInput = document.getElementById('chatbot-input');
+const chatbotSend = document.getElementById('chatbot-send');
+const chatbotSendLabel = chatbotSend?.querySelector('[data-chatbot-send-label]');
+const chatbotError = document.getElementById('chatbot-error');
+
+let chatbotConversationId = null;
+let chatbotBusy = false;
+let closeChatbotModal = () => {};
+let lastChatbotTrigger = null;
+const chatbotHiddenCitationTitles = new Set([
+    'privacy summary',
+    'planos e limites terracota',
+    'faq publico terracota',
+    'faq público terracota',
+]);
+
+function chatbotShouldLockBody() {
+    return window.matchMedia('(max-width: 767px)').matches;
+}
+
+function chatbotSetLauncherState(isOpen) {
+    chatbotTriggers.forEach((trigger) => {
+        trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    if (chatbotLauncher) {
+        chatbotLauncher.classList.toggle('is-hidden', isOpen);
+    }
+}
+
+function chatbotSetLauncherLabel(text) {
+    if (!chatbotLauncherLabel || !text) return;
+    chatbotLauncherLabel.textContent = text;
+}
+
+function chatbotRequest(url, body) {
+    return postJson(url, body);
+}
+
+function chatbotAutosizeInput() {
+    if (!chatbotInput) return;
+    chatbotInput.style.height = '0px';
+    chatbotInput.style.height = `${Math.min(chatbotInput.scrollHeight, 160)}px`;
+}
+
+function chatbotScrollToBottom() {
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+}
+
+function chatbotSetError(message) {
+    if (!message) {
+        chatbotError.classList.add('hidden');
+        chatbotError.textContent = '';
+        return;
+    }
+    chatbotError.classList.remove('hidden');
+    chatbotError.textContent = message;
+}
+
+function chatbotRenderMessage(message) {
+    const citations = (Array.isArray(message.citations) ? message.citations : []).filter((item) => {
+        const title = String(item?.title || '').trim().toLowerCase();
+        return !chatbotHiddenCitationTitles.has(title);
+    });
+    const isAssistant = message.role === 'assistant';
+    const roleLabel = isAssistant ? 'Terracota IA' : 'Você';
+    const roleIcon = isAssistant ? 'ph ph-sparkle' : 'ph ph-user';
+    const citationHtml = citations.length
+        ? `<div class="chatbot-meta">${citations.map((item) => `
+            <details class="chatbot-source">
+                <summary class="chatbot-chip">${escapeHtml(item.title || 'Fonte')}</summary>
+                <div class="chatbot-source-body">
+                    <p class="chatbot-source-snippet">${escapeHtml(item.snippet || 'Sem trecho disponível para esta fonte.')}</p>
+                    <a class="chatbot-source-link" href="${escapeHtml(item.url || '#')}" target="_blank" rel="noreferrer">Abrir fonte</a>
+                </div>
+            </details>
+        `).join('')}</div>`
+        : '';
+    return `
+        <div class="chatbot-message chatbot-message-${escapeHtml(message.role)}">
+            <div class="chatbot-message-label">
+                <span class="chatbot-message-avatar chatbot-message-avatar-${escapeHtml(message.role)}"><i class="${roleIcon}"></i></span>
+                <span>${roleLabel}</span>
+            </div>
+            <div class="chatbot-bubble">${escapeHtml(message.content)}</div>
+            ${citationHtml}
+        </div>
+    `;
+}
+
+function chatbotRenderConversation(messages) {
+    chatbotMessages.innerHTML = (messages || []).map(chatbotRenderMessage).join('');
+    chatbotScrollToBottom();
+}
+
+function chatbotAppendMessage(message) {
+    chatbotMessages.insertAdjacentHTML('beforeend', chatbotRenderMessage(message));
+    chatbotScrollToBottom();
+}
+
+function chatbotCreateStreamingMessage() {
+    const row = document.createElement('div');
+    row.className = 'chatbot-message chatbot-message-assistant chatbot-loading';
+    row.setAttribute('data-chatbot-streaming', 'true');
+    row.innerHTML = `
+        <div class="chatbot-message-label">
+            <span class="chatbot-message-avatar chatbot-message-avatar-assistant"><i class="ph ph-sparkle"></i></span>
+            <span>Terracota IA</span>
+        </div>
+        <div class="chatbot-bubble">Pensando...</div>
+    `;
+    chatbotMessages.appendChild(row);
+    chatbotScrollToBottom();
+    return row;
+}
+
+function chatbotUpdateStreamingMessage(row, delta) {
+    if (!row) return;
+    const bubble = row.querySelector('.chatbot-bubble');
+    if (!bubble) return;
+    if (bubble.textContent === 'Pensando...') {
+        bubble.textContent = '';
+    }
+    bubble.textContent += delta || '';
+    chatbotScrollToBottom();
+}
+
+function chatbotReplaceStreamingMessage(row, message = '') {
+    if (!row) return;
+    const bubble = row.querySelector('.chatbot-bubble');
+    if (!bubble) return;
+    bubble.textContent = message || '';
+    chatbotScrollToBottom();
+}
+
+function chatbotFinalizeStreamingMessage(row, payload) {
+    const answer = payload.answer || row?.querySelector('.chatbot-bubble')?.textContent || '';
+    const html = chatbotRenderMessage({
+        id: payload.message_id,
+        role: 'assistant',
+        content: answer,
+        citations: payload.citations || [],
+    });
+    if (row) {
+        row.outerHTML = html;
+    } else {
+        chatbotAppendMessage({
+            id: payload.message_id,
+            role: 'assistant',
+            content: answer,
+            citations: payload.citations || [],
+        });
+    }
+    chatbotLastAssistantMessage = answer;
+}
+
+function chatbotParseSseBlock(rawBlock) {
+    const lines = String(rawBlock || '')
+        .split('\n')
+        .map((line) => line.trimEnd())
+        .filter(Boolean);
+    if (!lines.length) return null;
+
+    let eventName = 'message';
+    const dataLines = [];
+    lines.forEach((line) => {
+        if (line.startsWith('event:')) {
+            eventName = line.slice(6).trim();
+        } else if (line.startsWith('data:')) {
+            dataLines.push(line.slice(5).trim());
+        }
+    });
+    if (!dataLines.length) return null;
+
+    try {
+        return {
+            event: eventName,
+            data: JSON.parse(dataLines.join('\n')),
+        };
+    } catch (error) {
+        return null;
+    }
+}
+
+async function chatbotStreamMessage(message) {
+    const response = await fetch('/api/chat/message/stream', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'text/event-stream',
+            'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({
+            conversation_id: chatbotConversationId,
+            message,
+            page_context: 'landing-faq',
+            locale: 'pt-BR',
+        }),
+    });
+
+    if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload.error || 'Falha no assistente IA.');
+    }
+
+    const streamingRow = chatbotCreateStreamingMessage();
+    const reader = response.body?.getReader();
+    if (!reader) {
+        throw new Error('Streaming indisponível no navegador atual.');
+    }
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let donePayload = null;
+
+    while (reader) {
+        const { value, done } = await reader.read();
+        buffer += decoder.decode(value || new Uint8Array(), { stream: !done }).replace(/\r\n/g, '\n');
+
+        let boundary = buffer.indexOf('\n\n');
+        while (boundary !== -1) {
+            const block = buffer.slice(0, boundary);
+            buffer = buffer.slice(boundary + 2);
+            const parsed = chatbotParseSseBlock(block);
+            if (parsed) {
+                if (parsed.event === 'delta') {
+                    chatbotUpdateStreamingMessage(streamingRow, parsed.data.delta || '');
+                } else if (parsed.event === 'done') {
+                    donePayload = parsed.data || {};
+                } else if (parsed.event === 'replace') {
+                    chatbotReplaceStreamingMessage(streamingRow, parsed.data.message || '');
+                } else if (parsed.event === 'error') {
+                    throw new Error(parsed.data?.error || 'Falha no assistente IA.');
+                }
+            }
+            boundary = buffer.indexOf('\n\n');
+        }
+
+        if (done) {
+            break;
+        }
+    }
+
+    return { row: streamingRow, payload: donePayload };
+}
+
+async function chatbotEnsureSession() {
+    const data = await chatbotRequest('/api/chat/session', {
+        source_page: 'landing-faq',
+        locale: 'pt-BR',
+    });
+    chatbotConversationId = data.conversation_id;
+    chatbotRenderConversation(data.messages || []);
+    chatbotSetError('');
+    chatbotSetLauncherLabel('Continuar conversa');
+    return data;
+}
+
+async function chatbotSendMessage(rawMessage) {
+    const message = String(rawMessage || '').trim();
+    if (!message || !chatbotConversationId || chatbotBusy) return;
+    chatbotBusy = true;
+    chatbotSetError('');
+    chatbotInput.value = '';
+    chatbotAutosizeInput();
+    chatbotAppendMessage({ role: 'user', content: message, citations: [] });
+    chatbotSend.setAttribute('disabled', 'disabled');
+    if (chatbotSendLabel) chatbotSendLabel.textContent = 'Enviando';
+
+    try {
+        const { row, payload } = await chatbotStreamMessage(message);
+        if (!payload) {
+            throw new Error('Assistente indisponível no momento. Use o contato por e-mail.');
+        }
+        chatbotFinalizeStreamingMessage(row, payload);
+        chatbotSetLauncherLabel('Continuar conversa');
+    } catch (error) {
+        chatbotMessages.querySelector('[data-chatbot-streaming="true"]')?.remove();
+        const fallbackMessage = error.message || 'Assistente indisponível no momento. Use o contato por e-mail.';
+        chatbotSetError(fallbackMessage);
+    } finally {
+        chatbotBusy = false;
+        chatbotSend.removeAttribute('disabled');
+        if (chatbotSendLabel) chatbotSendLabel.textContent = 'Enviar';
+        chatbotInput.focus();
+    }
+}
+
+if (chatbotTriggers.length && chatbotModal) {
+    closeChatbotModal = () => {
+        chatbotModal.classList.add('hidden');
+        chatbotModal.setAttribute('aria-hidden', 'true');
+        if (chatbotShouldLockBody()) {
+            document.body.classList.remove('overflow-hidden');
+        }
+        chatbotSetLauncherState(false);
+        lastChatbotTrigger?.focus();
+    };
+    const openChatbotModal = async (trigger = null) => {
+        lastChatbotTrigger = trigger;
+        chatbotModal.classList.remove('hidden');
+        chatbotModal.setAttribute('aria-hidden', 'false');
+        if (chatbotShouldLockBody()) {
+            document.body.classList.add('overflow-hidden');
+        }
+        chatbotSetLauncherState(true);
+        setTimeout(() => {
+            chatbotInput.focus();
+            chatbotAutosizeInput();
+        }, 40);
+        if (!chatbotConversationId) {
+            try {
+                await chatbotEnsureSession();
+            } catch (error) {
+                chatbotSetError(error.message || 'Não foi possível iniciar o assistente IA agora.');
+            }
+        }
+    };
+
+    chatbotTriggers.forEach((trigger) => {
+        trigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (trigger.hasAttribute('data-chatbot-launcher') && !chatbotModal.classList.contains('hidden')) {
+                closeChatbotModal();
+                return;
+            }
+            openChatbotModal(trigger);
+        });
+    });
+
+    chatbotModal.querySelectorAll('[data-chatbot-close]').forEach(function(el) {
+        el.addEventListener('click', closeChatbotModal);
+    });
+
+    chatbotForm?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        chatbotSendMessage(chatbotInput.value);
+    });
+
+    chatbotInput?.addEventListener('input', chatbotAutosizeInput);
+    chatbotInput?.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            chatbotSendMessage(chatbotInput.value);
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !chatbotModal.classList.contains('hidden')) {
+            closeChatbotModal();
+        }
+    });
+
+    window.addEventListener('resize', chatbotAutosizeInput);
+}
+{% endif %}
 
 document.getElementById('radar-form').addEventListener('submit', async function(e) {
     e.preventDefault();

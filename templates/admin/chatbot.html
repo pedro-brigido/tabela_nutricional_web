@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Chatbot IA | Admin{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between gap-4 mb-8">
+    <div>
+        <h1 class="text-3xl font-heading font-bold">Chatbot IA</h1>
+        <p class="text-sm text-terracota-textMuted mt-2">Visibilidade operacional das conversas, feedbacks e handoffs.</p>
+    </div>
+    <a href="{{ url_for('admin.dashboard') }}" class="px-4 py-2 bg-terracota-surfaceHighlight border border-white/10 rounded-lg text-sm hover:bg-white/5 transition-colors">Voltar</a>
+</div>
+
+<div class="grid md:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-5">
+        <p class="text-xs text-terracota-textMuted uppercase tracking-wider mb-2">Conversas</p>
+        <p class="text-2xl font-heading font-bold">{{ metrics.total_conversations }}</p>
+    </div>
+    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-5">
+        <p class="text-xs text-terracota-textMuted uppercase tracking-wider mb-2">Feedbacks</p>
+        <p class="text-2xl font-heading font-bold">{{ metrics.total_feedback }}</p>
+    </div>
+    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-5">
+        <p class="text-xs text-terracota-textMuted uppercase tracking-wider mb-2">Negativos</p>
+        <p class="text-2xl font-heading font-bold text-yellow-300">{{ metrics.negative_feedback }}</p>
+    </div>
+    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-5">
+        <p class="text-xs text-terracota-textMuted uppercase tracking-wider mb-2">Bloqueados</p>
+        <p class="text-2xl font-heading font-bold text-red-300">{{ metrics.flagged_messages }}</p>
+    </div>
+    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-5">
+        <p class="text-xs text-terracota-textMuted uppercase tracking-wider mb-2">Handoffs</p>
+        <p class="text-2xl font-heading font-bold">{{ metrics.handoff_count }}</p>
+    </div>
+    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-5">
+        <p class="text-xs text-terracota-textMuted uppercase tracking-wider mb-2">Latência média</p>
+        <p class="text-2xl font-heading font-bold">{{ metrics.avg_latency }} ms</p>
+    </div>
+</div>
+
+<div class="bg-terracota-surface border border-white/10 rounded-2xl p-6 mb-8">
+    <h2 class="text-lg font-heading font-semibold mb-4">Consumo acumulado</h2>
+    <div class="grid md:grid-cols-2 gap-4 text-sm text-terracota-textMuted">
+        <p><span class="text-white font-medium">Prompt tokens:</span> {{ metrics.total_prompt_tokens }}</p>
+        <p><span class="text-white font-medium">Completion tokens:</span> {{ metrics.total_completion_tokens }}</p>
+    </div>
+</div>
+
+<div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
+    <h2 class="text-lg font-heading font-semibold mb-4">Conversas recentes</h2>
+    <div class="space-y-3">
+        {% for item in metrics.recent_conversations %}
+        <div class="border border-white/8 rounded-xl px-4 py-3">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-2">
+                <p class="text-sm font-medium text-white">
+                    {{ item.user.email if item.user else 'Visitante anônimo' }}
+                </p>
+                <p class="text-xs text-terracota-textMuted">{{ item.updated_at.strftime('%d/%m/%Y %H:%M') }}</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-2 text-xs text-terracota-textMuted">
+                <p><span class="text-white/90">Conversa:</span> {{ item.id }}</p>
+                <p><span class="text-white/90">Intenção:</span> {{ item.last_user_intent or '—' }}</p>
+                <p><span class="text-white/90">Confiança:</span> {{ item.last_confidence or '—' }}</p>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-sm text-terracota-textMuted">Nenhuma conversa registrada ainda.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -36,6 +36,7 @@ dependencies = [
     "python-dotenv>=1.0",
     "python-json-logger>=2",
     "pytz>=2024.1",
+    "openai>=2.21,<3",
     "stripe>=8.0",
 ]
 

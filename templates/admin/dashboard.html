@@ -3,7 +3,7 @@
 {% block content %}
 <h1 class="text-3xl font-heading font-bold mb-8">Painel Admin</h1>
 
-<div class="grid md:grid-cols-4 gap-6 mb-8">
+<div class="grid md:grid-cols-2 xl:grid-cols-5 gap-6 mb-8">
     <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6 text-center">
         <p class="text-3xl font-heading font-bold text-terracota-cyan">{{ total_users }}</p>
         <p class="text-xs text-terracota-textMuted mt-1 uppercase tracking-wider">Usuários</p>
@@ -15,6 +15,10 @@
     <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6 text-center">
         <p class="text-3xl font-heading font-bold text-yellow-300">{{ open_tickets }}</p>
         <p class="text-xs text-terracota-textMuted mt-1 uppercase tracking-wider">Tickets abertos</p>
+    </div>
+    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6 text-center">
+        <p class="text-3xl font-heading font-bold text-terracota-cyan">{{ total_chatbot_conversations }}</p>
+        <p class="text-xs text-terracota-textMuted mt-1 uppercase tracking-wider">Conversas IA</p>
     </div>
     <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
         <p class="text-xs text-terracota-textMuted uppercase tracking-wider mb-2">Distribuição</p>
@@ -28,5 +32,6 @@
     <a href="{{ url_for('admin.user_list') }}" class="px-4 py-2 bg-terracota-surfaceHighlight border border-white/10 rounded-lg text-sm hover:bg-white/5 transition-colors">Gerenciar Usuários</a>
     <a href="{{ url_for('admin.logs') }}" class="px-4 py-2 bg-terracota-surfaceHighlight border border-white/10 rounded-lg text-sm hover:bg-white/5 transition-colors">Audit Logs</a>
     <a href="{{ url_for('admin.tickets') }}" class="px-4 py-2 bg-terracota-surfaceHighlight border border-white/10 rounded-lg text-sm hover:bg-white/5 transition-colors">Tickets</a>
+    <a href="{{ url_for('admin.chatbot') }}" class="px-4 py-2 bg-terracota-surfaceHighlight border border-white/10 rounded-lg text-sm hover:bg-white/5 transition-colors">Chatbot IA</a>
 </div>
 {% endblock %}

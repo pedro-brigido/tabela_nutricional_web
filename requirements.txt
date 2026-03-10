@@ -79,6 +79,8 @@ markupsafe==3.0.3
     #   wtforms
 openpyxl==3.1.5
     # via tabela-nutricional-web
+openai==2.21.0
+    # via tabela-nutricional-web
 ordered-set==4.1.0
     # via flask-limiter
 packaging==26.0

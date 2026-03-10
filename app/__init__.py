@@ -85,6 +85,7 @@ def create_app(config_name: str | None = None) -> "Flask":
     from app.blueprints.billing import billing_bp
     from app.blueprints.product import product_bp
     from app.blueprints.legacy import legacy_bp
+    from app.blueprints.ai_support import ai_support_bp
 
     init_oauth(flask_app)
 
@@ -112,10 +113,15 @@ def create_app(config_name: str | None = None) -> "Flask":
     flask_app.register_blueprint(billing_bp)
     flask_app.register_blueprint(product_bp)
     flask_app.register_blueprint(legacy_bp)
+    flask_app.register_blueprint(ai_support_bp)
 
     @flask_app.context_processor
     def inject_billing_flags():
         return {"stripe_enabled": flask_app.config.get("STRIPE_ENABLED", False)}
+
+    @flask_app.context_processor
+    def inject_chatbot_flags():
+        return {"chatbot_enabled": flask_app.config.get("CHATBOT_ENABLED", False)}
 
     @flask_app.context_processor
     def inject_usage_context():
@@ -132,6 +138,11 @@ def create_app(config_name: str | None = None) -> "Flask":
 
     register_security_headers(flask_app)
     register_request_logging(flask_app)
+
+    with flask_app.app_context():
+        from app.services.chatbot_service import ensure_chatbot_storage
+
+        ensure_chatbot_storage()
 
     # Error handlers
     from app.errors import register_error_handlers

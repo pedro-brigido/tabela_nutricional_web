@@ -390,5 +390,40 @@ def register_cli(app: Flask) -> None:
         db.session.commit()
         click.echo(f"Anonymized {count} user(s).")
 
+    @app.cli.command("chatbot-sync-kb")
+    def chatbot_sync_kb():
+        """Sync chatbot knowledge documents and chunks."""
+        from app.services.chatbot_service import sync_knowledge_base
+
+        result = sync_knowledge_base()
+        click.echo(
+            "Knowledge synced. "
+            f"created={result['created']} updated={result['updated']} chunks={result['chunks']}"
+        )
+
+    @app.cli.command("chatbot-reembed")
+    @click.option(
+        "--all",
+        "embed_all",
+        is_flag=True,
+        default=False,
+        help="Regera embeddings de todos os chunks, nao apenas dos faltantes.",
+    )
+    def chatbot_reembed(embed_all: bool):
+        """Generate embeddings for chatbot knowledge chunks."""
+        from app.services.chatbot_service import reembed_knowledge_base, sync_if_needed
+
+        sync_if_needed()
+        result = reembed_knowledge_base(only_missing=not embed_all)
+        click.echo(f"Embeddings atualizados: {result['embedded']}")
+
+    @app.cli.command("chatbot-prune")
+    def chatbot_prune():
+        """Delete expired chatbot conversations based on retention settings."""
+        from app.services.chatbot_service import prune_expired_conversations
+
+        deleted = prune_expired_conversations()
+        click.echo(f"Conversas removidas: {deleted}")
+
 
 _PLANS_SEED = PLANS_SEED

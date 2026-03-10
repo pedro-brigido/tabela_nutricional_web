@@ -12,6 +12,7 @@ from app.models.plan import Plan, Subscription, UsageRecord
 from app.models.support import SupportTicket
 from app.models.user import User
 from app.services.audit_service import log_action
+from app.services.chatbot_service import chatbot_metrics
 from app.services.plan_service import (
     assign_plan,
     get_user_plan,
@@ -37,6 +38,7 @@ def dashboard():
         .all()
     )
     open_tickets = SupportTicket.query.filter_by(status="open").count()
+    chatbot_summary = chatbot_metrics()
 
     return render_template(
         "admin/dashboard.html",
@@ -44,6 +46,7 @@ def dashboard():
         total_tables_month=total_tables_month,
         plan_dist=plan_dist,
         open_tickets=open_tickets,
+        total_chatbot_conversations=chatbot_summary["total_conversations"],
     )
 
 
@@ -177,6 +180,13 @@ def tickets():
     return render_template(
         "admin/tickets.html", pagination=pagination, status_filter=status_filter
     )
+
+
+@admin_bp.route("/chatbot")
+@require_role("admin")
+def chatbot():
+    metrics = chatbot_metrics()
+    return render_template("admin/chatbot.html", metrics=metrics)
 
 
 @admin_bp.route("/tickets/<int:ticket_id>/update", methods=["POST"])
