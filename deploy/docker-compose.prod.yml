@@ -15,7 +15,7 @@ services:
     env_file:
       - /opt/terracota/.env
     volumes:
-      - /opt/terracota/data:/app/data
+      - tabela_data:/app/data
     healthcheck:
       test:
         [
@@ -33,3 +33,5 @@ networks:
   terracota_network:
     external: true
 
+volumes:
+  tabela_data:

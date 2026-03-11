@@ -85,7 +85,7 @@ Arquivo: `deploy/release.sh`
 Fluxo do script:
 
 1. valida compose e env
-2. cria backup de `/opt/terracota/data`
+2. cria backup do volume Docker `tabela-nutricional_tabela_data`
 3. faz pull e sobe nova imagem (`IMAGE_REF` por digest)
 4. valida `/health`
 5. em falha, rollback automatico para imagem anterior

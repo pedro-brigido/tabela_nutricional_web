@@ -4,7 +4,7 @@ set -Eeuo pipefail
 APP_DIR="${APP_DIR:-/opt/terracota}"
 NETWORK_NAME="${NETWORK_NAME:-terracota_network}"
 
-mkdir -p "${APP_DIR}" "${APP_DIR}/data" "${APP_DIR}/backups"
+mkdir -p "${APP_DIR}" "${APP_DIR}/backups"
 
 if [[ ! -f "${APP_DIR}/.env" ]]; then
   echo "[bootstrap] Missing ${APP_DIR}/.env."
@@ -18,4 +18,3 @@ fi
 
 echo "[bootstrap] Done."
 echo "[bootstrap] Ensure /opt/terracota/.env is populated and run deploy/release.sh via CI."
-
