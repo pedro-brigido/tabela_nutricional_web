@@ -44,6 +44,8 @@ data/
 *.sqlite
 *.sqlite3
 subscribers_*.csv
+!src/tabela_nutricional/data/
+!src/tabela_nutricional/data/taco.json
 
 # Environment and secrets (keep .env.example)
 .env
