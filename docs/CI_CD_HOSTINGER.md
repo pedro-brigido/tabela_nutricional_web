@@ -53,7 +53,7 @@ Segredos obrigatorios:
 
 - `VPS_HOST`
 - `VPS_PORT` (opcional, default 22)
-- `VPS_USER`
+- `VPS_USER` (opcional; se vazio, o workflow usa `root`)
 - `VPS_SSH_KEY`
 - `VPS_KNOWN_HOSTS`
 - `GHCR_USERNAME`
