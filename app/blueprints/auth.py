@@ -33,6 +33,14 @@ GOOGLE_METADATA_URL = (
 )
 
 
+def _validate_email_format(email: str) -> None:
+    """Validate syntax without hard dependency on checker signature in tests."""
+    try:
+        validate_email(email, check_deliverability=False)
+    except TypeError:
+        validate_email(email)
+
+
 def _is_safe_redirect(target: str) -> bool:
     """Prevent open-redirect: only allow relative paths on the same host."""
     if not target:
@@ -68,7 +76,7 @@ def login():
             flash("Preencha e-mail e senha.", "error")
             return render_template("login.html")
         try:
-            validate_email(email)
+            _validate_email_format(email)
         except EmailNotValidError:
             flash("E-mail inválido.", "error")
             return render_template("login.html")
@@ -128,7 +136,7 @@ def register():
             flash("Informe seu e-mail.", "error")
             return render_template("register.html")
         try:
-            validate_email(email)
+            _validate_email_format(email)
         except EmailNotValidError:
             flash("E-mail inválido.", "error")
             return render_template("register.html")
