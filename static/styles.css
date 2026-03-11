@@ -977,6 +977,37 @@ body {
     text-decoration-color: currentColor;
 }
 
+/* Benefit section bridge CTA (plans) */
+.benefits-plans-cta {
+    color: rgba(231, 239, 251, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+    box-shadow: 0 16px 30px -20px rgba(0, 0, 0, 0.65),
+                0 0 24px -18px rgba(0, 240, 255, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.25s ease,
+                background 0.25s ease,
+                box-shadow 0.25s ease,
+                color 0.25s ease;
+}
+.benefits-plans-cta i {
+    color: rgba(125, 239, 255, 0.95);
+    transition: color 0.25s ease, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.benefits-plans-cta:hover {
+    transform: translateY(-1px);
+    color: #ffffff;
+    border-color: rgba(0, 240, 255, 0.34);
+    background: linear-gradient(160deg, rgba(0, 240, 255, 0.16), rgba(255, 255, 255, 0.05));
+    box-shadow: 0 22px 36px -22px rgba(0, 0, 0, 0.72),
+                0 0 34px -18px rgba(0, 240, 255, 0.64),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.benefits-plans-cta:hover i:last-child {
+    transform: translateY(1px);
+}
+
 /* --- FAQ Smooth Open/Close Animation --- */
 details.faq-item {
     --faq-duration: 0.3s;
@@ -1010,10 +1041,24 @@ details.faq-item[open] > div:not(:first-child) {
     content: '';
     position: absolute;
     top: 0;
-    left: 10%;
-    right: 10%;
+    left: 8%;
+    right: 8%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), rgba(0, 240, 255, 0.2), rgba(255, 255, 255, 0.1), transparent);
+    pointer-events: none;
+}
+.section-divider::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 0.42rem;
+    height: 0.42rem;
+    transform: translate(-50%, -50%);
+    border-radius: 9999px;
+    background: rgba(0, 240, 255, 0.78);
+    box-shadow: 0 0 0 5px rgba(0, 240, 255, 0.1),
+                0 0 26px -2px rgba(0, 240, 255, 0.45);
     pointer-events: none;
 }
 .section-divider-y {
@@ -1038,6 +1083,31 @@ details.faq-item[open] > div:not(:first-child) {
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08), transparent);
     pointer-events: none;
+}
+
+/* Landing home: tighten section rhythm without changing content density */
+.landing-home > section {
+    scroll-margin-top: 6rem;
+}
+.landing-home > section.py-32 {
+    padding-top: clamp(5.25rem, 7vw, 6.4rem);
+    padding-bottom: clamp(5.25rem, 7vw, 6.4rem);
+}
+.landing-home > section.py-28 {
+    padding-top: clamp(4.95rem, 6.4vw, 5.8rem);
+    padding-bottom: clamp(4.95rem, 6.4vw, 5.8rem);
+}
+.landing-home > section.py-24 {
+    padding-top: clamp(4.6rem, 5.8vw, 5.25rem);
+    padding-bottom: clamp(4.6rem, 5.8vw, 5.25rem);
+}
+.landing-home > section.pt-8.pb-14 {
+    padding-top: clamp(1.25rem, 2.5vw, 1.5rem);
+    padding-bottom: clamp(2.3rem, 4vw, 2.7rem);
+}
+.landing-home > section.py-14 {
+    padding-top: clamp(2.5rem, 3.8vw, 2.8rem);
+    padding-bottom: clamp(2.5rem, 3.8vw, 2.8rem);
 }
 
 /* --- Subtle Noise Texture Overlay --- */
@@ -1124,6 +1194,9 @@ a:focus-visible {
     .card-lift:hover,
     .btn-cta-primary,
     .btn-cta-secondary,
+    .benefits-plans-cta,
+    .benefits-plans-cta i,
+    .hero-preview-card,
     .feature-card-icon,
     .benefit-card-icon,
     .benefit-card-icon::before,
@@ -1139,6 +1212,8 @@ a:focus-visible {
     .pricing-card-featured,
     .trust-card,
     .trust-card-icon,
+    .chatbot-launcher,
+    .chatbot-launcher-icon .chatbot-robot-glyph,
     .proof-card,
     .shadow-card-hover:hover,
     .progress-line,
@@ -1159,10 +1234,26 @@ a:focus-visible {
 
 /* Subtle grid pattern overlay for hero depth */
 .hero-grid-pattern {
+    position: relative;
+    isolation: isolate;
     background-image:
-        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-    background-size: 72px 72px;
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 92px 92px;
+    background-position: center top;
+}
+.hero-grid-pattern::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(9, 13, 23, 0) 52%, rgba(9, 13, 23, 0.36) 78%, rgba(9, 13, 23, 0.72) 100%);
+    z-index: 0;
+}
+
+.hero-premium > * {
+    position: relative;
+    z-index: 1;
 }
 
 .hero-premium::before {
@@ -1206,6 +1297,17 @@ a:focus-visible {
     box-shadow: 0 35px 80px -20px rgba(0, 0, 0, 0.55),
                 0 0 60px -25px rgba(0, 240, 255, 0.35),
                 inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    transform-origin: center top;
+    transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.3s ease,
+                box-shadow 0.35s ease;
+}
+.hero-preview-card:hover {
+    transform: translateY(-5px) scale(1.01);
+    border-color: rgba(0, 240, 255, 0.32);
+    box-shadow: 0 42px 90px -24px rgba(0, 0, 0, 0.6),
+                0 0 72px -22px rgba(0, 240, 255, 0.42),
+                inset 0 1px 0 rgba(255, 255, 255, 0.09);
 }
 
 .hero-status-pill {
@@ -1690,6 +1792,31 @@ a:focus-visible {
     color: rgba(133, 240, 255, 0.93);
 }
 
+.chatbot-robot-glyph {
+    display: inline-flex;
+    width: 1em;
+    height: 1em;
+    line-height: 0;
+    color: currentColor;
+}
+.chatbot-robot-glyph svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+.chatbot-robot-glyph--launcher {
+    font-size: 1.16rem;
+}
+.chatbot-robot-glyph--kicker {
+    font-size: 0.86rem;
+}
+.chatbot-robot-glyph--mini {
+    font-size: 0.92rem;
+}
+.chatbot-robot-glyph--tiny {
+    font-size: 0.86rem;
+}
+
 .chatbot-modal {
     pointer-events: none;
 }
@@ -1766,27 +1893,32 @@ a:focus-visible {
     position: relative;
     width: 2.6rem;
     height: 2.6rem;
-    border-radius: 9999px;
+    border-radius: 0.92rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     color: rgba(10, 14, 24, 0.95);
-    background: linear-gradient(145deg, rgba(0, 240, 255, 0.98), rgba(112, 244, 255, 0.88));
-    box-shadow: 0 12px 22px -14px rgba(0, 240, 255, 0.68);
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    background: linear-gradient(145deg, rgba(0, 240, 255, 0.96), rgba(112, 244, 255, 0.9));
+    box-shadow: 0 12px 22px -14px rgba(0, 240, 255, 0.68),
+                inset 0 1px 0 rgba(255, 255, 255, 0.38);
 }
 .chatbot-launcher-icon::after {
     content: '';
     position: absolute;
-    top: 0.45rem;
-    right: 0.38rem;
+    top: 0.36rem;
+    right: 0.3rem;
     width: 0.42rem;
     height: 0.42rem;
     border-radius: 9999px;
     background: rgba(11, 197, 115, 1);
     box-shadow: 0 0 0 4px rgba(11, 197, 115, 0.12);
 }
-.chatbot-launcher-icon i {
-    font-size: 1rem;
+.chatbot-launcher-icon .chatbot-robot-glyph {
+    transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.chatbot-launcher:hover .chatbot-launcher-icon .chatbot-robot-glyph {
+    transform: translateY(-1px) scale(1.04);
 }
 .chatbot-launcher-copy {
     display: flex;
@@ -1857,6 +1989,9 @@ a:focus-visible {
     letter-spacing: 0.14em;
     font-weight: 700;
 }
+.chatbot-kicker .chatbot-robot-glyph {
+    color: rgba(146, 240, 255, 0.95);
+}
 .chatbot-title {
     margin-top: 0.58rem;
     font-family: 'Space Grotesk', sans-serif;
@@ -1922,6 +2057,9 @@ a:focus-visible {
     border-color: rgba(0, 240, 255, 0.28);
     background: rgba(0, 240, 255, 0.1);
     color: rgba(140, 240, 255, 0.98);
+}
+.chatbot-message-avatar-assistant .chatbot-robot-glyph {
+    font-size: 0.86rem;
 }
 .chatbot-message-avatar-user {
     border-color: rgba(255, 255, 255, 0.14);
@@ -2075,6 +2213,10 @@ a:focus-visible {
 }
 .faq-side-ai-cta {
     margin-top: 0.7rem;
+}
+.faq-side-ai-cta .chatbot-robot-glyph {
+    font-size: 0.92rem;
+    color: rgba(138, 240, 255, 0.96);
 }
 
 @keyframes chatbotDockEnter {
