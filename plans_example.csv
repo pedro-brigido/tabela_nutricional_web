@@ -1,0 +1,5 @@
+slug,name,price_brl,max_tables_per_month,max_ingredients_per_table,has_templates,has_pdf_export,has_png_export,has_version_history,has_branding,pulse_level,pulse_max_topics,pulse_has_alerts,pulse_has_radar,is_active,display_order
+free,Free,0,1,10,0,0,0,0,0,digest,0,0,0,1,0
+flow_start,Terracota Flow Start,39.90,3,25,1,1,0,0,0,general,0,1,0,1,1
+flow_pro,Terracota Flow Pro,79.90,10,80,1,1,1,1,0,pro,5,1,0,1,2
+flow_studio,Terracota Flow Studio (Unlimited),199.90,,,1,1,1,1,1,advanced,15,1,1,1,3

@@ -1,0 +1,28 @@
+{% extends "app/base_app.html" %}
+{% block title %}Meus Tickets | Terracota{% endblock %}
+{% block content %}
+<h1 class="text-3xl font-heading font-bold mb-8">Meus Tickets</h1>
+
+<div class="mb-6">
+    <a href="{{ url_for('support.contact') }}" class="px-4 py-2 bg-terracota-cyan text-terracota-base font-semibold rounded-lg text-sm hover:bg-white transition-colors">Novo Ticket</a>
+</div>
+
+{% if tickets %}
+<div class="space-y-4">
+    {% for t in tickets %}
+    <div class="bg-terracota-surface border border-white/10 rounded-xl p-4">
+        <div class="flex items-center justify-between mb-2">
+            <h3 class="font-semibold">{{ t.subject }}</h3>
+            <span class="text-xs px-2 py-1 rounded-full {{ 'bg-green-500/20 text-green-300' if t.status == 'resolved' else 'bg-yellow-500/20 text-yellow-300' if t.status == 'open' else 'bg-blue-500/20 text-blue-300' }}">
+                {{ t.status }}
+            </span>
+        </div>
+        <p class="text-sm text-terracota-textMuted">{{ t.category }} &middot; {{ t.created_at.strftime('%d/%m/%Y %H:%M') if t.created_at }}</p>
+        <p class="text-sm mt-2">{{ t.message[:200] }}{% if t.message|length > 200 %}...{% endif %}</p>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-terracota-textMuted">Nenhum ticket encontrado.</p>
+{% endif %}
+{% endblock %}

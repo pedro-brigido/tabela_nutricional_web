@@ -1,0 +1,87 @@
+from app.models.plan import Plan
+
+
+def test_pricing_comparison_is_in_landing_when_no_plans(client):
+    resp = client.get("/")
+    assert resp.status_code == 200
+    text = resp.data.decode("utf-8")
+    assert "Planos ainda não foram carregados no banco" in text
+    assert "Comparativo simplificado" in text
+    assert "Branding no PDF" in text
+    assert "Essencial" in text
+
+
+def test_landing_uses_db_plans_when_present(client, db_session):
+    db_session.add_all(
+        [
+            Plan(
+                slug="free",
+                name="Grátis",
+                price_brl=0,
+                max_tables_per_month=1,
+                max_ingredients_per_table=10,
+                pulse_level="digest",
+                display_order=0,
+                is_active=True,
+            ),
+            Plan(
+                slug="flow_start",
+                name="Básico",
+                price_brl=39.90,
+                max_tables_per_month=3,
+                max_ingredients_per_table=25,
+                pulse_level="general",
+                has_templates=True,
+                has_pdf_export=True,
+                pulse_has_alerts=True,
+                display_order=1,
+                is_active=True,
+            ),
+            Plan(
+                slug="flow_pro",
+                name="Profissional",
+                price_brl=79.90,
+                max_tables_per_month=10,
+                max_ingredients_per_table=80,
+                has_templates=True,
+                has_pdf_export=True,
+                has_png_export=True,
+                has_version_history=True,
+                pulse_level="pro",
+                pulse_max_topics=5,
+                pulse_has_alerts=True,
+                display_order=2,
+                is_active=True,
+            ),
+            Plan(
+                slug="flow_studio",
+                name="Ilimitado",
+                price_brl=199.90,
+                max_tables_per_month=None,
+                max_ingredients_per_table=None,
+                has_templates=True,
+                has_pdf_export=True,
+                has_png_export=True,
+                has_version_history=True,
+                has_branding=True,
+                pulse_level="advanced",
+                pulse_max_topics=15,
+                pulse_has_alerts=True,
+                pulse_has_radar=True,
+                display_order=3,
+                is_active=True,
+            ),
+        ]
+    )
+    db_session.commit()
+
+    resp = client.get("/")
+    assert resp.status_code == 200
+    text = resp.data.decode("utf-8")
+    assert "Planos ainda não foram carregados no banco" not in text
+    assert "Studio" in text
+
+
+def test_old_pricing_page_removed(client):
+    resp = client.get("/pricing")
+    assert resp.status_code == 404

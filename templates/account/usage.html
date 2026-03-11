@@ -1,0 +1,39 @@
+{% extends "app/base_app.html" %}
+{% block title %}Consumo | Terracota{% endblock %}
+{% block content %}
+<h1 class="text-3xl font-heading font-bold mb-8">Consumo Mensal</h1>
+
+<div class="bg-terracota-surface border border-white/10 rounded-2xl p-6 max-w-lg">
+    <p class="text-xs text-terracota-textMuted uppercase tracking-wider mb-1">Período</p>
+    <p class="text-xl font-heading font-bold mb-6">{{ usage.period }}</p>
+
+    <div class="space-y-4">
+        <div>
+            <div class="flex justify-between text-sm mb-1">
+                <span class="text-terracota-textMuted">Tabelas criadas</span>
+                <span class="font-semibold">{{ usage.tables_created }}{% if usage.tables_limit is not none %} / {{ usage.tables_limit }}{% endif %}</span>
+            </div>
+            {% if usage.tables_limit is not none %}
+            <div class="w-full bg-white/10 rounded-full h-2">
+                {% set pct = (usage.tables_created / usage.tables_limit * 100) if usage.tables_limit > 0 else 0 %}
+                <div class="bg-terracota-cyan h-2 rounded-full" style="width: {{ [pct, 100]|min }}%"></div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <div class="flex justify-between text-sm">
+                <span class="text-terracota-textMuted">Ingredientes por tabela</span>
+                <span class="font-semibold">{% if usage.ingredients_limit is not none %}até {{ usage.ingredients_limit }}{% else %}Ilimitado{% endif %}</span>
+            </div>
+        </div>
+
+        <div>
+            <div class="flex justify-between text-sm">
+                <span class="text-terracota-textMuted">Plano</span>
+                <span class="font-semibold text-terracota-cyan">{{ usage.plan_name }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

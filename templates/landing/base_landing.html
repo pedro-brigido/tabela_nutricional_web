@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Terracota Compliance{% endblock %}</title>
+
+    <!-- SEO: Default meta (overridable per page) -->
+    {% block meta %}
+    <meta name="description" content="Calculadora de tabela nutricional conforme ANVISA (RDC 429/2020, IN 75/2020). Gere rótulos em conformidade em minutos.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ request.url }}">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="Terracota Compliance">
+    <meta property="og:title" content="Terracota — Tabela Nutricional ANVISA em Minutos">
+    <meta property="og:description" content="Calculadora de tabela nutricional conforme ANVISA. Arredondamentos, %VD e alérgenos automáticos.">
+    <meta property="og:url" content="{{ request.url }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Terracota — Tabela Nutricional ANVISA">
+    <meta name="twitter:description" content="Gere tabelas nutricionais em conformidade com RDC 429/2020 e IN 75/2020 em minutos.">
+    {% endblock %}
+
+    <!-- Preconnect (performance) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script defer src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        heading: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        terracota: {
+                            base: '#0B0D17',
+                            deepDark: '#0B0D17',
+                            surface: '#151828',
+                            surfaceHighlight: '#1E233A',
+                            cyan: '#00F0FF',
+                            cyanHover: '#00C8D6',
+                            purple: '#7B2CBF',
+                            purpleBright: '#B890FF',
+                            text: '#FFFFFF',
+                            textLight: '#D7E2F2',
+                            textMuted: '#A7B6CA',
+                        }
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'hero-glow': 'conic-gradient(from 180deg at 50% 50%, #7B2CBF33 0deg, #00F0FF33 180deg, #7B2CBF33 360deg)',
+                    }
+                }
+            }
+        }
+    </script>
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-terracota-base text-terracota-text font-sans antialiased min-h-screen selection:bg-terracota-cyan selection:text-terracota-base overflow-x-hidden">
+
+    <!-- Ambient Background Glow -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute top-[-15%] left-[-12%] w-[38%] h-[38%] bg-terracota-purple/[0.06] blur-[140px] rounded-full"></div>
+        <div class="absolute bottom-[-15%] right-[-12%] w-[38%] h-[38%] bg-terracota-cyan/[0.06] blur-[140px] rounded-full"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-50 bg-terracota-base/80 backdrop-blur-xl border-b border-white/[0.06]">
+        <div class="max-w-7xl mx-auto px-6 h-[4.5rem] flex items-center justify-between">
+            <a href="{{ url_for('main.index') }}" class="flex items-center gap-4 group">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-terracota-surfaceHighlight to-terracota-surface flex items-center justify-center border border-white/10 group-hover:border-terracota-cyan/50 transition-colors relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-terracota-cyan/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <span class="font-heading font-bold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-white to-terracota-cyan">T</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold tracking-tight text-white font-heading uppercase leading-none">Terracota</span>
+                    <span class="text-[11px] tracking-[0.22em] text-terracota-cyan/90 uppercase mt-1">Compliance</span>
+                </div>
+            </a>
+
+            <!-- Mobile menu button -->
+            <button id="mobile-menu-btn" class="md:hidden text-terracota-textMuted hover:text-white transition-colors" aria-label="Menu">
+                <i class="ph ph-list text-2xl"></i>
+            </button>
+
+            <nav class="hidden md:flex items-center gap-8">
+                {% block nav_links %}
+                <a href="{{ url_for('main.index') }}#beneficios" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Soluções</a>
+                <a href="{{ url_for('main.index') }}#planos" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Planos</a>
+                <a href="{{ url_for('main.index') }}#faq" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Ajuda</a>
+                <a href="{{ url_for('support.contact') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Contato</a>
+                {% endblock %}
+            </nav>
+
+            <div class="hidden md:flex items-center gap-4">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('product.calculator') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Minha Conta</a>
+                    <a href="{{ url_for('auth.logout') }}" class="px-4 py-2 rounded-lg border border-white/10 text-terracota-textMuted text-sm font-medium hover:bg-white/5 transition-colors">Sair</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="px-5 py-2.5 rounded-full border border-terracota-cyan/25 text-terracota-cyan text-sm font-medium hover:bg-terracota-cyan/10 transition-colors">Entrar</a>
+                    <a href="{{ url_for('auth.register') }}" class="px-5 py-2.5 rounded-full bg-terracota-cyan text-terracota-base text-sm font-semibold hover:bg-white transition-colors shadow-[0_0_20px_-6px_#00F0FF44]">Comece Grátis</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-white/[0.08] bg-terracota-base/95 backdrop-blur-xl">
+            <div class="px-6 py-4 flex flex-col gap-3">
+                {% block mobile_nav_links %}
+                <a href="{{ url_for('main.index') }}#beneficios" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">Soluções</a>
+                <a href="{{ url_for('main.index') }}#planos" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">Planos</a>
+                <a href="{{ url_for('main.index') }}#faq" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">Ajuda</a>
+                <a href="{{ url_for('support.contact') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">Contato</a>
+                {% endblock %}
+                <hr class="border-white/10">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('product.calculator') }}" class="text-sm font-medium text-terracota-cyan py-2">Minha Conta</a>
+                    <a href="{{ url_for('auth.logout') }}" class="text-sm font-medium text-terracota-textMuted py-2">Sair</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="text-sm font-medium text-terracota-cyan py-2">Entrar</a>
+                    <a href="{{ url_for('auth.register') }}" class="text-sm font-medium text-white bg-terracota-cyan/20 rounded-lg py-2 px-4 text-center">Comece Grátis</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="relative z-10 pt-24 pb-12 min-h-screen">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="max-w-5xl mx-auto px-6 mb-6">
+                    {% for category, message in messages %}
+                        <div class="mb-2 p-3 rounded-lg text-sm {{ 'bg-red-500/20 text-red-300 border border-red-500/30' if category == 'error' else 'bg-terracota-cyan/20 text-terracota-cyan border border-terracota-cyan/30' }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="border-t border-white/[0.06] pt-16 pb-10 landing-footer relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-[1.2fr_0.8fr_0.8fr] gap-8 md:gap-10">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-terracota-surfaceHighlight flex items-center justify-center border border-white/[0.08]">
+                            <span class="font-heading font-bold text-base text-terracota-cyan">T</span>
+                        </div>
+                        <span class="text-base font-medium text-white/90 tracking-widest uppercase">Terracota</span>
+                    </div>
+                    <p class="text-sm text-terracota-textLight/55 max-w-sm leading-relaxed">
+                        Plataforma para geração de tabelas nutricionais com foco em conformidade regulatória, clareza operacional e velocidade de execução.
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-[11px] uppercase tracking-[0.18em] text-terracota-textMuted/70 mb-4 font-medium">Produto</p>
+                    <div class="flex flex-col gap-2.5">
+                        <a href="{{ url_for('main.index') }}#planos" class="text-sm text-terracota-textLight/60 hover:text-white transition-colors">Planos</a>
+                        <a href="{{ url_for('main.index') }}#faq" class="text-sm text-terracota-textLight/60 hover:text-white transition-colors">FAQ</a>
+                        <a href="{{ url_for('main.privacy') }}" class="text-sm text-terracota-textLight/60 hover:text-white transition-colors">Privacidade</a>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-[11px] uppercase tracking-[0.18em] text-terracota-textMuted/70 mb-4 font-medium">Suporte</p>
+                    <div class="flex flex-col gap-2.5">
+                        <a href="{{ url_for('support.contact') }}" class="text-sm text-terracota-textLight/60 hover:text-white transition-colors">Falar com suporte</a>
+                        <a href="{{ url_for('support.help_page') }}" class="text-sm text-terracota-textLight/60 hover:text-white transition-colors">Central de ajuda</a>
+                        <a href="{{ url_for('auth.login') }}" class="text-sm text-terracota-textLight/60 hover:text-white transition-colors">Entrar na conta</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10 pt-6 landing-footer-divider"></div>
+            <div class="mt-6 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+                <span class="text-sm text-terracota-textLight/70">&copy; 2026 Terracota Compliance & Systems.</span>
+                <span class="text-xs text-terracota-textMuted/60">Desenvolvido para operações com exigência regulatória.</span>
+            </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('mobile-menu-btn')?.addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+            const icon = this.querySelector('i');
+            icon.classList.toggle('ph-list');
+            icon.classList.toggle('ph-x');
+        });
+        document.querySelectorAll('#mobile-menu a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                document.getElementById('mobile-menu').classList.add('hidden');
+                var icon = document.getElementById('mobile-menu-btn')?.querySelector('i');
+                if (icon) { icon.classList.add('ph-list'); icon.classList.remove('ph-x'); }
+            });
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

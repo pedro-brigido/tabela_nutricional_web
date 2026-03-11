@@ -1,0 +1,65 @@
+{% extends "landing/base_landing.html" %}
+{% block title %}Ajuda | Terracota{% endblock %}
+{% block meta %}
+<meta name="description" content="Central de ajuda do Terracota. Tire dúvidas sobre a calculadora de tabela nutricional, planos, exportação e conformidade ANVISA.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ url_for('support.help_page', _external=True) }}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Terracota Compliance">
+<meta property="og:title" content="Ajuda | Terracota">
+<meta property="og:description" content="Central de ajuda do Terracota. Dúvidas sobre tabela nutricional, conformidade ANVISA e planos.">
+<meta property="og:url" content="{{ url_for('support.help_page', _external=True) }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ajuda | Terracota">
+<meta name="twitter:description" content="Tire suas dúvidas sobre a calculadora de tabela nutricional Terracota.">
+{% endblock %}
+{% block content %}
+<h1 class="text-3xl font-heading font-bold mb-8">Central de Ajuda</h1>
+
+<div class="grid md:grid-cols-2 gap-6">
+    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
+        <h2 class="text-lg font-heading font-semibold mb-4"><i class="ph ph-calculator text-terracota-cyan mr-2"></i>Como usar a Calculadora</h2>
+        <div class="space-y-3 text-sm text-terracota-textMuted">
+            <p><strong class="text-white">1.</strong> Faça login ou crie sua conta.</p>
+            <p><strong class="text-white">2.</strong> Preencha os dados do produto (nome, porção, alérgenos).</p>
+            <p><strong class="text-white">3.</strong> Adicione ingredientes manualmente ou importe via Excel.</p>
+            <p><strong class="text-white">4.</strong> Clique em "Calcular" para gerar a tabela nutricional em conformidade com a ANVISA.</p>
+        </div>
+    </div>
+
+    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
+        <h2 class="text-lg font-heading font-semibold mb-4"><i class="ph ph-credit-card text-terracota-cyan mr-2"></i>Planos e Limites</h2>
+        <div class="space-y-3 text-sm text-terracota-textMuted">
+            <p><strong class="text-white">Free:</strong> 1 tabela/mês, até 10 ingredientes.</p>
+            <p><strong class="text-white">Flow Start:</strong> 3 tabelas/mês, até 25 ingredientes.</p>
+            <p><strong class="text-white">Flow Pro:</strong> 10 tabelas/mês, até 80 ingredientes, templates, PDF/PNG, histórico.</p>
+            <p><strong class="text-white">Flow Studio:</strong> Ilimitado, branding no PDF, Pulse avançado.</p>
+        </div>
+    </div>
+
+    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
+        <h2 class="text-lg font-heading font-semibold mb-4"><i class="ph ph-user-circle text-terracota-cyan mr-2"></i>Conta e Segurança</h2>
+        <div class="space-y-3 text-sm text-terracota-textMuted">
+            <p><strong class="text-white">Esqueci minha senha:</strong> Use a opção "Esqueci minha senha" na tela de login.</p>
+            <p><strong class="text-white">Alterar senha:</strong> Acesse Minha Conta > Configurações.</p>
+            <p><strong class="text-white">Excluir conta:</strong> Acesse Minha Conta > Configurações > Zona de perigo.</p>
+            <p><strong class="text-white">Exportar dados:</strong> Acesse Minha Conta > Configurações para exportar seus dados (LGPD).</p>
+        </div>
+    </div>
+
+    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
+        <h2 class="text-lg font-heading font-semibold mb-4"><i class="ph ph-scales text-terracota-cyan mr-2"></i>Regulamentação ANVISA</h2>
+        <div class="space-y-3 text-sm text-terracota-textMuted">
+            <p>Nossa calculadora segue as normas <strong class="text-white">RDC 429/2020</strong> e <strong class="text-white">IN 75/2020</strong>.</p>
+            <p>Os arredondamentos seguem o Anexo IV (insignificância) e Anexo XXII (energia).</p>
+            <p>Para dúvidas específicas sobre regulamentação, entre em contato conosco.</p>
+        </div>
+    </div>
+</div>
+
+<div class="mt-8 text-center">
+    <p class="text-terracota-textMuted mb-4">Não encontrou o que procurava?</p>
+    <a href="{{ url_for('support.contact') }}" class="px-6 py-3 bg-terracota-cyan text-terracota-base font-semibold rounded-xl hover:bg-white transition-colors">Fale conosco</a>
+</div>
+{% endblock %}

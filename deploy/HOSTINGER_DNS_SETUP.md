@@ -63,7 +63,7 @@ Após configurar os registros DNS:
 
 1. **Tempo de propagação**: Geralmente leva entre **5 a 30 minutos**, mas pode levar até **24-48 horas** em casos raros
 2. **Verificar propagação**: Você pode verificar se o DNS já propagou usando ferramentas online:
-   - https://www.whatsmydns.net/#A/rotulagem.terracotabpo.com
+   - *https://www.whatsmydns.net/#A/rotulagem.terracotabpo.com*
    - https://dnschecker.org/#A/rotulagem.terracotabpo.com
 3. **Teste local**: No terminal, você pode testar:
    ```bash

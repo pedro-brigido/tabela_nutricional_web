@@ -1,69 +1,183 @@
 # Terracota | Calculadora Nutricional
 
-Calculadora nutricional em conformidade com a **RDC 429/2020** e **IN 75/2020** (ANVISA). Projeto Python com pacote instalável e aplicação Flask.
+Calculadora nutricional em conformidade com a **RDC 429/2020** e **IN 75/2020** (ANVISA). Aplicação Flask com controle de acesso por planos (Free, Flow Start, Flow Pro, Flow Studio). Gerenciado com [uv](https://docs.astral.sh/uv/).
 
 ## Requisitos
 
 - Python 3.10+
+- [uv](https://docs.astral.sh/uv/installation/) (gerenciador de pacotes)
 
 ## Instalação
 
 ```bash
-pip install -r requirements.txt
-# Opcional: instalar o pacote em modo editável para desenvolvimento
-pip install -e .
+# Instalar uv (se ainda não tiver)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Clonar/cd no projeto
+cd tabela_nutricional_web
+
+# Criar venv e instalar dependências
+uv sync
 ```
 
 ## Como executar
 
+A aplicação usa **application factory** e o entry point é `wsgi.py` (não existe mais `app.py`).
+
 ```bash
-python app.py
+# Opção 1: Servidor de desenvolvimento (recomendado local)
+# Requer FLASK_APP=wsgi:app no .env (já está em .env.example)
+uv run flask run
+
+# Opção 2: Via wsgi.py (inicia app com create_app, não depende de FLASK_APP)
+uv run python wsgi.py
+
+# Opção 3: Gunicorn (produção)
+uv run gunicorn -c gunicorn.conf.py wsgi:app
 ```
 
-Acesse [http://localhost:5000](http://localhost:5000) no navegador.
+Acesse [http://127.0.0.1:5000](http://127.0.0.1:5000) no navegador.
+
+### Variáveis de ambiente
+
+Copie `.env.example` para `.env` e ajuste conforme necessário.
+
+| Variável | Descrição |
+|----------|-----------|
+| `FLASK_ENV` | `development`, `testing` ou `production` |
+| `SECRET_KEY` | Chave para sessões (gere com `python -c "import secrets; print(secrets.token_hex(32))"`) |
+| `DATA_DIR` | Diretório para `app.db` e `subscribers.db` (padrão: `./data`) |
+| `DATABASE_URL` | URI do banco (padrão: `sqlite:///{DATA_DIR}/app.db`) |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Login com Google (opcional) |
+| `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET` | Stripe Checkout/Billing/Webhooks |
+| `STRIPE_PRICE_ID_FLOW_START`, `STRIPE_PRICE_ID_FLOW_PRO`, `STRIPE_PRICE_ID_FLOW_STUDIO` | Price IDs Stripe para cada plano pago. Ver [Configuração do Stripe (passo a passo)](docs/STRIPE_SETUP.md) |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_USE_TLS`, `EMAIL_FROM` | SMTP para e-mails transacionais |
+| `NEWSLETTER_NOTIFY_EMAIL` | E-mail que recebe aviso de newsletter (padrão: `comercial@terracotabpo.com`) |
+| `USE_RELOADER` | `1` para reload automático ao editar (apenas com `python wsgi.py`) |
+| `FLASK_RUN_HOST` / `FLASK_RUN_PORT` | Host e porta (padrão: 127.0.0.1:5000) |
+
+## Banco de dados e migrações
+
+O schema é gerenciado pelo **Alembic** (Flask-Migrate).
+
+```bash
+# Aplicar migrações
+uv run flask db upgrade
+
+# Criar nova migração (após alterar models)
+uv run flask db migrate -m "descrição"
+
+# Comandos CLI úteis
+uv run flask seed-plans              # Popular tabela de planos (Free, Flow Start, etc.)
+uv run flask create-admin <email>    # Tornar usuário admin
+uv run flask backfill-free-plan      # Atribuir plano Free a usuários sem assinatura
+uv run flask anonymize-deleted       # Anonimizar contas soft-deleted há 30+ dias
+uv run flask sync-stripe-prices      # Sincronizar STRIPE_PRICE_ID_* para a tabela de planos
+```
 
 ## Estrutura do projeto
 
 ```
 .
-├── app.py                 # Aplicação Flask (rotas, API, import Excel)
-├── pyproject.toml         # Configuração do pacote Python
-├── requirements.txt
-├── src/
-│   └── tabela_nutricional/   # Pacote principal
-│       ├── __init__.py
-│       └── calculator.py    # Cálculo ANVISA (RDC 429/2020, IN 75/2020)
-├── tests/
-│   └── test_calculator.py
+├── wsgi.py                # Entry point (create_app + gunicorn)
+├── app/
+│   ├── __init__.py        # create_app() — application factory
+│   ├── config.py          # Config Dev/Test/Prod
+│   ├── extensions.py      # db, login_manager, csrf, limiter, migrate
+│   ├── decorators.py      # @require_entitlement, @require_quota, @require_role
+│   ├── errors.py           # Handlers 400, 403, 404, 429, 500
+│   ├── middleware.py       # Security headers, request logging
+│   ├── cli.py             # Comandos Flask (seed-plans, create-admin, etc.)
+│   ├── models/            # User, Plan, Subscription, UsageRecord, NutritionTable, AuditLog, SupportTicket
+│   ├── services/          # plan_service, usage_service, table_service, auth_service, audit_service, email_service
+│   └── blueprints/        # auth, main, calculator, account, admin, support
+├── migrations/            # Alembic
+├── src/tabela_nutricional/  # Cálculo ANVISA
 ├── static/
-│   ├── app.js             # Frontend (wizard, chamadas à API)
-│   └── styles.css
-├── templates/
-│   └── index.html
-└── legacy/                # Implementação antiga em JavaScript (referência)
-    ├── README.md
-    ├── anvisaCalculator.js
-    ├── script.js
-    ├── index.html
-    └── styles.css
+├── templates/             # base, auth/, main/, account/, admin/, support/, errors/
+├── tests/
+├── deploy/                # Docker e scripts
+├── pyproject.toml
+└── .env.example
 ```
 
-## API
+## Planos e funcionalidades
 
-- **POST /api/calculate** — Recebe `{ product, ingredients }` e retorna dados nutricionais calculados.
-- **POST /api/import-excel** — Recebe arquivo `.xlsx` e retorna lista de ingredientes extraídos.
+| Plano | Tabelas/mês | Ingredientes/tabela | Recursos |
+|-------|-------------|---------------------|----------|
+| **Free** | 1 | 10 | Pulse Digest |
+| **Flow Start** (R$ 39,90) | 3 | 25 | Pulse geral |
+| **Flow Pro** (R$ 79,90) | 10 | 80 | Templates, PDF/PNG, histórico, Pulse Pro (5 temas + alertas) |
+| **Flow Studio** (R$ 199,90) | Ilimitado | Ilimitado | Branding PDF, Pulse Advanced (15 temas + radar) |
 
-## Importação de Excel
+Assinaturas podem ser atribuídas manualmente via admin e também via Stripe (Checkout + Billing Portal + Webhooks).
 
-O arquivo Excel deve conter colunas identificáveis por nomes como: Nome/Ingrediente, Quantidade/Qtd, Kcal, Carboidratos, Proteínas, Gorduras, Fibra, Sódio, etc. O formato `.xlsx` é suportado (requer `openpyxl`).
+## Rotas principais
+
+- **/** — Landing
+- **/#planos** — Seção de planos e comparação simplificada na landing
+- **/health** — Health check (inclui status do banco)
+- **/login**, **/register**, **/logout** — Auth
+- **/forgot-password**, **/reset-password/<token>** — Redefinição de senha
+- **/verify-email/<token>** — Verificação de e-mail
+- **/account** — Minha Conta (plano, consumo, configurações, upgrade)
+- **POST /billing/checkout**, **POST /billing/portal**, **POST /billing/webhook** — Fluxos Stripe
+- **/billing/success**, **/billing/cancel** — Páginas informativas pós-checkout
+- **/help**, **/contact** — Suporte
+- **/admin/** — Painel admin (requer `is_admin`); usuários, planos, quotas, logs, tickets
+- **POST /api/calculate** — Calcular tabela nutricional (requer login, respeita quota de ingredientes)
+- **POST /api/import-excel** — Importar ingredientes de Excel
+- **POST /api/tables**, **GET /api/tables**, **GET /api/tables/<id>**, **DELETE /api/tables/<id>** — CRUD de tabelas salvas (consome quota ao salvar)
+- **POST /api/subscribe** — Newsletter
 
 ## Testes
 
 ```bash
-pip install -e ".[dev]"
-pytest
+uv sync --group dev
+uv run pytest
 ```
 
-## Legado
+Com cobertura:
 
-A pasta `legacy/` contém a versão original em JavaScript (calculadora e app standalone). A aplicação atual usa o backend Python e o frontend em `static/app.js` (API).
+```bash
+uv run pytest --cov=app --cov-report=term-missing
+```
+
+## Stripe local (webhooks)
+
+Para configurar cada variável Stripe passo a passo (chaves, webhook secret, Price IDs), veja [docs/STRIPE_SETUP.md](docs/STRIPE_SETUP.md).
+
+1. Configure as variáveis `STRIPE_*` no `.env`.
+2. Inicie a aplicação local.
+3. Em outro terminal, rode:
+
+```bash
+stripe listen --forward-to localhost:5000/billing/webhook
+```
+
+4. Copie o `whsec_...` exibido pelo Stripe CLI para `STRIPE_WEBHOOK_SECRET`.
+
+## Deploy com Docker
+
+O container sobe com um **entrypoint** que, na ordem:
+
+1. Aplica migrações (`flask db upgrade`)
+2. Garante planos no banco (`flask seed-plans`)
+3. Inicia o Gunicorn
+
+Não é preciso rodar migrações ou seed manualmente após o deploy.
+
+```bash
+cd deploy
+docker compose build
+docker compose up -d
+```
+
+Ou use o script completo no VPS:
+
+```bash
+cd deploy
+sudo ./vps_deploy.sh
+```
+
+Consulte `deploy/HOSTINGER_DNS_SETUP.md` para configurar DNS no Hostinger.

@@ -1,0 +1,60 @@
+{% extends "landing/base_landing.html" %}
+{% block title %}Política de Privacidade | Terracota{% endblock %}
+{% block meta %}
+<meta name="description" content="Política de privacidade do Terracota. Como coletamos, usamos e protegemos seus dados, em conformidade com a LGPD.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ url_for('main.privacy', _external=True) }}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Terracota Compliance">
+<meta property="og:title" content="Política de Privacidade | Terracota">
+<meta property="og:description" content="Como o Terracota coleta, usa e protege seus dados pessoais (LGPD).">
+<meta property="og:url" content="{{ url_for('main.privacy', _external=True) }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Política de Privacidade | Terracota">
+<meta name="twitter:description" content="Política de privacidade e conformidade LGPD do Terracota.">
+{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto prose prose-invert">
+    <h1 class="text-3xl font-heading font-bold mb-8">Política de Privacidade</h1>
+
+    <p class="text-terracota-textMuted mb-6">Última atualização: Fevereiro 2026</p>
+
+    <div class="space-y-6 text-sm text-terracota-textMuted leading-relaxed">
+        <div>
+            <h2 class="text-lg font-heading font-semibold text-white mb-2">1. Dados coletados</h2>
+            <p>Coletamos apenas os dados necessários para fornecer nosso serviço: nome, e-mail, dados de login (OAuth ou senha hash), e as tabelas nutricionais que você cria. Dados de pagamento são processados por terceiros (quando disponível).</p>
+        </div>
+
+        <div>
+            <h2 class="text-lg font-heading font-semibold text-white mb-2">2. Uso dos dados</h2>
+            <p>Seus dados são utilizados exclusivamente para: autenticação, personalização do serviço, controle de quotas, envio de comunicações transacionais (reset de senha, verificação de e-mail) e melhorias no produto.</p>
+        </div>
+
+        <div>
+            <h2 class="text-lg font-heading font-semibold text-white mb-2">3. Armazenamento e segurança</h2>
+            <p>Senhas são armazenadas com hash argon2id. Sessões são protegidas com cookies seguros (HttpOnly, SameSite). Dados são armazenados em servidores com acesso restrito.</p>
+        </div>
+
+        <div>
+            <h2 class="text-lg font-heading font-semibold text-white mb-2">4. Seus direitos (LGPD)</h2>
+            <p>Você tem direito a: acessar seus dados, corrigi-los, exportá-los em formato JSON, solicitar exclusão da conta. Acesse "Minha Conta > Configurações" para exercer esses direitos.</p>
+        </div>
+
+        <div>
+            <h2 class="text-lg font-heading font-semibold text-white mb-2">5. Exclusão de dados</h2>
+            <p>Ao solicitar exclusão, sua conta é desativada imediatamente. Após 30 dias, seus dados pessoais são anonimizados. Tabelas nutricionais são removidas junto com a conta.</p>
+        </div>
+
+        <div>
+            <h2 class="text-lg font-heading font-semibold text-white mb-2">6. Cookies</h2>
+            <p>Utilizamos cookies estritamente necessários para autenticação e funcionamento do serviço. Não utilizamos cookies de rastreamento ou publicidade.</p>
+        </div>
+
+        <div>
+            <h2 class="text-lg font-heading font-semibold text-white mb-2">7. Contato</h2>
+            <p>Para questões sobre privacidade, entre em contato pelo formulário em <a href="{{ url_for('support.contact') }}" class="text-terracota-cyan hover:underline">/contact</a> ou pelo e-mail comercial@terracotabpo.com.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

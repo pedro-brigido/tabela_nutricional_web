@@ -32,6 +32,10 @@ from tabela_nutricional.types import (
     normalize_ingredients,
     _to_decimal,
 )
+from tabela_nutricional.validators import (
+    validate_ingredients_full,
+    validate_portion_size as validate_portion_range,
+)
 from tabela_nutricional.vdr_values import get_vdr, has_vdr
 
 # Order of nutrients in output (RDC 429)
@@ -204,6 +208,8 @@ def calculate(
     Full pipeline: aggregate -> per100/perPortion -> round components -> energy ->
     significance -> express -> %VD. Returns new contract (per100_base, perPortion, meta).
     """
+    warnings: list[str] = []
+
     try:
         ctx = CalculationContext.from_request(
             portion_size,
@@ -215,6 +221,19 @@ def calculate(
         )
     except ValueError:
         return None
+
+    # Validate portion size range
+    portion_val = validate_portion_range(ctx.portion_size)
+    warnings.extend(portion_val.warnings)
+    if not portion_val.is_valid:
+        return None
+
+    # Validate ingredient data
+    ing_validation = validate_ingredients_full(ingredients)
+    warnings.extend(ing_validation.warnings)
+    if not ing_validation.is_valid:
+        return None
+
     try:
         ing_list = normalize_ingredients(ingredients)
     except ValueError:
@@ -240,7 +259,9 @@ def calculate(
             "portion_size": str(ctx.portion_size),
             "portion_unit": ctx.portion_unit,
             "food_category": ctx.food_category,
-        }
+            "regulatory_version": "IN_75_2020_RDC_429_2020_v1",
+        },
+        warnings=warnings,
     )
     return CalculationResult(
         per100_base=per100_block,
@@ -263,9 +284,20 @@ def to_legacy_output(result: CalculationResult) -> dict:
                 "vd": nr.vd_display if nr.vd_display != "**" else "",
             }
         return out
+
+    significance_info = {}
+    for k, nr in result.perPortion.nutrients.items():
+        if nr.flags.is_insignificant or nr.flags.was_forced_zero:
+            significance_info[k] = {
+                "insignificant": True,
+                "basis": nr.flags.insignificance_basis or "annex_iv",
+                "notes": nr.notes,
+            }
+
     return {
         "per100g": block_to_legacy(result.per100_base),
         "perPortion": block_to_legacy(result.perPortion),
+        "significanceInfo": significance_info,
         "meta": {
             "context_echo": result.meta.context_echo,
             "warnings": result.meta.warnings,

@@ -1,0 +1,1920 @@
+{% extends "landing/base_landing.html" %}
+
+{% block title %}Terracota — Tabela Nutricional ANVISA em Minutos | Calculadora RDC 429{% endblock %}
+
+{% block meta %}
+<meta name="description" content="Gere tabelas nutricionais em conformidade com a ANVISA (RDC 429/2020, IN 75/2020, RDC 26/2015) em minutos. Arredondamentos, %VD, alérgenos e valor energético automáticos. Comece grátis.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ url_for('main.index', _external=True) }}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Terracota Compliance">
+<meta property="og:title" content="Terracota — Tabela Nutricional Pronta em Minutos, em Conformidade com a ANVISA">
+<meta property="og:description" content="Gere tabelas nutricionais em conformidade com a ANVISA (RDC 429, IN 75, RDC 26) em poucos cliques. Arredondamentos, %VD, alérgenos e valor energético automáticos. Comece grátis.">
+<meta property="og:url" content="{{ url_for('main.index', _external=True) }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Terracota — Tabela Nutricional em Conformidade com a ANVISA">
+<meta name="twitter:description" content="Gere tabelas nutricionais conforme RDC 429/2020, IN 75/2020 e RDC 26/2015 em minutos. Comece grátis.">
+{% endblock %}
+
+{% block nav_links %}
+<a href="#como-funciona" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Como Funciona</a>
+<a href="#beneficios" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Benefícios</a>
+<a href="#planos" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Planos</a>
+<a href="#faq" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">FAQ</a>
+{% endblock %}
+
+{% block mobile_nav_links %}
+<a href="#como-funciona" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">Como Funciona</a>
+<a href="#beneficios" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">Benefícios</a>
+<a href="#planos" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">Planos</a>
+<a href="#faq" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">FAQ</a>
+{% endblock %}
+
+{% block content %}
+    <!-- ============================================================
+         1. HERO — What it is + Who it's for + CTA
+         ============================================================ -->
+    <section class="relative min-h-[78vh] lg:min-h-[88vh] flex items-center py-24 overflow-hidden hero-grid-pattern hero-premium">
+        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-[1.05fr_0.95fr] gap-14 xl:gap-20 items-center w-full">
+            <div class="relative z-10 max-w-2xl">
+                <div class="hero-eyebrow inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-8">
+                    <i class="ph ph-shield-check text-sm" aria-hidden="true"></i>
+                    <span class="text-[11px] font-medium uppercase tracking-[0.16em]">Conforme RDC 429/2020, IN 75/2020 e RDC 26/2015</span>
+                </div>
+                <h1 class="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-heading font-bold leading-[1.08] mb-7">
+                    Tabela nutricional em conformidade<br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-terracota-cyan to-terracota-purpleBright">pronta em minutos.</span>
+                </h1>
+                <p class="text-lg text-terracota-textLight/85 mb-9 max-w-xl leading-relaxed">
+                    O Terracota calcula, arredonda e formata sua tabela nutricional com base na ANVISA. Você entrega rótulos confiáveis com velocidade e reduz risco regulatório desde o primeiro produto.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('product.calculator') }}" class="btn-cta-primary inline-flex items-center justify-center gap-2 px-9 py-4 bg-terracota-cyan text-terracota-base font-bold rounded-full ring-1 ring-terracota-cyan/45 shadow-[0_0_35px_-8px_#00F0FF66]">
+                        <i class="ph ph-arrow-right"></i> Acessar Calculadora
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('auth.register') }}" class="btn-cta-primary inline-flex items-center justify-center gap-2 px-9 py-4 bg-terracota-cyan text-terracota-base font-bold rounded-full ring-1 ring-terracota-cyan/45 shadow-[0_0_35px_-8px_#00F0FF66]">
+                        <i class="ph ph-arrow-right"></i> Comece Grátis
+                    </a>
+                    {% endif %}
+                    <a href="#como-funciona" class="btn-cta-secondary px-8 py-4 bg-terracota-surfaceHighlight border border-white/[0.14] text-white font-semibold rounded-full text-center inline-flex justify-center items-center gap-2">
+                        Como Funciona <i class="ph ph-arrow-down"></i>
+                    </a>
+                </div>
+                <div class="mt-7 flex flex-wrap gap-2.5">
+                    <span class="hero-microproof-item"><i class="ph ph-check-circle"></i> Sem cartão de crédito</span>
+                    <span class="hero-microproof-item"><i class="ph ph-clock"></i> Primeira tabela em minutos</span>
+                    <span class="hero-microproof-item"><i class="ph ph-seal-check"></i> Regras ANVISA aplicadas</span>
+                </div>
+            </div>
+
+            <div class="relative hidden lg:block">
+                <div class="absolute inset-[-10%] bg-hero-glow opacity-25 animate-spin-slow" style="animation-duration: 20s;"></div>
+                <div class="hero-preview-card relative">
+                    <div class="flex items-start justify-between gap-4 mb-5">
+                        <div>
+                            <p class="text-[11px] uppercase tracking-[0.16em] text-terracota-textMuted">Preview do sistema</p>
+                            <p class="text-sm text-terracota-textLight mt-1">Fluxo de cálculo pronto para exportação</p>
+                        </div>
+                        <span class="hero-status-pill">Alta confiança</span>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2.5 mb-5">
+                        <div class="hero-mini-stat"><span>Cálculo</span><strong>Automático</strong></div>
+                        <div class="hero-mini-stat"><span>Validação</span><strong>IN 75</strong></div>
+                        <div class="hero-mini-stat"><span>Formato</span><strong>Regulatório</strong></div>
+                    </div>
+
+                    <div class="border border-white/10 rounded-xl overflow-hidden text-xs bg-terracota-surface/70">
+                        <div class="bg-terracota-cyan/12 px-3 py-2 font-bold text-terracota-cyan text-center border-b border-white/10">INFORMAÇÃO NUTRICIONAL</div>
+                        <div class="px-3 py-1.5 text-terracota-textMuted border-b border-white/5">Porção de 30 g (1 unidade)</div>
+                        <div class="grid grid-cols-3 gap-px bg-white/5">
+                            <div class="px-3 py-1.5 bg-terracota-surface text-terracota-textMuted"></div>
+                            <div class="px-3 py-1.5 bg-terracota-surface text-terracota-textMuted text-center font-semibold">100 g</div>
+                            <div class="px-3 py-1.5 bg-terracota-surface text-terracota-textMuted text-center font-semibold">Porção</div>
+                        </div>
+                        <div class="divide-y divide-white/5 text-terracota-textLight">
+                            <div class="grid grid-cols-3 gap-px bg-white/5"><div class="px-3 py-1.5 bg-terracota-surface">Valor energético</div><div class="px-3 py-1.5 bg-terracota-surface text-center">350 kcal</div><div class="px-3 py-1.5 bg-terracota-surface text-center">105 kcal</div></div>
+                            <div class="grid grid-cols-3 gap-px bg-white/5"><div class="px-3 py-1.5 bg-terracota-surface">Carboidratos</div><div class="px-3 py-1.5 bg-terracota-surface text-center">45 g</div><div class="px-3 py-1.5 bg-terracota-surface text-center">14 g</div></div>
+                            <div class="grid grid-cols-3 gap-px bg-white/5"><div class="px-3 py-1.5 bg-terracota-surface">Proteínas</div><div class="px-3 py-1.5 bg-terracota-surface text-center">8,5 g</div><div class="px-3 py-1.5 bg-terracota-surface text-center">2,6 g</div></div>
+                            <div class="grid grid-cols-3 gap-px bg-white/5"><div class="px-3 py-1.5 bg-terracota-surface">Gorduras totais</div><div class="px-3 py-1.5 bg-terracota-surface text-center">12 g</div><div class="px-3 py-1.5 bg-terracota-surface text-center">3,6 g</div></div>
+                            <div class="grid grid-cols-3 gap-px bg-white/5"><div class="px-3 py-1.5 bg-terracota-surface">Fibras</div><div class="px-3 py-1.5 bg-terracota-surface text-center">3,0 g</div><div class="px-3 py-1.5 bg-terracota-surface text-center">0,9 g</div></div>
+                            <div class="grid grid-cols-3 gap-px bg-white/5"><div class="px-3 py-1.5 bg-terracota-surface">Sódio</div><div class="px-3 py-1.5 bg-terracota-surface text-center">280 mg</div><div class="px-3 py-1.5 bg-terracota-surface text-center">84 mg</div></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 flex flex-wrap gap-2">
+                        <span class="hero-microproof-item"><i class="ph ph-seal-check"></i> RDC 429</span>
+                        <span class="hero-microproof-item"><i class="ph ph-seal-check"></i> IN 75/2020</span>
+                        <span class="hero-microproof-item"><i class="ph ph-seal-check"></i> RDC 26/2015</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         2. TRUST BAR — Regulation credentials
+         ============================================================ -->
+    <section class="pt-8 pb-14 relative">
+        <div class="max-w-6xl mx-auto px-6">
+            <p class="text-center text-[11px] uppercase tracking-[0.2em] text-terracota-textMuted/60 mb-8 font-medium">Conformidade regulatória comprovada</p>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div class="proof-card">
+                        <div class="proof-card-badge">RDC 429</div>
+                        <p class="proof-card-label">Base de rotulagem nutricional</p>
+                    </div>
+                    <div class="proof-card">
+                        <div class="proof-card-badge">IN 75/2020</div>
+                        <p class="proof-card-label">Regras de arredondamento</p>
+                    </div>
+                    <div class="proof-card">
+                        <div class="proof-card-badge">RDC 26/2015</div>
+                        <p class="proof-card-label">Declaração de alérgicos</p>
+                    </div>
+                    <div class="proof-card">
+                        <div class="proof-card-badge">&lt; 5 min</div>
+                        <p class="proof-card-label">Tempo médio para gerar</p>
+                    </div>
+                </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         3. PAIN / PROBLEM — Why you need this (before the solution)
+         ============================================================ -->
+    <section id="riscos" class="risk-section py-24 relative overflow-hidden section-warm-tint">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-14 md:mb-16">
+                <p class="risk-eyebrow">Risco de Não Conformidade</p>
+                <h2 class="text-3xl md:text-4xl font-heading font-bold">Não conformidade regulatória gera custo real</h2>
+                <p class="text-terracota-textMuted mt-4 text-lg">Quando a tabela não segue RDC 429, IN 75 e RDC 26, o impacto aparece na operação, no caixa e na confiança da marca.</p>
+            </div>
+
+            <div class="risk-grid grid md:grid-cols-3 gap-5 lg:gap-6">
+                <article class="risk-card risk-card-operational card-base card-lift">
+                    <div class="risk-card-top">
+                        <span class="risk-card-chip">Operacional</span>
+                        <span class="risk-card-severity">Risco recorrente</span>
+                    </div>
+                    <p class="risk-card-value">&gt; 60%</p>
+                    <p class="risk-card-title">dos rótulos apresentam desvio técnico</p>
+                    <p class="risk-card-description">Diferenças em arredondamento, %VD e formatação podem reprovar o material.</p>
+                </article>
+
+                <article class="risk-card risk-card-financial card-base card-lift">
+                    <div class="risk-card-top">
+                        <span class="risk-card-chip">Financeiro</span>
+                        <span class="risk-card-severity risk-card-severity-critical">Risco crítico</span>
+                    </div>
+                    <p class="risk-card-value">R$ 75 mil a R$ 1,5 mi</p>
+                    <p class="risk-card-title">de exposição potencial em multa</p>
+                    <p class="risk-card-description">A Lei 6.437/77 prevê autuações altas; falhas de alérgenos elevam a gravidade.</p>
+                </article>
+
+                <article class="risk-card risk-card-reputation card-base card-lift">
+                    <div class="risk-card-top">
+                        <span class="risk-card-chip">Reputação</span>
+                        <span class="risk-card-severity">Risco estratégico</span>
+                    </div>
+                    <p class="risk-card-value">Recall operacional</p>
+                    <p class="risk-card-title">com efeito direto em marca e canal</p>
+                    <p class="risk-card-description">Há recolhimento, retrabalho e desgaste comercial mesmo após a correção.</p>
+                </article>
+            </div>
+
+            <div class="risk-transition" aria-hidden="true"></div>
+
+            <div class="mt-8 md:mt-10 pain-solution-callout risk-solution-callout text-center">
+                <p class="risk-solution-kicker">Caminho seguro</p>
+                <h3 class="risk-solution-title">Terracota transforma conformidade em processo padrão</h3>
+                <p class="risk-solution-description">As regras regulatórias entram no cálculo desde o início e a saída já vem pronta para revisão e publicação.</p>
+                <div class="risk-solution-proofs">
+                    <span class="risk-solution-proof">RDC 429</span>
+                    <span class="risk-solution-proof">IN 75</span>
+                    <span class="risk-solution-proof">RDC 26</span>
+                </div>
+                <a href="#como-funciona" class="risk-solution-cta inline-flex items-center gap-2 text-sm font-semibold transition-colors">
+                    Ver como o fluxo reduz risco <i class="ph ph-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         4. HOW IT WORKS — 3-step solution (after the problem)
+         ============================================================ -->
+    <section id="como-funciona" class="py-32 relative section-divider bg-terracota-surface/30">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16 md:mb-20">
+                <p class="hiw-section-label">Fluxo Terracota</p>
+                <h2 class="text-3xl md:text-4xl font-heading font-bold">Da receita ao rótulo em 3 passos</h2>
+                <p class="text-terracota-textMuted mt-4 text-lg">Entrada de dados, cálculo regulatório e exportação pronta para uso.</p>
+            </div>
+
+            <div class="hiw-flow relative">
+                <div class="hidden md:block hiw-flow-line" aria-hidden="true"></div>
+
+                <div class="grid md:grid-cols-3 gap-6 lg:gap-7">
+                    <article class="hiw-step-card hiw-step-input group relative">
+                        <div class="hiw-step-indicator">
+                            <span class="hiw-step-marker" aria-hidden="true">01</span>
+                        </div>
+                        <p class="hiw-step-kicker"><i class="ph-duotone ph-file-xls" aria-hidden="true"></i>Entrada</p>
+                        <h4 class="hiw-step-title">Envie a composição</h4>
+                        <p class="hiw-step-description">Importe Excel ou preencha ingredientes e porção em poucos cliques.</p>
+                    </article>
+
+                    <article class="hiw-step-card hiw-step-core hiw-step-engine group relative">
+                        <span class="hiw-core-flag">Motor Terracota</span>
+                        <div class="hiw-step-indicator">
+                            <span class="hiw-step-marker" aria-hidden="true">02</span>
+                        </div>
+                        <p class="hiw-step-kicker"><i class="ph-duotone ph-seal-check" aria-hidden="true"></i>Processamento</p>
+                        <h4 class="hiw-step-title">Calculamos e validamos</h4>
+                        <p class="hiw-step-description">Aplicamos IN 75, %VD, energia e alérgenos de forma automática.</p>
+                    </article>
+
+                    <article class="hiw-step-card hiw-step-output group relative">
+                        <div class="hiw-step-indicator">
+                            <span class="hiw-step-marker" aria-hidden="true">03</span>
+                        </div>
+                        <p class="hiw-step-kicker"><i class="ph-duotone ph-file-pdf" aria-hidden="true"></i>Saída</p>
+                        <h4 class="hiw-step-title">Exporte para o rótulo</h4>
+                        <p class="hiw-step-description">Baixe o PDF regulamentado, pronto para design e impressão.</p>
+                    </article>
+                </div>
+            </div>
+
+            <div class="hiw-cta-bridge text-center">
+                <p class="hiw-cta-title">Do upload ao arquivo final, em um fluxo único e confiável.</p>
+                <div class="hiw-cta-actions">
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('product.calculator') }}" class="btn-cta-primary inline-flex items-center gap-2 px-9 py-4 bg-terracota-cyan text-terracota-base font-bold rounded-full hover:bg-white shadow-[0_0_30px_-5px_#00F0FF55]">
+                    <i class="ph ph-arrow-right"></i> Acessar Calculadora
+                </a>
+                {% else %}
+                <a href="{{ url_for('auth.register') }}" class="btn-cta-primary inline-flex items-center gap-2 px-9 py-4 bg-terracota-cyan text-terracota-base font-bold rounded-full hover:bg-white shadow-[0_0_30px_-5px_#00F0FF55]">
+                    <i class="ph ph-arrow-right"></i> Comece Grátis
+                </a>
+                {% endif %}
+                <p class="hiw-cta-note"><i class="ph ph-check-circle" aria-hidden="true"></i>Sem cartão de crédito no plano inicial.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         5. BENEFITS — Value-oriented features
+         ============================================================ -->
+    <section id="beneficios" class="py-32 relative overflow-hidden section-divider">
+        <div class="max-w-7xl mx-auto px-6 relative">
+            <div class="text-center max-w-3xl mx-auto mb-20">
+                <h3 class="text-terracota-cyan font-semibold tracking-wider uppercase text-sm mb-3">Por Que o Terracota</h3>
+                <h2 class="text-3xl md:text-4xl font-heading font-bold">Tudo que você precisa para rotular certo</h2>
+                <p class="text-terracota-textMuted mt-4 text-lg">Funcionalidades que simplificam a rotulagem e garantem conformidade.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">
+                <div class="benefit-card card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 pb-9 shadow-card shadow-card-hover hover:border-white/[0.14] group h-full relative overflow-hidden">
+                    <div class="benefit-card-glow" aria-hidden="true"></div>
+                    <div class="relative flex flex-col h-full">
+                        <div class="benefit-card-head">
+                            <div class="benefit-card-icon">
+                                <i class="ph-duotone ph-shield-check" aria-hidden="true"></i>
+                            </div>
+                            <div class="benefit-card-title-group">
+                                <span class="benefit-card-kicker">Conformidade</span>
+                                <h4 class="benefit-card-title text-[1.15rem] font-heading font-semibold leading-tight text-white">Conformidade automática</h4>
+                            </div>
+                        </div>
+                        <p class="text-[0.82rem] leading-relaxed text-terracota-textLight/80">
+                            Arredondamentos da IN 75, cálculo de %VD e valor energético conforme Atwater — todos os cálculos seguem a regulamentação vigente, automaticamente.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="benefit-card card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 pb-9 shadow-card shadow-card-hover hover:border-white/[0.14] group h-full relative overflow-hidden">
+                    <div class="benefit-card-glow" aria-hidden="true"></div>
+                    <div class="relative flex flex-col h-full">
+                        <div class="benefit-card-head">
+                            <div class="benefit-card-icon">
+                                <i class="ph-duotone ph-file-xls" aria-hidden="true"></i>
+                            </div>
+                            <div class="benefit-card-title-group">
+                                <span class="benefit-card-kicker">Importação</span>
+                                <h4 class="benefit-card-title text-[1.15rem] font-heading font-semibold leading-tight text-white">Importação Excel</h4>
+                            </div>
+                        </div>
+                        <p class="text-[0.82rem] leading-relaxed text-terracota-textLight/80">
+                            Já tem a composição em planilha? Importe direto — sem redigitar dados e sem erros de transcrição.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="benefit-card card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 pb-9 shadow-card shadow-card-hover hover:border-white/[0.14] group h-full relative overflow-hidden">
+                    <div class="benefit-card-glow" aria-hidden="true"></div>
+                    <div class="relative flex flex-col h-full">
+                        <div class="benefit-card-head">
+                            <div class="benefit-card-icon">
+                                <i class="ph-duotone ph-warning-diamond" aria-hidden="true"></i>
+                            </div>
+                            <div class="benefit-card-title-group">
+                                <span class="benefit-card-kicker">Alertas</span>
+                                <h4 class="benefit-card-title text-[1.15rem] font-heading font-semibold leading-tight text-white">Alérgenos (RDC 26)</h4>
+                            </div>
+                        </div>
+                        <p class="text-[0.82rem] leading-relaxed text-terracota-textLight/80">
+                            Declare alérgenos conforme a RDC 26/2015. Evite a infração que mais gera recalls no Brasil.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="benefit-card card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 pb-9 shadow-card shadow-card-hover hover:border-white/[0.14] group h-full relative overflow-hidden">
+                    <div class="benefit-card-glow" aria-hidden="true"></div>
+                    <div class="relative flex flex-col h-full">
+                        <div class="benefit-card-head">
+                            <div class="benefit-card-icon">
+                                <i class="ph-duotone ph-file-pdf" aria-hidden="true"></i>
+                            </div>
+                            <div class="benefit-card-title-group">
+                                <span class="benefit-card-kicker">Exportação</span>
+                                <h4 class="benefit-card-title text-[1.15rem] font-heading font-semibold leading-tight text-white">Pronta para o rótulo</h4>
+                            </div>
+                        </div>
+                        <p class="text-[0.82rem] leading-relaxed text-terracota-textLight/80">
+                            Exporte no formato regulamentado. Mande direto para a gráfica ou para o designer da embalagem.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="benefit-card card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 pb-9 shadow-card shadow-card-hover hover:border-white/[0.14] group h-full relative overflow-hidden">
+                    <div class="benefit-card-glow" aria-hidden="true"></div>
+                    <div class="relative flex flex-col h-full">
+                        <div class="benefit-card-head">
+                            <div class="benefit-card-icon">
+                                <i class="ph-duotone ph-timer" aria-hidden="true"></i>
+                            </div>
+                            <div class="benefit-card-title-group">
+                                <span class="benefit-card-kicker">Velocidade</span>
+                                <h4 class="benefit-card-title text-[1.15rem] font-heading font-semibold leading-tight text-white">Minutos, não horas</h4>
+                            </div>
+                        </div>
+                        <p class="text-[0.82rem] leading-relaxed text-terracota-textLight/80">
+                            O que levaria horas em planilha, o Terracota entrega em minutos — com precisão regulatória.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="benefit-card card-base card-lift card-accent-top bg-terracota-surface border border-white/[0.06] rounded-2xl p-8 pb-9 shadow-card shadow-card-hover hover:border-white/[0.14] group h-full relative overflow-hidden">
+                    <div class="benefit-card-glow" aria-hidden="true"></div>
+                    <div class="relative flex flex-col h-full">
+                        <div class="benefit-card-head">
+                            <div class="benefit-card-icon">
+                                <i class="ph-duotone ph-rocket-launch" aria-hidden="true"></i>
+                            </div>
+                            <div class="benefit-card-title-group">
+                                <span class="benefit-card-kicker">Entrada</span>
+                                <h4 class="benefit-card-title text-[1.15rem] font-heading font-semibold leading-tight text-white">Grátis para começar</h4>
+                            </div>
+                        </div>
+                        <p class="text-[0.82rem] leading-relaxed text-terracota-textLight/80">
+                            Comece sem custo com 1 tabela por mês. Quando precisar de mais, é só fazer upgrade.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('product.calculator') }}" class="btn-cta-primary inline-flex items-center gap-2 px-9 py-4 bg-terracota-cyan text-terracota-base font-bold rounded-full hover:bg-white shadow-[0_0_30px_-5px_#00F0FF55]">
+                    <i class="ph ph-arrow-right"></i> Acessar Calculadora
+                </a>
+                {% else %}
+                <a href="#planos" class="link-accent inline-flex items-center gap-2 text-sm font-semibold transition-colors">
+                    Ver planos e preços <i class="ph ph-arrow-down"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         6. IDEAL FOR — Who benefits (persona use-case section)
+         ============================================================ -->
+    <section id="ideal-para" class="py-32 relative section-divider bg-terracota-surface/30">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16 md:mb-20">
+                <p class="persona-section-label">Feito Para Você</p>
+                <h2 class="text-3xl md:text-4xl font-heading font-bold">Cada perfil, uma dor. Uma só solução.</h2>
+                <p class="text-terracota-textMuted mt-4 text-lg max-w-2xl mx-auto">Nutricionistas, indústrias e marcas artesanais já usam o Terracota para rotular com confiança e velocidade.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-5 lg:gap-6">
+
+                <!-- Persona 1: Nutricionistas -->
+                <article class="persona-card group">
+                    <div class="persona-card-icon">
+                        <i class="ph-duotone ph-heartbeat" aria-hidden="true"></i>
+                    </div>
+                    <p class="persona-card-label">Nutricionistas e Consultores</p>
+                    <h4 class="persona-card-pain">Muitos clientes, pouco tempo</h4>
+                    <p class="persona-card-benefit">
+                        Gere tabelas para múltiplos clientes em minutos, com arredondamentos IN 75 automáticos e zero retrabalho.
+                    </p>
+                    <div class="persona-card-tags">
+                        <span class="persona-tag"><i class="ph ph-users-three" aria-hidden="true"></i>Múltiplos clientes</span>
+                        <span class="persona-tag"><i class="ph ph-timer" aria-hidden="true"></i>Entrega rápida</span>
+                    </div>
+                </article>
+
+                <!-- Persona 2: Indústrias -->
+                <article class="persona-card group">
+                    <div class="persona-card-icon">
+                        <i class="ph-duotone ph-factory" aria-hidden="true"></i>
+                    </div>
+                    <p class="persona-card-label">Fábricas e Indústrias</p>
+                    <h4 class="persona-card-pain">Risco regulatório em cada rótulo</h4>
+                    <p class="persona-card-benefit">
+                        Conformidade ANVISA garantida desde o cálculo. Menos risco de multas, recalls e atrasos na produção.
+                    </p>
+                    <div class="persona-card-tags">
+                        <span class="persona-tag"><i class="ph ph-shield-check" aria-hidden="true"></i>Conformidade</span>
+                        <span class="persona-tag"><i class="ph ph-chart-line-up" aria-hidden="true"></i>Escala</span>
+                    </div>
+                </article>
+
+                <!-- Persona 3: Artesanais -->
+                <article class="persona-card group">
+                    <div class="persona-card-icon">
+                        <i class="ph-duotone ph-storefront" aria-hidden="true"></i>
+                    </div>
+                    <p class="persona-card-label">Marcas Artesanais e Startups</p>
+                    <h4 class="persona-card-pain">Primeiro produto, zero experiência</h4>
+                    <p class="persona-card-benefit">
+                        Lance com rótulo regulamentado sem precisar de consultoria. Do ingrediente ao PDF pronto para impressão.
+                    </p>
+                    <div class="persona-card-tags">
+                        <span class="persona-tag"><i class="ph ph-rocket-launch" aria-hidden="true"></i>Primeiro rótulo</span>
+                        <span class="persona-tag"><i class="ph ph-compass" aria-hidden="true"></i>Sem experiência prévia</span>
+                    </div>
+                </article>
+
+            </div>
+
+            <!-- Integrated CTA -->
+            <div class="persona-cta">
+                <p class="persona-cta-line">Se identificou? Comece agora — sem compromisso.</p>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('product.calculator') }}" class="btn-cta-primary inline-flex items-center gap-2 px-8 py-3.5 bg-terracota-cyan text-terracota-base font-bold rounded-full hover:bg-white shadow-[0_0_30px_-5px_#00F0FF55]">
+                    <i class="ph ph-arrow-right" aria-hidden="true"></i> Acessar Calculadora
+                </a>
+                {% else %}
+                <a href="{{ url_for('auth.register') }}" class="btn-cta-primary inline-flex items-center gap-2 px-8 py-3.5 bg-terracota-cyan text-terracota-base font-bold rounded-full hover:bg-white shadow-[0_0_30px_-5px_#00F0FF55]">
+                    <i class="ph ph-arrow-right" aria-hidden="true"></i> Comece Grátis
+                </a>
+                {% endif %}
+                <p class="persona-cta-note"><i class="ph ph-check-circle" aria-hidden="true"></i>Plano gratuito disponível. Sem cartão de crédito.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ============================================================
+         7. PRICING — Premium plan cards + trust reassurance
+         ============================================================ -->
+    <section id="planos" class="py-32 relative section-divider">
+        <div class="max-w-7xl mx-auto px-6">
+            {% set free_plan = (plans | selectattr('slug', 'equalto', 'free') | list | first) %}
+            {% set start_plan = (plans | selectattr('slug', 'equalto', 'flow_start') | list | first) %}
+            {% set pro_plan = (plans | selectattr('slug', 'equalto', 'flow_pro') | list | first) %}
+            {% set studio_plan = (plans | selectattr('slug', 'equalto', 'flow_studio') | list | first) %}
+
+            {% if bootstrap_error %}
+            <div class="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-sm text-red-200">
+                <strong class="block mb-1">Atenção (bootstrap)</strong>
+                {{ bootstrap_error }}
+            </div>
+            {% elif bootstrap_warning %}
+            <div class="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl text-sm text-yellow-200">
+                <strong class="block mb-1">Aviso</strong>
+                {{ bootstrap_warning }}
+            </div>
+            {% endif %}
+
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h3 class="text-terracota-cyan font-semibold tracking-wider uppercase text-sm mb-3">Planos Terracota</h3>
+                <h2 class="text-3xl md:text-4xl font-heading font-bold mb-4 leading-tight">
+                    Conformidade profissional por uma fração do risco regulatório
+                </h2>
+                <p class="text-terracota-textMuted text-lg leading-relaxed max-w-2xl mx-auto">
+                    Escolha o plano pelo seu volume de produção e mantenha cálculo, regras da ANVISA e exportação no mesmo fluxo operacional.
+                </p>
+            </div>
+
+            <div class="pricing-grid grid md:grid-cols-2 lg:grid-cols-4 gap-5 mb-12 md:mb-14 items-stretch">
+                {% for p in plans %}
+                {% set is_pro = (p.slug == 'flow_pro') %}
+                {% set is_free = (p.slug == 'free') %}
+                {% set is_start = (p.slug == 'flow_start') %}
+                {% set is_studio = (p.slug == 'flow_studio') %}
+
+                {% if is_free %}
+                    {% set display_name = 'Essencial' %}
+                    {% set ideal_for = 'Entrada sem risco' %}
+                    {% set subtitle = 'Valide seu fluxo com os recursos essenciais antes de escalar.' %}
+                    {% set bullets = [
+                        '1 tabela por mês',
+                        'Até 10 ingredientes',
+                        'Visualização e impressão',
+                    ] %}
+                    {% set cta_label = 'Começar grátis' %}
+                    {% set cta_href = url_for('auth.register') %}
+                {% elif is_start %}
+                    {% set display_name = 'Start' %}
+                    {% set ideal_for = 'Pequenos produtores' %}
+                    {% set subtitle = 'Para quem já produz e precisa de tabelas com regularidade.' %}
+                    {% set bullets = [
+                        '3 tabelas por mês',
+                        'Até 25 ingredientes',
+                        'Exportar PDF',
+                        'Modelos prontos',
+                    ] %}
+                    {% set cta_label = 'Assinar Start' %}
+                    {% set cta_href = url_for('support.contact', category='billing', subject='Assinar ' ~ p.name, plan='flow_start') %}
+                    {% set cta_plan_slug = 'flow_start' %}
+                {% elif is_pro %}
+                    {% set display_name = 'Pro' %}
+                    {% set ideal_for = 'Produção frequente' %}
+                    {% set subtitle = 'O melhor custo-benefício para quem produz com frequência.' %}
+                    {% set bullets = [
+                        '10 tabelas por mês',
+                        'Até 80 ingredientes',
+                        'Exportar PDF + PNG',
+                        'Modelos e histórico',
+                        'Suporte prioritário',
+                    ] %}
+                    {% set cta_label = 'Assinar Pro' %}
+                    {% set cta_href = url_for('support.contact', category='billing', subject='Assinar ' ~ p.name, plan='flow_pro') %}
+                    {% set cta_plan_slug = 'flow_pro' %}
+                {% else %}
+                    {% set display_name = 'Studio' %}
+                    {% set ideal_for = 'Operação em escala' %}
+                    {% set subtitle = 'Sem limites de tabelas ou ingredientes. Para quem opera em escala.' %}
+                    {% set bullets = [
+                        'Tabelas ilimitadas',
+                        'Ingredientes ilimitados',
+                        'Exportação premium + marca própria',
+                        'Modelos avançados',
+                        'Suporte prioritário',
+                    ] %}
+                    {% set cta_label = 'Assinar Studio' %}
+                    {% set cta_href = url_for('support.contact', category='billing', subject='Assinar ' ~ p.name, plan='flow_studio') %}
+                    {% set cta_plan_slug = 'flow_studio' %}
+                {% endif %}
+
+                <div class="pricing-card card-base rounded-2xl flex flex-col h-full shadow-pricing transition-all relative {{ 'pricing-card-featured' if is_pro else 'pricing-card-default' }}">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <!-- Plan header -->
+                        <div class="flex items-start justify-between gap-3 mb-5">
+                            <div>
+                                <p class="pricing-ideal-tag"><i class="ph ph-user-circle" aria-hidden="true"></i>{{ ideal_for }}</p>
+                                <h3 class="pricing-plan-name {{ 'pricing-plan-name-featured' if is_pro else '' }}">{{ display_name }}</h3>
+                            </div>
+                            {% if is_pro %}
+                            <span class="pricing-featured-badge" aria-label="Plano mais popular">
+                                <i class="ph-fill ph-star text-[9px]" aria-hidden="true"></i>
+                                Mais escolhido
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Price block -->
+                        <div class="pricing-price-block">
+                            {% if p.price_brl > 0 %}
+                            <div class="pricing-price-row">
+                                <span class="pricing-currency">R$</span>
+                                <span class="pricing-price-value {{ 'pricing-price-value-featured' if is_pro else '' }}">{{ "%.2f"|format(p.price_brl)|replace('.', ',') }}</span>
+                                <span class="pricing-period">/mês</span>
+                            </div>
+                            {% else %}
+                            <span class="pricing-price-free">Grátis</span>
+                            <p class="pricing-price-note">para começar</p>
+                            {% endif %}
+                        </div>
+
+                        <p class="pricing-subtitle">{{ subtitle }}</p>
+
+                        <!-- Divider -->
+                        <div class="pricing-divider {{ 'pricing-divider-featured' if is_pro else '' }}"></div>
+
+                        <!-- Feature list -->
+                        <ul class="pricing-feature-list flex-grow mb-7">
+                            {% for b in bullets %}
+                            <li class="pricing-feature-item">
+                                <i class="ph-fill ph-check-circle pricing-feature-icon {{ 'pricing-feature-icon-featured' if is_pro else '' }}"></i>
+                                <span>{{ b }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+
+                        <!-- CTA -->
+                        {% if stripe_enabled and not is_free and p.stripe_price_id %}
+                        {% set is_current = (current_plan and current_plan.slug == p.slug) %}
+                        <form method="post" action="{{ url_for('billing.checkout') }}" class="checkout-form mt-auto" data-plan-slug="{{ cta_plan_slug }}" data-plan-name="{{ p.name }}" data-is-current="{{ 'true' if is_current else 'false' }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="plan_slug" value="{{ cta_plan_slug }}">
+                            <button type="submit" class="pricing-cta w-full text-center px-4 py-3.5 rounded-xl text-sm font-semibold transition-all {{ 'pricing-cta-primary' if is_pro else 'pricing-cta-secondary' }}">
+                                {% if is_current %}Plano Atual{% else %}{{ cta_label }}{% endif %}
+                            </button>
+                        </form>
+                        {% else %}
+                        <a href="{{ cta_href }}" class="pricing-cta block text-center px-4 py-3.5 rounded-xl text-sm font-semibold transition-all mt-auto {{ 'pricing-cta-primary' if is_pro else 'pricing-cta-secondary' }}">
+                            {{ cta_label }}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- ── Trust & Reassurance Bar ── -->
+            <div class="trust-reassurance-section relative">
+                <div class="trust-reassurance-head text-center mb-8">
+                    <p class="trust-reassurance-kicker">Decisão segura</p>
+                    <h3 class="trust-reassurance-title">Assine com segurança operacional e financeira</h3>
+                </div>
+
+                <div class="trust-grid grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <article class="trust-card group">
+                        <div class="trust-card-icon">
+                            <i class="ph ph-seal-check" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <p class="trust-card-title">Conformidade regulatória</p>
+                            <p class="trust-card-copy">RDC 429, IN 75 e RDC 26 aplicadas no fluxo.</p>
+                        </div>
+                    </article>
+
+                    <article class="trust-card group">
+                        <div class="trust-card-icon">
+                            <i class="ph ph-lock-key" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <p class="trust-card-title">Pagamento seguro</p>
+                            <p class="trust-card-copy">Cobrança e proteção de dados via Stripe.</p>
+                        </div>
+                    </article>
+
+                    <article class="trust-card group">
+                        <div class="trust-card-icon">
+                            <i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <p class="trust-card-title">Sem compromisso rígido</p>
+                            <p class="trust-card-copy">Cancele quando quiser, sem multa ou carência.</p>
+                        </div>
+                    </article>
+
+                    <article class="trust-card group">
+                        <div class="trust-card-icon">
+                            <i class="ph ph-headset" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <p class="trust-card-title">Suporte humano real</p>
+                            <p class="trust-card-copy">Resposta em até 24h úteis para seu cenário.</p>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="trust-reassurance-foot text-center mt-8">
+                    <p class="pricing-compare-kicker">Comparativo simplificado</p>
+                    <div class="pricing-compare-shell overflow-x-auto" id="comparativo-planos">
+                        <table class="pricing-compare-table min-w-[820px] w-full">
+                            <thead>
+                                <tr>
+                                    <th>Recurso</th>
+                                    <th>Essencial</th>
+                                    <th>Start</th>
+                                    <th class="is-featured">Pro</th>
+                                    <th>Studio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Preço mensal</td>
+                                    <td>{% if free_plan and free_plan.price_brl == 0 %}Grátis{% else %}—{% endif %}</td>
+                                    <td>{% if start_plan %}R$ {{ "%.2f"|format(start_plan.price_brl)|replace('.', ',') }}{% else %}—{% endif %}</td>
+                                    <td class="is-featured">{% if pro_plan %}R$ {{ "%.2f"|format(pro_plan.price_brl)|replace('.', ',') }}{% else %}—{% endif %}</td>
+                                    <td>{% if studio_plan %}R$ {{ "%.2f"|format(studio_plan.price_brl)|replace('.', ',') }}{% else %}—{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>Tabelas por mês</td>
+                                    <td>{% if free_plan %}{{ free_plan.max_tables_per_month }}{% else %}—{% endif %}</td>
+                                    <td>{% if start_plan %}{{ start_plan.max_tables_per_month }}{% else %}—{% endif %}</td>
+                                    <td class="is-featured">{% if pro_plan %}{{ pro_plan.max_tables_per_month }}{% else %}—{% endif %}</td>
+                                    <td>{% if studio_plan and studio_plan.max_tables_per_month is none %}Ilimitadas{% elif studio_plan %}{{ studio_plan.max_tables_per_month }}{% else %}—{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>Ingredientes por tabela</td>
+                                    <td>{% if free_plan %}{{ free_plan.max_ingredients_per_table }}{% else %}—{% endif %}</td>
+                                    <td>{% if start_plan %}{{ start_plan.max_ingredients_per_table }}{% else %}—{% endif %}</td>
+                                    <td class="is-featured">{% if pro_plan %}{{ pro_plan.max_ingredients_per_table }}{% else %}—{% endif %}</td>
+                                    <td>{% if studio_plan and studio_plan.max_ingredients_per_table is none %}Ilimitados{% elif studio_plan %}{{ studio_plan.max_ingredients_per_table }}{% else %}—{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>Templates prontos</td>
+                                    <td>{% if free_plan and free_plan.has_templates %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if start_plan and start_plan.has_templates %}Sim{% else %}—{% endif %}</td>
+                                    <td class="is-featured">{% if pro_plan and pro_plan.has_templates %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if studio_plan and studio_plan.has_templates %}Sim{% else %}—{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>Exportação PDF</td>
+                                    <td>{% if free_plan and free_plan.has_pdf_export %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if start_plan and start_plan.has_pdf_export %}Sim{% else %}—{% endif %}</td>
+                                    <td class="is-featured">{% if pro_plan and pro_plan.has_pdf_export %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if studio_plan and studio_plan.has_pdf_export %}Sim{% else %}—{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>Exportação PNG</td>
+                                    <td>{% if free_plan and free_plan.has_png_export %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if start_plan and start_plan.has_png_export %}Sim{% else %}—{% endif %}</td>
+                                    <td class="is-featured">{% if pro_plan and pro_plan.has_png_export %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if studio_plan and studio_plan.has_png_export %}Sim{% else %}—{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>Histórico de versões</td>
+                                    <td>{% if free_plan and free_plan.has_version_history %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if start_plan and start_plan.has_version_history %}Sim{% else %}—{% endif %}</td>
+                                    <td class="is-featured">{% if pro_plan and pro_plan.has_version_history %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if studio_plan and studio_plan.has_version_history %}Sim{% else %}—{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>Branding no PDF</td>
+                                    <td>{% if free_plan and free_plan.has_branding %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if start_plan and start_plan.has_branding %}Sim{% else %}—{% endif %}</td>
+                                    <td class="is-featured">{% if pro_plan and pro_plan.has_branding %}Sim{% else %}—{% endif %}</td>
+                                    <td>{% if studio_plan and studio_plan.has_branding %}Sim{% else %}—{% endif %}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Subscription Modal -->
+    <div id="subscription-modal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeSubscriptionModal()"></div>
+        <div class="relative bg-terracota-surface border border-white/[0.08] rounded-2xl p-8 max-w-md w-full mx-4 shadow-elevated">
+            <button onclick="closeSubscriptionModal()" class="absolute top-4 right-4 text-terracota-textLight/70 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div id="modal-icon" class="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center text-2xl"></div>
+            <h3 id="modal-title" class="text-xl font-heading font-bold text-center mb-2"></h3>
+            <p id="modal-message" class="text-sm text-terracota-textLight/90 text-center mb-6 leading-relaxed"></p>
+            <div id="modal-actions" class="flex flex-col gap-3"></div>
+        </div>
+    </div>
+
+    <script>
+    function closeSubscriptionModal() {
+        document.getElementById('subscription-modal').classList.add('hidden');
+    }
+
+    function showSubscriptionModal(planName, planSlug, isCurrent) {
+        const modal = document.getElementById('subscription-modal');
+        const icon = document.getElementById('modal-icon');
+        const title = document.getElementById('modal-title');
+        const message = document.getElementById('modal-message');
+        const actions = document.getElementById('modal-actions');
+
+        if (isCurrent) {
+            icon.className = 'w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center text-2xl bg-terracota-cyan/10 border border-terracota-cyan/30 text-terracota-cyan';
+            icon.innerHTML = '<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+            title.textContent = 'Você já possui este plano!';
+            message.textContent = `Você já está assinando o plano ${planName}. Deseja gerenciar sua assinatura ou fazer upgrade para outro plano?`;
+            actions.innerHTML = `
+                <a href="{{ url_for('billing.portal_redirect') }}" class="btn-cta-primary w-full text-center px-4 py-3 bg-terracota-cyan text-terracota-base font-bold rounded-full text-sm hover:bg-white">
+                    Gerenciar Assinatura
+                </a>
+                <a href="{{ url_for('account.upgrade') }}" class="btn-cta-secondary w-full text-center px-4 py-3 bg-terracota-surfaceHighlight border border-white/[0.1] text-white font-medium rounded-full text-sm hover:bg-white/5">
+                    Ver outros planos
+                </a>
+                <button onclick="closeSubscriptionModal()" class="w-full text-center px-4 py-2 text-sm text-terracota-textLight/80 hover:text-white transition-colors">
+                    Fechar
+                </button>
+            `;
+        } else {
+            icon.className = 'w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center text-2xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400';
+            icon.innerHTML = '<svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>';
+            title.textContent = 'Você já possui uma assinatura ativa';
+            message.textContent = `Para migrar para o plano ${planName}, recomendamos usar o Portal de Cobrança para evitar dupla cobrança.`;
+            actions.innerHTML = `
+                <a href="{{ url_for('billing.portal_redirect') }}" class="btn-cta-primary w-full text-center px-4 py-3 bg-terracota-cyan text-terracota-base font-bold rounded-full text-sm hover:bg-white">
+                    Abrir Portal de Cobrança
+                </a>
+                <button onclick="closeSubscriptionModal()" class="w-full text-center px-4 py-2 text-sm text-terracota-textLight/80 hover:text-white transition-colors">
+                    Cancelar
+                </button>
+            `;
+        }
+
+        modal.classList.remove('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPlanSlug = '{{ current_plan.slug if current_plan else "" }}';
+        if (!currentPlanSlug || currentPlanSlug === 'free') return;
+
+        document.querySelectorAll('.checkout-form').forEach(function(form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const planSlug = form.dataset.planSlug;
+                const planName = form.dataset.planName;
+                const isCurrent = form.dataset.isCurrent === 'true';
+                showSubscriptionModal(planName, planSlug, isCurrent);
+            });
+        });
+    });
+    </script>
+
+    <!-- ============================================================
+         8. FAQ — Top objection-handling questions
+         ============================================================ -->
+    <section id="faq" class="py-28 relative section-divider bg-terracota-surface/30">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-14">
+                <p class="faq-section-kicker">Dúvidas antes da assinatura</p>
+                <h2 class="faq-headline text-3xl md:text-4xl font-heading font-bold leading-tight">Respostas para decidir com segurança regulatória</h2>
+                <p class="faq-subheadline text-terracota-textMuted mt-4 text-lg">Esclareça conformidade, cobrança e operação em minutos. Se seu caso for específico, fale com nosso time.</p>
+            </div>
+
+            <div class="faq-objection-wrap">
+                <div class="faq-objection-grid grid lg:grid-cols-2 gap-6 xl:gap-8 items-stretch">
+                    <div class="faq-support-column order-2 lg:order-1">
+                        <div id="contato" class="faq-side-card">
+                            <p class="faq-side-kicker">Suporte humano</p>
+                            <h4 class="text-xl font-heading font-semibold text-white mb-2">Seu caso não cabe no padrão?</h4>
+                            <p class="text-sm text-terracota-textLight/90 leading-relaxed mb-5">
+                                Validamos enquadramento regulatório, limite ideal de plano e fluxo de publicação antes do rótulo ir para produção.
+                            </p>
+                            <div class="faq-side-inline-shell">
+                                <p class="faq-side-inline-kicker">Envio rápido por e-mail</p>
+                                <form id="faq-inline-contact-form" method="post" action="{{ url_for('support.contact') }}" class="faq-side-inline-form">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="category" value="other">
+                                    <input type="hidden" name="subject" value="Dúvida sobre conformidade (FAQ inline)">
+                                    <input type="hidden" name="source" value="faq-inline">
+                                    <input id="faq-inline-conversation-id" type="hidden" name="conversation_id" value="">
+
+                                    <div class="faq-side-inline-grid">
+                                        <label class="faq-side-inline-field">
+                                            <span>Nome</span>
+                                            <input
+                                                type="text"
+                                                name="name"
+                                                required
+                                                value="{{ current_user.name if current_user.is_authenticated else '' }}"
+                                                class="faq-contact-input faq-side-inline-input"
+                                            >
+                                        </label>
+                                        <label class="faq-side-inline-field">
+                                            <span>E-mail</span>
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                required
+                                                value="{{ current_user.email if current_user.is_authenticated else '' }}"
+                                                class="faq-contact-input faq-side-inline-input"
+                                            >
+                                        </label>
+                                    </div>
+
+                                    <label class="faq-side-inline-field">
+                                        <span>Mensagem</span>
+                                        <textarea
+                                            id="faq-inline-contact-message"
+                                            name="message"
+                                            rows="3"
+                                            required
+                                            class="faq-contact-input faq-side-inline-textarea"
+                                            placeholder="Ex.: Tenho 12 SKUs com variação de porção e preciso validar o fluxo antes da publicação."
+                                        ></textarea>
+                                    </label>
+
+                                    <div class="faq-side-inline-actions">
+                                        <button type="submit" class="faq-cta-primary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm">
+                                            <i class="ph ph-paper-plane-tilt"></i> Enviar e-mail
+                                        </button>
+                                        <button type="button" class="faq-cta-secondary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm" data-faq-contact-trigger>
+                                            <i class="ph ph-arrows-out-simple"></i> Abrir formulário completo
+                                        </button>
+                                    </div>
+                                    <div id="faq-inline-contact-status" class="faq-side-inline-status hidden" aria-live="polite"></div>
+                                </form>
+                            </div>
+
+                            <p class="faq-side-proof"><i class="ph ph-clock" aria-hidden="true"></i>Resposta humana em até 24h úteis.</p>
+                            {% if chatbot_enabled %}
+                            <a
+                                href="{{ url_for('support.contact', category='other', subject='Ajuda via chatbot IA', source='faq-chatbot') }}"
+                                class="faq-cta-secondary faq-side-ai-cta inline-flex items-center justify-center gap-2 px-6 py-3 text-sm"
+                                data-chatbot-trigger
+                            >
+                                <i class="ph ph-sparkle"></i> Abrir assistente IA
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div id="ajuda" class="faq-shell space-y-3 order-1 lg:order-2">
+                        <details class="faq-item faq-item-premium group" open>
+                            <summary class="faq-summary">
+                                <div class="faq-summary-main">
+                                    <span class="faq-topic">Conformidade</span>
+                                    <span class="faq-q">A tabela gerada é aceita pela ANVISA?</span>
+                                </div>
+                                <span class="faq-toggle-wrap"><i class="ph ph-plus faq-toggle"></i></span>
+                            </summary>
+                            <p class="faq-answer">
+                                Sim. O motor aplica RDC 429/2020, IN 75/2020 e RDC 26/2015, gerando tabela no formato exigido pela ANVISA.
+                            </p>
+                        </details>
+
+                        <details class="faq-item faq-item-premium group">
+                            <summary class="faq-summary">
+                                <div class="faq-summary-main">
+                                    <span class="faq-topic">Responsabilidade técnica</span>
+                                    <span class="faq-q">O Terracota substitui o nutricionista responsável?</span>
+                                </div>
+                                <span class="faq-toggle-wrap"><i class="ph ph-plus faq-toggle"></i></span>
+                            </summary>
+                            <p class="faq-answer">
+                                Não. Automatizamos cálculo e conformidade operacional; a validação técnica e a responsabilidade legal seguem com o profissional habilitado.
+                            </p>
+                        </details>
+
+                        <details class="faq-item faq-item-premium group">
+                            <summary class="faq-summary">
+                                <div class="faq-summary-main">
+                                    <span class="faq-topic">Cobrança</span>
+                                    <span class="faq-q">Preciso cadastrar cartão de crédito para começar?</span>
+                                </div>
+                                <span class="faq-toggle-wrap"><i class="ph ph-plus faq-toggle"></i></span>
+                            </summary>
+                            <p class="faq-answer">
+                                Não. O plano Grátis pode ser usado sem cartão. Cartão só é solicitado se você decidir fazer upgrade.
+                            </p>
+                        </details>
+
+                        <details class="faq-item faq-item-premium group">
+                            <summary class="faq-summary">
+                                <div class="faq-summary-main">
+                                    <span class="faq-topic">Limites de uso</span>
+                                    <span class="faq-q">Quais são os limites de uso dos planos?</span>
+                                </div>
+                                <span class="faq-toggle-wrap"><i class="ph ph-plus faq-toggle"></i></span>
+                            </summary>
+                            <p class="faq-answer">
+                                Cada plano define volume mensal e capacidade por produto. Se a demanda crescer, você troca de plano sem travas.
+                            </p>
+                        </details>
+
+                        <details class="faq-item faq-item-premium group">
+                            <summary class="faq-summary">
+                                <div class="faq-summary-main">
+                                    <span class="faq-topic">Produtividade</span>
+                                    <span class="faq-q">Qual a diferença entre fazer no Excel e usar o Terracota?</span>
+                                </div>
+                                <span class="faq-toggle-wrap"><i class="ph ph-plus faq-toggle"></i></span>
+                            </summary>
+                            <p class="faq-answer">
+                                No Excel, regras e revisão são manuais. No Terracota, cálculo, arredondamentos e conformidade já entram no fluxo de forma padronizada.
+                            </p>
+                        </details>
+
+                        <details class="faq-item faq-item-premium group">
+                            <summary class="faq-summary">
+                                <div class="faq-summary-main">
+                                    <span class="faq-topic">Assinatura</span>
+                                    <span class="faq-q">Posso cancelar quando quiser?</span>
+                                </div>
+                                <span class="faq-toggle-wrap"><i class="ph ph-plus faq-toggle"></i></span>
+                            </summary>
+                            <p class="faq-answer">
+                                Sim. Sem multa e sem carência. Ao cancelar, seu acesso continua ativo até o fim do período já pago.
+                            </p>
+                        </details>
+
+                        <details class="faq-item faq-item-premium group">
+                            <summary class="faq-summary">
+                                <div class="faq-summary-main">
+                                    <span class="faq-topic">Suporte</span>
+                                    <span class="faq-q">Como funciona o suporte para casos específicos?</span>
+                                </div>
+                                <span class="faq-toggle-wrap"><i class="ph ph-plus faq-toggle"></i></span>
+                            </summary>
+                            <p class="faq-answer">
+                                Abra um chamado com seu cenário e objetivo de rotulagem. O time retorna em até 24h úteis com orientação prática.
+                            </p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Contact Modal -->
+    <div id="faq-contact-modal" class="faq-contact-modal fixed inset-0 z-[10000] hidden items-center justify-center px-4">
+        <div class="faq-contact-overlay absolute inset-0" data-faq-contact-close></div>
+        <div class="faq-contact-panel relative w-full max-w-xl">
+            <button type="button" class="faq-contact-close" aria-label="Fechar contato" data-faq-contact-close>
+                <i class="ph ph-x"></i>
+            </button>
+            <p class="faq-contact-kicker">Suporte humano</p>
+            <h3 class="faq-contact-title">Fale com um especialista agora</h3>
+            <p id="faq-contact-context" class="faq-contact-copy">
+                Envie seu cenário e retornamos com orientação prática para enquadramento regulatório e fluxo de publicação.
+            </p>
+            <div id="faq-contact-status" class="faq-contact-status hidden" aria-live="polite"></div>
+
+            <form id="faq-contact-form" method="post" action="{{ url_for('support.contact') }}" class="faq-contact-form mt-5">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input id="faq-contact-category" type="hidden" name="category" value="other">
+                <input id="faq-contact-subject" type="hidden" name="subject" value="Dúvida sobre conformidade (FAQ)">
+                <input id="faq-contact-source" type="hidden" name="source" value="faq">
+                <input id="faq-contact-conversation-id" type="hidden" name="conversation_id" value="">
+
+                <div class="grid sm:grid-cols-2 gap-3">
+                    <label class="faq-contact-field">
+                        <span>Nome</span>
+                        <input
+                            type="text"
+                            name="name"
+                            required
+                            value="{{ current_user.name if current_user.is_authenticated else '' }}"
+                            class="faq-contact-input"
+                        >
+                    </label>
+                    <label class="faq-contact-field">
+                        <span>E-mail</span>
+                        <input
+                            type="email"
+                            name="email"
+                            required
+                            value="{{ current_user.email if current_user.is_authenticated else '' }}"
+                            class="faq-contact-input"
+                        >
+                    </label>
+                </div>
+
+                <label class="faq-contact-field">
+                    <span>Mensagem</span>
+                    <textarea
+                        id="faq-contact-message"
+                        name="message"
+                        rows="4"
+                        required
+                        class="faq-contact-input faq-contact-textarea"
+                        placeholder="Ex.: Tenho 12 SKUs com variação de porção e preciso validar o fluxo para publicação."
+                    ></textarea>
+                </label>
+
+                <div class="faq-contact-actions">
+                    <button type="submit" class="faq-cta-primary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm">
+                        <i class="ph ph-paper-plane-tilt"></i> Enviar para especialista
+                    </button>
+                    <a href="{{ url_for('support.contact', category='other', subject='Dúvida sobre conformidade', source='faq') }}" class="faq-cta-secondary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm">
+                        Abrir formulário completo
+                    </a>
+                </div>
+                <p class="faq-contact-proof"><i class="ph ph-clock"></i>Resposta em até 24h úteis.</p>
+            </form>
+        </div>
+    </div>
+
+    {% if chatbot_enabled %}
+    <div id="faq-chatbot-modal" class="chatbot-modal fixed inset-0 z-[10000] hidden" aria-hidden="true">
+        <div class="chatbot-overlay absolute inset-0" data-chatbot-close></div>
+        <section class="chatbot-panel" role="dialog" aria-modal="true" aria-labelledby="chatbot-title">
+            <div class="chatbot-header">
+                <div class="chatbot-header-copy">
+                    <p class="chatbot-kicker"><i class="ph ph-sparkle" aria-hidden="true"></i> Especialista IA</p>
+                    <h3 id="chatbot-title" class="chatbot-title">Assistente Terracota</h3>
+                    <p class="chatbot-disclaimer">Pergunte sobre produto, cobrança, exportação e funcionamento do Terracota.</p>
+                </div>
+                <div class="chatbot-header-actions">
+                    <button type="button" class="chatbot-close" aria-label="Fechar assistente IA" data-chatbot-close>
+                        <i class="ph ph-x"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="chatbot-messages" class="chatbot-messages" aria-live="polite"></div>
+
+            <form id="chatbot-form" class="chatbot-form">
+                <label class="sr-only" for="chatbot-input">Sua pergunta</label>
+                <div class="chatbot-input-shell">
+                    <textarea
+                        id="chatbot-input"
+                        class="chatbot-input"
+                        rows="1"
+                        maxlength="1200"
+                        placeholder="Pergunte sobre planos, conformidade, exportação ou cobrança"
+                        required
+                    ></textarea>
+                    <button id="chatbot-send" type="submit" class="chatbot-send-btn" aria-label="Enviar pergunta">
+                        <i class="ph ph-paper-plane-tilt"></i>
+                        <span data-chatbot-send-label>Enviar</span>
+                    </button>
+                </div>
+                <div id="chatbot-error" class="chatbot-error hidden"></div>
+            </form>
+        </section>
+    </div>
+    <button
+        type="button"
+        id="chatbot-floating-launcher"
+        class="chatbot-launcher"
+        data-chatbot-trigger
+        data-chatbot-launcher
+        aria-controls="faq-chatbot-modal"
+        aria-expanded="false"
+    >
+        <span class="chatbot-launcher-icon" aria-hidden="true">
+            <i class="ph ph-sparkle"></i>
+        </span>
+        <span class="chatbot-launcher-copy">
+            <span class="chatbot-launcher-kicker">Assistente IA</span>
+            <span id="chatbot-launcher-label" class="chatbot-launcher-label">Tire dúvidas sem sair da página</span>
+        </span>
+    </button>
+    {% endif %}
+
+    <!-- ============================================================
+         9. FINAL CTA — Page closer
+         ============================================================ -->
+    <section class="py-24 lg:py-28 relative section-divider overflow-hidden final-close-wrap">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[450px] bg-terracota-cyan/[0.04] blur-[160px] rounded-full pointer-events-none"></div>
+        <div class="absolute top-[58%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[280px] bg-terracota-purple/[0.03] blur-[130px] rounded-full pointer-events-none"></div>
+        <div class="max-w-4xl mx-auto px-6 relative">
+            <div class="final-close-stack text-center">
+                <p class="final-close-kicker"><i class="ph ph-shield-check" aria-hidden="true"></i> Fluxo Terracota pronto para publicar</p>
+                <h2 class="final-close-title text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-5 leading-[1.08]">
+                    Sua próxima tabela nutricional pode sair hoje.<br>
+                    <span class="final-close-highlight">Com conformidade ANVISA e menos trabalho manual.</span>
+                </h2>
+                <p class="final-close-body text-lg text-terracota-textLight/90 mb-7 max-w-2xl mx-auto leading-relaxed">
+                    Centralize cálculo, arredondamento e exportação em um fluxo profissional para reduzir retrabalho e ganhar velocidade na operação.
+                </p>
+
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('product.calculator') }}" class="btn-cta-primary final-close-cta inline-flex items-center gap-2.5 px-10 py-5 bg-terracota-cyan text-terracota-base font-bold text-lg rounded-full ring-1 ring-terracota-cyan/45 shadow-[0_0_34px_-8px_#00F0FF66]">
+                    <i class="ph ph-arrow-right"></i> Gerar Tabela Agora
+                </a>
+                {% else %}
+                <a href="{{ url_for('auth.register') }}" class="btn-cta-primary final-close-cta inline-flex items-center gap-2.5 px-10 py-5 bg-terracota-cyan text-terracota-base font-bold text-lg rounded-full ring-1 ring-terracota-cyan/45 shadow-[0_0_34px_-8px_#00F0FF66]">
+                    <i class="ph ph-arrow-right"></i> Comece Grátis
+                </a>
+                {% endif %}
+                <p class="final-close-cta-note"><i class="ph ph-lock-open" aria-hidden="true"></i> Sem cartão no plano inicial. Cancele quando quiser.</p>
+
+                <div class="final-proof-row">
+                    <span class="final-proof-chip"><i class="ph ph-gavel"></i> RDC 429, IN 75 e RDC 26 no motor</span>
+                    <span class="final-proof-chip"><i class="ph ph-file-pdf"></i> PDF pronto para design e impressão</span>
+                    <span class="final-proof-chip"><i class="ph ph-headset"></i> Suporte humano para casos específicos</span>
+                </div>
+            </div>
+            <div class="final-news-bridge" aria-hidden="true"></div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         10. NEWSLETTER — Stay updated (soft capture for non-converters)
+         ============================================================ -->
+    <section class="py-14 relative newsletter-wrap">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="newsletter-shell">
+                <div class="newsletter-head">
+                    <div>
+                        <p class="newsletter-kicker">Radar regulatório</p>
+                        <h2 class="newsletter-title text-2xl md:text-3xl font-heading font-bold text-white">Atualizações ANVISA e MAPA sem ruído</h2>
+                    </div>
+                </div>
+                <p class="newsletter-copy text-terracota-textLight/85 mb-6 leading-relaxed">
+                    Receba mudanças relevantes com orientação prática para manter seus rótulos atualizados, sem boletins longos ou conteúdo genérico.
+                </p>
+
+                <form id="radar-form" class="newsletter-form flex flex-col sm:flex-row gap-3">
+                    <input id="radar-email" type="email" placeholder="Seu melhor e-mail" required class="newsletter-input flex-grow rounded-full px-5 py-3 text-white text-sm transition-all font-sans placeholder:text-terracota-textMuted/75">
+                    <button id="radar-btn" type="submit" class="newsletter-cta btn-cta-secondary px-6 py-3 text-white font-semibold rounded-full whitespace-nowrap text-sm">
+                        Receber atualizações
+                    </button>
+                </form>
+                <div class="newsletter-proof-row" aria-hidden="true">
+                    <span class="newsletter-proof-chip"><i class="ph ph-check-circle"></i> Conteúdo objetivo</span>
+                    <span class="newsletter-proof-chip"><i class="ph ph-check-circle"></i> Sem spam</span>
+                    <span class="newsletter-proof-chip"><i class="ph ph-check-circle"></i> Cancele com 1 clique</span>
+                </div>
+                <p id="radar-msg" class="newsletter-msg text-xs text-terracota-textMuted/85 mt-3">Sem spam. Cancele quando quiser.</p>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block head %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Terracota Compliance",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "description": "Calculadora de tabela nutricional conforme ANVISA (RDC 429/2020, IN 75/2020, RDC 26/2015). Gere rótulos em conformidade em minutos.",
+    "url": "{{ url_for('main.index', _external=True) }}",
+    "offers": [
+        {
+            "@type": "Offer",
+            "name": "Grátis",
+            "price": "0",
+            "priceCurrency": "BRL",
+            "description": "1 tabela/mês, até 10 ingredientes"
+        },
+        {
+            "@type": "Offer",
+            "name": "Profissional",
+            "price": "79.90",
+            "priceCurrency": "BRL",
+            "billingIncrement": "P1M",
+            "description": "10 tabelas/mês, até 80 ingredientes, export PDF/PNG"
+        },
+        {
+            "@type": "Offer",
+            "name": "Ilimitado",
+            "price": "199.90",
+            "priceCurrency": "BRL",
+            "billingIncrement": "P1M",
+            "description": "Tabelas ilimitadas, ingredientes ilimitados, branding no PDF"
+        }
+    ]
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "A tabela gerada é aceita pela ANVISA?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sim. O motor aplica RDC 429/2020, IN 75/2020 e RDC 26/2015, gerando tabela no formato exigido pela ANVISA."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "O Terracota substitui o nutricionista responsável?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Não. O Terracota automatiza cálculo e conformidade operacional, mas a validação técnica e a responsabilidade legal continuam com o profissional habilitado."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Preciso cadastrar cartão de crédito para começar?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Não. O plano Grátis pode ser usado sem cartão. Cartão só é solicitado se você decidir fazer upgrade para planos pagos."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Quais são os limites de uso dos planos?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Cada plano define volume mensal e capacidade por produto. Se a demanda crescer, você pode trocar de plano sem travas."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Qual a diferença entre fazer no Excel e usar o Terracota?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No Excel, regras e revisão são manuais. No Terracota, cálculo, arredondamentos e conformidade já entram no fluxo de forma padronizada e rastreável."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Posso cancelar quando quiser?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sim. Sem multa, sem carência. Ao cancelar, você mantém acesso até o fim do período já pago."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Como funciona o suporte para casos específicos?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Você pode abrir um chamado com seu cenário e objetivo de rotulagem. O time responde em até 24h úteis com orientação prática."
+            }
+        }
+    ]
+}
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const faqContactTriggers = Array.from(document.querySelectorAll('[data-faq-contact-trigger]'));
+const faqContactModal = document.getElementById('faq-contact-modal');
+const faqContactForm = document.getElementById('faq-contact-form');
+const faqContactMessage = document.getElementById('faq-contact-message');
+const faqContactStatus = document.getElementById('faq-contact-status');
+const faqContactContext = document.getElementById('faq-contact-context');
+const faqContactCategory = document.getElementById('faq-contact-category');
+const faqContactSubject = document.getElementById('faq-contact-subject');
+const faqContactSource = document.getElementById('faq-contact-source');
+const faqContactConversationId = document.getElementById('faq-contact-conversation-id');
+const faqInlineContactForm = document.getElementById('faq-inline-contact-form');
+const faqInlineContactMessage = document.getElementById('faq-inline-contact-message');
+const faqInlineContactStatus = document.getElementById('faq-inline-contact-status');
+const faqInlineConversationId = document.getElementById('faq-inline-conversation-id');
+const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+const faqContactDefaults = {
+    category: 'other',
+    subject: 'Dúvida sobre conformidade (FAQ)',
+    source: 'faq',
+    conversationId: '',
+    context: 'Envie seu cenário e retornamos com orientação prática para enquadramento regulatório e fluxo de publicação.',
+    message: '',
+};
+let openFaqContactModal = null;
+let closeFaqContactModal = null;
+
+function postJson(url, body, extraHeaders = {}) {
+    return fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRFToken': csrfToken,
+            'X-Requested-With': 'fetch',
+            ...extraHeaders,
+        },
+        body: JSON.stringify(body),
+    }).then(async (res) => {
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            const error = new Error(data.error || 'Falha ao processar a solicitação.');
+            error.payload = data;
+            throw error;
+        }
+        return data;
+    });
+}
+
+function faqContactSetStatus(message, tone = '') {
+    if (!faqContactStatus) return;
+    faqContactStatus.classList.remove('hidden', 'is-success', 'is-error');
+    if (!message) {
+        faqContactStatus.textContent = '';
+        faqContactStatus.classList.add('hidden');
+        return;
+    }
+    if (tone) {
+        faqContactStatus.classList.add(`is-${tone}`);
+    }
+    faqContactStatus.textContent = message;
+}
+
+function faqInlineSetStatus(message, tone = '') {
+    if (!faqInlineContactStatus) return;
+    faqInlineContactStatus.classList.remove('hidden', 'is-success', 'is-error');
+    if (!message) {
+        faqInlineContactStatus.textContent = '';
+        faqInlineContactStatus.classList.add('hidden');
+        return;
+    }
+    if (tone) {
+        faqInlineContactStatus.classList.add(`is-${tone}`);
+    }
+    faqInlineContactStatus.textContent = message;
+}
+
+if (faqContactModal && faqContactForm) {
+    closeFaqContactModal = () => {
+        faqContactModal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+        faqContactSetStatus('');
+    };
+    openFaqContactModal = (options = {}) => {
+        const state = { ...faqContactDefaults, ...options };
+        if (faqContactCategory) faqContactCategory.value = state.category || faqContactDefaults.category;
+        if (faqContactSubject) faqContactSubject.value = state.subject || faqContactDefaults.subject;
+        if (faqContactSource) faqContactSource.value = state.source || faqContactDefaults.source;
+        if (faqContactConversationId) faqContactConversationId.value = state.conversationId || '';
+        if (faqContactContext) faqContactContext.textContent = state.context || faqContactDefaults.context;
+        if (faqContactMessage) faqContactMessage.value = state.message || '';
+        faqContactSetStatus('');
+        faqContactModal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+        setTimeout(() => faqContactMessage?.focus(), 40);
+    };
+
+    faqContactTriggers.forEach((trigger) => {
+        trigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            openFaqContactModal();
+        });
+    });
+
+    faqContactModal.querySelectorAll('[data-faq-contact-close]').forEach(function(el) {
+        el.addEventListener('click', closeFaqContactModal);
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !faqContactModal.classList.contains('hidden')) {
+            closeFaqContactModal();
+        }
+    });
+
+    faqContactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const submitButton = faqContactForm.querySelector('button[type="submit"]');
+        const previousText = submitButton?.innerHTML;
+        const payload = Object.fromEntries(new FormData(faqContactForm).entries());
+
+        faqContactSetStatus('');
+        if (submitButton) {
+            submitButton.setAttribute('disabled', 'disabled');
+            submitButton.innerHTML = '<i class="ph ph-spinner-gap animate-spin"></i> Enviando...';
+        }
+
+        try {
+            const data = await postJson('{{ url_for("support.contact") }}', payload);
+            faqContactSetStatus(data.message || 'Mensagem enviada com sucesso.', 'success');
+            if (faqContactMessage) {
+                faqContactMessage.value = '';
+            }
+        } catch (error) {
+            faqContactSetStatus(
+                error.message || 'Não foi possível enviar sua mensagem agora.',
+                'error'
+            );
+        } finally {
+            if (submitButton) {
+                submitButton.removeAttribute('disabled');
+                submitButton.innerHTML = previousText || 'Enviar para especialista';
+            }
+        }
+    });
+}
+
+if (faqInlineContactForm) {
+    faqInlineContactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const submitButton = faqInlineContactForm.querySelector('button[type="submit"]');
+        const previousText = submitButton?.innerHTML;
+        const payload = Object.fromEntries(new FormData(faqInlineContactForm).entries());
+
+        faqInlineSetStatus('');
+        if (submitButton) {
+            submitButton.setAttribute('disabled', 'disabled');
+            submitButton.innerHTML = '<i class="ph ph-spinner-gap animate-spin"></i> Enviando...';
+        }
+
+        try {
+            const data = await postJson('{{ url_for("support.contact") }}', payload);
+            faqInlineSetStatus(data.message || 'Mensagem enviada com sucesso.', 'success');
+            if (faqInlineContactMessage) {
+                faqInlineContactMessage.value = '';
+            }
+            if (faqInlineConversationId) {
+                faqInlineConversationId.value = '';
+            }
+        } catch (error) {
+            faqInlineSetStatus(
+                error.message || 'Não foi possível enviar sua mensagem agora.',
+                'error'
+            );
+        } finally {
+            if (submitButton) {
+                submitButton.removeAttribute('disabled');
+                submitButton.innerHTML = previousText || 'Enviar e-mail';
+            }
+        }
+    });
+}
+
+function escapeHtml(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+{% if chatbot_enabled %}
+const chatbotTriggers = Array.from(document.querySelectorAll('[data-chatbot-trigger]'));
+const chatbotLauncher = document.querySelector('[data-chatbot-launcher]');
+const chatbotLauncherLabel = document.getElementById('chatbot-launcher-label');
+const chatbotModal = document.getElementById('faq-chatbot-modal');
+const chatbotMessages = document.getElementById('chatbot-messages');
+const chatbotForm = document.getElementById('chatbot-form');
+const chatbotInput = document.getElementById('chatbot-input');
+const chatbotSend = document.getElementById('chatbot-send');
+const chatbotSendLabel = chatbotSend?.querySelector('[data-chatbot-send-label]');
+const chatbotError = document.getElementById('chatbot-error');
+
+let chatbotConversationId = null;
+let chatbotBusy = false;
+let closeChatbotModal = () => {};
+let lastChatbotTrigger = null;
+const chatbotHiddenCitationTitles = new Set([
+    'privacy summary',
+    'planos e limites terracota',
+    'faq publico terracota',
+    'faq público terracota',
+]);
+
+function chatbotShouldLockBody() {
+    return window.matchMedia('(max-width: 767px)').matches;
+}
+
+function chatbotSetLauncherState(isOpen) {
+    chatbotTriggers.forEach((trigger) => {
+        trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    if (chatbotLauncher) {
+        chatbotLauncher.classList.toggle('is-hidden', isOpen);
+    }
+}
+
+function chatbotSetLauncherLabel(text) {
+    if (!chatbotLauncherLabel || !text) return;
+    chatbotLauncherLabel.textContent = text;
+}
+
+function chatbotRequest(url, body) {
+    return postJson(url, body);
+}
+
+function chatbotAutosizeInput() {
+    if (!chatbotInput) return;
+    chatbotInput.style.height = '0px';
+    chatbotInput.style.height = `${Math.min(chatbotInput.scrollHeight, 160)}px`;
+}
+
+function chatbotScrollToBottom() {
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+}
+
+function chatbotSetError(message) {
+    if (!message) {
+        chatbotError.classList.add('hidden');
+        chatbotError.textContent = '';
+        return;
+    }
+    chatbotError.classList.remove('hidden');
+    chatbotError.textContent = message;
+}
+
+function chatbotRenderMessage(message) {
+    const citations = (Array.isArray(message.citations) ? message.citations : []).filter((item) => {
+        const title = String(item?.title || '').trim().toLowerCase();
+        return !chatbotHiddenCitationTitles.has(title);
+    });
+    const isAssistant = message.role === 'assistant';
+    const roleLabel = isAssistant ? 'Terracota IA' : 'Você';
+    const roleIcon = isAssistant ? 'ph ph-sparkle' : 'ph ph-user';
+    const citationHtml = citations.length
+        ? `<div class="chatbot-meta">${citations.map((item) => `
+            <details class="chatbot-source">
+                <summary class="chatbot-chip">${escapeHtml(item.title || 'Fonte')}</summary>
+                <div class="chatbot-source-body">
+                    <p class="chatbot-source-snippet">${escapeHtml(item.snippet || 'Sem trecho disponível para esta fonte.')}</p>
+                    <a class="chatbot-source-link" href="${escapeHtml(item.url || '#')}" target="_blank" rel="noreferrer">Abrir fonte</a>
+                </div>
+            </details>
+        `).join('')}</div>`
+        : '';
+    return `
+        <div class="chatbot-message chatbot-message-${escapeHtml(message.role)}">
+            <div class="chatbot-message-label">
+                <span class="chatbot-message-avatar chatbot-message-avatar-${escapeHtml(message.role)}"><i class="${roleIcon}"></i></span>
+                <span>${roleLabel}</span>
+            </div>
+            <div class="chatbot-bubble">${escapeHtml(message.content)}</div>
+            ${citationHtml}
+        </div>
+    `;
+}
+
+function chatbotRenderConversation(messages) {
+    chatbotMessages.innerHTML = (messages || []).map(chatbotRenderMessage).join('');
+    chatbotScrollToBottom();
+}
+
+function chatbotAppendMessage(message) {
+    chatbotMessages.insertAdjacentHTML('beforeend', chatbotRenderMessage(message));
+    chatbotScrollToBottom();
+}
+
+function chatbotCreateStreamingMessage() {
+    const row = document.createElement('div');
+    row.className = 'chatbot-message chatbot-message-assistant chatbot-loading';
+    row.setAttribute('data-chatbot-streaming', 'true');
+    row.innerHTML = `
+        <div class="chatbot-message-label">
+            <span class="chatbot-message-avatar chatbot-message-avatar-assistant"><i class="ph ph-sparkle"></i></span>
+            <span>Terracota IA</span>
+        </div>
+        <div class="chatbot-bubble">Pensando...</div>
+    `;
+    chatbotMessages.appendChild(row);
+    chatbotScrollToBottom();
+    return row;
+}
+
+function chatbotUpdateStreamingMessage(row, delta) {
+    if (!row) return;
+    const bubble = row.querySelector('.chatbot-bubble');
+    if (!bubble) return;
+    if (bubble.textContent === 'Pensando...') {
+        bubble.textContent = '';
+    }
+    bubble.textContent += delta || '';
+    chatbotScrollToBottom();
+}
+
+function chatbotReplaceStreamingMessage(row, message = '') {
+    if (!row) return;
+    const bubble = row.querySelector('.chatbot-bubble');
+    if (!bubble) return;
+    bubble.textContent = message || '';
+    chatbotScrollToBottom();
+}
+
+function chatbotFinalizeStreamingMessage(row, payload) {
+    const answer = payload.answer || row?.querySelector('.chatbot-bubble')?.textContent || '';
+    const html = chatbotRenderMessage({
+        id: payload.message_id,
+        role: 'assistant',
+        content: answer,
+        citations: payload.citations || [],
+    });
+    if (row) {
+        row.outerHTML = html;
+    } else {
+        chatbotAppendMessage({
+            id: payload.message_id,
+            role: 'assistant',
+            content: answer,
+            citations: payload.citations || [],
+        });
+    }
+    chatbotLastAssistantMessage = answer;
+}
+
+function chatbotParseSseBlock(rawBlock) {
+    const lines = String(rawBlock || '')
+        .split('\n')
+        .map((line) => line.trimEnd())
+        .filter(Boolean);
+    if (!lines.length) return null;
+
+    let eventName = 'message';
+    const dataLines = [];
+    lines.forEach((line) => {
+        if (line.startsWith('event:')) {
+            eventName = line.slice(6).trim();
+        } else if (line.startsWith('data:')) {
+            dataLines.push(line.slice(5).trim());
+        }
+    });
+    if (!dataLines.length) return null;
+
+    try {
+        return {
+            event: eventName,
+            data: JSON.parse(dataLines.join('\n')),
+        };
+    } catch (error) {
+        return null;
+    }
+}
+
+async function chatbotStreamMessage(message) {
+    const response = await fetch('/api/chat/message/stream', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'text/event-stream',
+            'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({
+            conversation_id: chatbotConversationId,
+            message,
+            page_context: 'landing-faq',
+            locale: 'pt-BR',
+        }),
+    });
+
+    if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload.error || 'Falha no assistente IA.');
+    }
+
+    const streamingRow = chatbotCreateStreamingMessage();
+    const reader = response.body?.getReader();
+    if (!reader) {
+        throw new Error('Streaming indisponível no navegador atual.');
+    }
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let donePayload = null;
+
+    while (reader) {
+        const { value, done } = await reader.read();
+        buffer += decoder.decode(value || new Uint8Array(), { stream: !done }).replace(/\r\n/g, '\n');
+
+        let boundary = buffer.indexOf('\n\n');
+        while (boundary !== -1) {
+            const block = buffer.slice(0, boundary);
+            buffer = buffer.slice(boundary + 2);
+            const parsed = chatbotParseSseBlock(block);
+            if (parsed) {
+                if (parsed.event === 'delta') {
+                    chatbotUpdateStreamingMessage(streamingRow, parsed.data.delta || '');
+                } else if (parsed.event === 'done') {
+                    donePayload = parsed.data || {};
+                } else if (parsed.event === 'replace') {
+                    chatbotReplaceStreamingMessage(streamingRow, parsed.data.message || '');
+                } else if (parsed.event === 'error') {
+                    throw new Error(parsed.data?.error || 'Falha no assistente IA.');
+                }
+            }
+            boundary = buffer.indexOf('\n\n');
+        }
+
+        if (done) {
+            break;
+        }
+    }
+
+    return { row: streamingRow, payload: donePayload };
+}
+
+async function chatbotEnsureSession() {
+    const data = await chatbotRequest('/api/chat/session', {
+        source_page: 'landing-faq',
+        locale: 'pt-BR',
+    });
+    chatbotConversationId = data.conversation_id;
+    chatbotRenderConversation(data.messages || []);
+    chatbotSetError('');
+    chatbotSetLauncherLabel('Continuar conversa');
+    return data;
+}
+
+async function chatbotSendMessage(rawMessage) {
+    const message = String(rawMessage || '').trim();
+    if (!message || !chatbotConversationId || chatbotBusy) return;
+    chatbotBusy = true;
+    chatbotSetError('');
+    chatbotInput.value = '';
+    chatbotAutosizeInput();
+    chatbotAppendMessage({ role: 'user', content: message, citations: [] });
+    chatbotSend.setAttribute('disabled', 'disabled');
+    if (chatbotSendLabel) chatbotSendLabel.textContent = 'Enviando';
+
+    try {
+        const { row, payload } = await chatbotStreamMessage(message);
+        if (!payload) {
+            throw new Error('Assistente indisponível no momento. Use o contato por e-mail.');
+        }
+        chatbotFinalizeStreamingMessage(row, payload);
+        chatbotSetLauncherLabel('Continuar conversa');
+    } catch (error) {
+        chatbotMessages.querySelector('[data-chatbot-streaming="true"]')?.remove();
+        const fallbackMessage = error.message || 'Assistente indisponível no momento. Use o contato por e-mail.';
+        chatbotSetError(fallbackMessage);
+    } finally {
+        chatbotBusy = false;
+        chatbotSend.removeAttribute('disabled');
+        if (chatbotSendLabel) chatbotSendLabel.textContent = 'Enviar';
+        chatbotInput.focus();
+    }
+}
+
+if (chatbotTriggers.length && chatbotModal) {
+    closeChatbotModal = () => {
+        chatbotModal.classList.add('hidden');
+        chatbotModal.setAttribute('aria-hidden', 'true');
+        if (chatbotShouldLockBody()) {
+            document.body.classList.remove('overflow-hidden');
+        }
+        chatbotSetLauncherState(false);
+        lastChatbotTrigger?.focus();
+    };
+    const openChatbotModal = async (trigger = null) => {
+        lastChatbotTrigger = trigger;
+        chatbotModal.classList.remove('hidden');
+        chatbotModal.setAttribute('aria-hidden', 'false');
+        if (chatbotShouldLockBody()) {
+            document.body.classList.add('overflow-hidden');
+        }
+        chatbotSetLauncherState(true);
+        setTimeout(() => {
+            chatbotInput.focus();
+            chatbotAutosizeInput();
+        }, 40);
+        if (!chatbotConversationId) {
+            try {
+                await chatbotEnsureSession();
+            } catch (error) {
+                chatbotSetError(error.message || 'Não foi possível iniciar o assistente IA agora.');
+            }
+        }
+    };
+
+    chatbotTriggers.forEach((trigger) => {
+        trigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (trigger.hasAttribute('data-chatbot-launcher') && !chatbotModal.classList.contains('hidden')) {
+                closeChatbotModal();
+                return;
+            }
+            openChatbotModal(trigger);
+        });
+    });
+
+    chatbotModal.querySelectorAll('[data-chatbot-close]').forEach(function(el) {
+        el.addEventListener('click', closeChatbotModal);
+    });
+
+    chatbotForm?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        chatbotSendMessage(chatbotInput.value);
+    });
+
+    chatbotInput?.addEventListener('input', chatbotAutosizeInput);
+    chatbotInput?.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            chatbotSendMessage(chatbotInput.value);
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !chatbotModal.classList.contains('hidden')) {
+            closeChatbotModal();
+        }
+    });
+
+    window.addEventListener('resize', chatbotAutosizeInput);
+}
+{% endif %}
+
+document.getElementById('radar-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('radar-email').value.trim();
+    const btn = document.getElementById('radar-btn');
+    const msg = document.getElementById('radar-msg');
+    if (!email) return;
+    msg.classList.remove('text-terracota-textMuted/85', 'text-green-400', 'text-red-400');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+    try {
+        const res = await fetch('/api/subscribe', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({email})
+        });
+        const data = await res.json();
+        if (res.ok) {
+            msg.textContent = '\u2713 ' + data.message;
+            msg.classList.add('text-green-400');
+            document.getElementById('radar-email').value = '';
+        } else {
+            msg.textContent = '\u2717 ' + (data.error || 'Erro ao cadastrar.');
+            msg.classList.add('text-red-400');
+        }
+    } catch {
+        msg.textContent = '\u2717 Erro de conexão. Tente novamente.';
+        msg.classList.add('text-red-400');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Receber atualizações';
+    }
+});
+</script>
+{% endblock %}

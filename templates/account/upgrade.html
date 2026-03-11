@@ -1,0 +1,110 @@
+{% extends "app/base_app.html" %}
+{% block title %}Planos | Terracota{% endblock %}
+{% block content %}
+<div class="text-center mb-12">
+    <h1 class="text-3xl font-heading font-bold mb-4">Escolha seu plano</h1>
+    <p class="text-terracota-textMuted">Seu plano atual: <span class="text-terracota-cyan font-semibold">{{ current_plan.name }}</span></p>
+</div>
+
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+    {% for p in plans %}
+    {% set is_pro = (p.slug == 'flow_pro') %}
+    <div class="bg-terracota-surface border {{ 'border-terracota-cyan/50' if p.slug == current_plan.slug else 'border-white/10' }} rounded-2xl p-6 flex flex-col relative {{ 'ring-2 ring-terracota-cyan/50 border-t-2 border-t-terracota-cyan' if is_pro and p.slug != current_plan.slug else '' }}">
+        {% if p.slug == current_plan.slug %}
+        <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-terracota-cyan text-terracota-base text-xs font-bold rounded-full">Atual</span>
+        {% elif is_pro %}
+        <span class="self-start px-3 py-1 bg-terracota-cyan/20 text-terracota-cyan text-xs font-bold rounded-full mb-4">Melhor custo-benefício</span>
+        {% endif %}
+
+        <h3 class="text-lg font-heading font-bold mb-1">{{ p.name }}</h3>
+        <p class="{{ 'text-3xl' if is_pro else 'text-2xl' }} font-bold mb-1">
+            {% if p.price_brl > 0 %}
+            R$ {{ "%.2f"|format(p.price_brl)|replace('.', ',') }}<span class="text-sm font-normal text-terracota-textMuted">/mês</span>
+            {% else %}
+            Grátis
+            {% endif %}
+        </p>
+
+        <ul class="space-y-2 text-sm text-terracota-textMuted flex-grow mb-6">
+            <li class="flex gap-2"><i class="ph ph-check text-terracota-cyan mt-0.5"></i><span>{{ p.max_tables_per_month if p.max_tables_per_month else 'Ilimitadas' }} tabelas/mês</span></li>
+            <li class="flex gap-2"><i class="ph ph-check text-terracota-cyan mt-0.5"></i><span>{{ p.max_ingredients_per_table if p.max_ingredients_per_table else 'Ilimitados' }} ingredientes</span></li>
+            {% if p.has_pdf_export %}<li class="flex gap-2"><i class="ph ph-check text-terracota-cyan mt-0.5"></i><span>Export PDF{% if p.has_png_export %} + PNG{% endif %}</span></li>{% endif %}
+            {% if p.has_templates %}<li class="flex gap-2"><i class="ph ph-check text-terracota-cyan mt-0.5"></i><span>Templates{% if p.has_version_history %} + histórico{% endif %}</span></li>{% endif %}
+            {% if p.has_branding %}<li class="flex gap-2"><i class="ph ph-check text-terracota-cyan mt-0.5"></i><span>Branding no PDF</span></li>{% endif %}
+        </ul>
+
+        {% if p.slug != current_plan.slug %}
+            {% if p.slug == 'flow_studio' %}
+            <a href="{{ url_for('support.contact', category='billing', subject='Teste Ilimitado (14 dias)', plan='flow_studio') }}" class="block text-center px-4 py-2.5 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">
+                Falar com vendas
+            </a>
+            {% elif stripe_enabled and p.slug != 'free' %}
+            <form method="post" action="{{ url_for('billing.checkout') }}" class="upgrade-checkout-form" data-target-plan-name="{{ p.name }}" data-target-plan-slug="{{ p.slug }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="plan_slug" value="{{ p.slug }}">
+                <button type="submit" class="w-full text-center px-4 py-2.5 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">
+                    Assinar
+                </button>
+            </form>
+            {% elif p.slug == 'free' %}
+            {# Free plan - no action needed for downgrade #}
+            {% else %}
+            <a href="{{ url_for('support.contact') }}" class="block text-center px-4 py-2.5 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">
+                Falar com vendas
+            </a>
+            {% endif %}
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<p class="text-center text-sm text-terracota-textMuted mt-8">
+    {% if stripe_enabled %}
+    Você pode iniciar a assinatura online. A ativação do plano acontece após confirmação do pagamento via Stripe.
+    {% else %}
+    Pagamento online em breve. Para upgrade, entre em contato com nossa equipe.
+    {% endif %}
+</p>
+{% if stripe_enabled and current_plan and current_plan.slug != 'free' %}
+<!-- Subscription Modal -->
+<div id="subscription-modal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeSubscriptionModal()"></div>
+    <div class="relative bg-terracota-surface border border-white/10 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl shadow-black/50">
+        <button onclick="closeSubscriptionModal()" class="absolute top-4 right-4 text-terracota-textMuted hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl flex items-center justify-center text-2xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        </div>
+        <h3 class="text-xl font-heading font-bold text-center mb-2">Você já possui uma assinatura ativa</h3>
+        <p id="modal-message" class="text-sm text-terracota-textMuted text-center mb-6 leading-relaxed"></p>
+        <div class="flex flex-col gap-3">
+            <a href="{{ url_for('billing.portal_redirect') }}" class="w-full text-center px-4 py-3 bg-terracota-cyan text-terracota-base font-bold rounded-xl text-sm hover:bg-white transition-colors">
+                Abrir Portal de Cobrança
+            </a>
+            <button onclick="closeSubscriptionModal()" class="w-full text-center px-4 py-2 text-sm text-terracota-textMuted hover:text-white transition-colors">
+                Cancelar
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function closeSubscriptionModal() {
+    document.getElementById('subscription-modal').classList.add('hidden');
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.upgrade-checkout-form').forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const targetPlanName = form.dataset.targetPlanName || 'outro plano';
+            document.getElementById('modal-message').textContent =
+                `Você já possui o plano {{ current_plan.name }}. Para migrar para ${targetPlanName}, recomendamos usar o Portal de Cobrança para evitar dupla cobrança.`;
+            document.getElementById('subscription-modal').classList.remove('hidden');
+        });
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

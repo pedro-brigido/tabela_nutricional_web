@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}{{ user.name }} | Admin{% endblock %}
+{% block content %}
+<a href="{{ url_for('admin.user_list') }}" class="text-sm text-terracota-textMuted hover:text-white mb-4 inline-block">&larr; Voltar</a>
+<h1 class="text-3xl font-heading font-bold mb-8">{{ user.name }}</h1>
+
+<div class="grid md:grid-cols-2 gap-6 mb-8">
+    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
+        <h2 class="text-lg font-heading font-semibold mb-4">Dados</h2>
+        <div class="space-y-2 text-sm">
+            <p><span class="text-terracota-textMuted">E-mail:</span> {{ user.email }}</p>
+            <p><span class="text-terracota-textMuted">Ativo:</span> {{ 'Sim' if user.is_active else 'Não' }}</p>
+            <p><span class="text-terracota-textMuted">Admin:</span> {{ 'Sim' if user.is_admin else 'Não' }}</p>
+            <p><span class="text-terracota-textMuted">E-mail verificado:</span> {{ 'Sim' if user.email_verified else 'Não' }}</p>
+            <p><span class="text-terracota-textMuted">Logins:</span> {{ user.login_count or 0 }}</p>
+            <p><span class="text-terracota-textMuted">Criado em:</span> {{ user.created_at.strftime('%d/%m/%Y %H:%M') if user.created_at }}</p>
+            <p><span class="text-terracota-textMuted">Stripe customer:</span> {{ user.stripe_customer_id or '—' }}</p>
+        </div>
+        <form method="post" action="{{ url_for('admin.toggle_active', user_id=user.id) }}" class="mt-4">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="px-4 py-2 border border-white/10 rounded-lg text-sm hover:bg-white/5 transition-colors">
+                {{ 'Desativar' if user.is_active else 'Ativar' }}
+            </button>
+        </form>
+    </div>
+
+    <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
+        <h2 class="text-lg font-heading font-semibold mb-4">Plano e Consumo</h2>
+        <p class="text-sm mb-1"><span class="text-terracota-textMuted">Plano:</span> <span class="text-terracota-cyan font-semibold">{{ plan.name }}</span></p>
+        <p class="text-sm mb-4"><span class="text-terracota-textMuted">Tabelas (mês):</span> {{ usage.tables_created }}</p>
+        {% if subscription %}
+        <div class="mb-4 text-sm space-y-1">
+            <p><span class="text-terracota-textMuted">Stripe subscription:</span> {{ subscription.stripe_subscription_id or '—' }}</p>
+            <p><span class="text-terracota-textMuted">Stripe status:</span> {{ subscription.stripe_status or subscription.status }}</p>
+            <p><span class="text-terracota-textMuted">Próximo ciclo:</span> {{ subscription.current_period_end.strftime('%d/%m/%Y') if subscription.current_period_end else '—' }}</p>
+        </div>
+        {% endif %}
+
+        <form method="post" action="{{ url_for('admin.set_plan', user_id=user.id) }}" class="flex gap-2 mb-4">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <select name="plan_slug" class="flex-grow px-3 py-2 bg-terracota-surfaceHighlight border border-white/10 rounded-lg text-white text-sm">
+                {% for p in plans %}
+                <option value="{{ p.slug }}" {{ 'selected' if p.slug == plan.slug }}>{{ p.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="px-4 py-2 bg-terracota-cyan text-terracota-base font-semibold rounded-lg text-sm">Alterar</button>
+        </form>
+
+        <form method="post" action="{{ url_for('admin.adjust_quota', user_id=user.id) }}" class="flex gap-2">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="number" name="tables_created" value="{{ usage.tables_created }}" min="0"
+                class="w-24 px-3 py-2 bg-terracota-surfaceHighlight border border-white/10 rounded-lg text-white text-sm">
+            <button type="submit" class="px-4 py-2 border border-white/10 rounded-lg text-sm hover:bg-white/5 transition-colors">Ajustar quota</button>
+        </form>
+    </div>
+</div>
+
+{% if logs %}
+<div class="bg-terracota-surface border border-white/10 rounded-2xl p-6">
+    <h2 class="text-lg font-heading font-semibold mb-4">Audit Log (recentes)</h2>
+    <div class="space-y-2 text-sm">
+        {% for l in logs %}
+        <div class="flex items-center justify-between p-2 bg-white/5 rounded">
+            <span class="font-mono text-xs text-terracota-cyan">{{ l.action }}</span>
+            <span class="text-terracota-textMuted text-xs">{{ l.created_at.strftime('%d/%m %H:%M') if l.created_at }}</span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
