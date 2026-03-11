@@ -121,6 +121,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate deploy secrets
+        run: |
+          if [ -z "${{ secrets.VPS_HOST }}" ]; then
+            echo "::error::Missing production secret VPS_HOST."
+            exit 1
+          fi
+          if [ -z "${{ secrets.VPS_SSH_KEY }}" ]; then
+            echo "::error::Missing production secret VPS_SSH_KEY."
+            exit 1
+          fi
+          if [ -z "${{ secrets.VPS_KNOWN_HOSTS }}" ]; then
+            echo "::error::Missing production secret VPS_KNOWN_HOSTS."
+            exit 1
+          fi
+          if [ -z "${{ secrets.GHCR_USERNAME }}" ]; then
+            echo "::error::Missing production secret GHCR_USERNAME."
+            exit 1
+          fi
+          if [ -z "${{ secrets.GHCR_READ_TOKEN }}" ]; then
+            echo "::error::Missing production secret GHCR_READ_TOKEN."
+            exit 1
+          fi
+
       - name: Prepare SSH
         run: |
           install -m 700 -d ~/.ssh
@@ -129,21 +152,26 @@ jobs:
           printf '%s\n' "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
-      - name: Resolve SSH port
+      - name: Resolve deploy target
         run: |
           if [ -n "${{ secrets.VPS_PORT }}" ]; then
-            echo "VPS_PORT=${{ secrets.VPS_PORT }}" >> "$GITHUB_ENV"
+            echo "DEPLOY_PORT=${{ secrets.VPS_PORT }}" >> "$GITHUB_ENV"
           else
-            echo "VPS_PORT=22" >> "$GITHUB_ENV"
+            echo "DEPLOY_PORT=22" >> "$GITHUB_ENV"
           fi
+          if [ -n "${{ secrets.VPS_USER }}" ]; then
+            echo "DEPLOY_USER=${{ secrets.VPS_USER }}" >> "$GITHUB_ENV"
+          else
+            echo "DEPLOY_USER=root" >> "$GITHUB_ENV"
+          fi
+          echo "DEPLOY_HOST=${{ secrets.VPS_HOST }}" >> "$GITHUB_ENV"
 
       - name: Upload deploy assets
         run: |
-          ssh -p "$VPS_PORT" "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" "mkdir -p /opt/terracota"
-          scp -P "$VPS_PORT" deploy/docker-compose.prod.yml deploy/release.sh "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/terracota/"
+          ssh -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" "mkdir -p /opt/terracota"
+          scp -P "$DEPLOY_PORT" deploy/docker-compose.prod.yml deploy/release.sh "$DEPLOY_USER@$DEPLOY_HOST:/opt/terracota/"
 
       - name: Run remote release
         run: |
-          ssh -p "$VPS_PORT" "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+          ssh -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
             "chmod +x /opt/terracota/release.sh && IMAGE_REF='${{ needs.build-push.outputs.image_ref }}' GHCR_USERNAME='${{ secrets.GHCR_USERNAME }}' GHCR_READ_TOKEN='${{ secrets.GHCR_READ_TOKEN }}' /opt/terracota/release.sh"
-

@@ -135,7 +135,7 @@ No repositorio:
 
 - `VPS_HOST`: host ou IP do VPS
 - `VPS_PORT`: porta SSH, normalmente `22`
-- `VPS_USER`: usuario do VPS que executara o deploy
+- `VPS_USER`: usuario do VPS que executara o deploy; se omitir, o workflow usa `root`
 - `VPS_SSH_KEY`: conteudo completo da chave privada `~/.ssh/terracota_actions`
 - `VPS_KNOWN_HOSTS`: saida do `ssh-keyscan -H seu_host`
 - `GHCR_USERNAME`: seu usuario GitHub
@@ -274,4 +274,3 @@ Erro de deploy/healthcheck:
 - `.github/workflows/ci-cd.yml`
 - `deploy/docker-compose.prod.yml`
 - `deploy/release.sh`
-
