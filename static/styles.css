@@ -1010,10 +1010,24 @@ details.faq-item[open] > div:not(:first-child) {
     content: '';
     position: absolute;
     top: 0;
-    left: 10%;
-    right: 10%;
+    left: 8%;
+    right: 8%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), rgba(0, 240, 255, 0.2), rgba(255, 255, 255, 0.1), transparent);
+    pointer-events: none;
+}
+.section-divider::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 0.42rem;
+    height: 0.42rem;
+    transform: translate(-50%, -50%);
+    border-radius: 9999px;
+    background: rgba(0, 240, 255, 0.78);
+    box-shadow: 0 0 0 5px rgba(0, 240, 255, 0.1),
+                0 0 26px -2px rgba(0, 240, 255, 0.45);
     pointer-events: none;
 }
 .section-divider-y {
@@ -1038,6 +1052,31 @@ details.faq-item[open] > div:not(:first-child) {
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08), transparent);
     pointer-events: none;
+}
+
+/* Landing home: tighten section rhythm without changing content density */
+.landing-home > section {
+    scroll-margin-top: 6rem;
+}
+.landing-home > section.py-32 {
+    padding-top: clamp(5.9rem, 8vw, 7.2rem);
+    padding-bottom: clamp(5.9rem, 8vw, 7.2rem);
+}
+.landing-home > section.py-28 {
+    padding-top: clamp(5.5rem, 7vw, 6.35rem);
+    padding-bottom: clamp(5.5rem, 7vw, 6.35rem);
+}
+.landing-home > section.py-24 {
+    padding-top: clamp(5.1rem, 6.5vw, 5.7rem);
+    padding-bottom: clamp(5.1rem, 6.5vw, 5.7rem);
+}
+.landing-home > section.pt-8.pb-14 {
+    padding-top: clamp(1.55rem, 3vw, 1.85rem);
+    padding-bottom: clamp(2.8rem, 4.8vw, 3.15rem);
+}
+.landing-home > section.py-14 {
+    padding-top: clamp(3rem, 4.5vw, 3.2rem);
+    padding-bottom: clamp(3rem, 4.5vw, 3.2rem);
 }
 
 /* --- Subtle Noise Texture Overlay --- */
@@ -1124,6 +1163,7 @@ a:focus-visible {
     .card-lift:hover,
     .btn-cta-primary,
     .btn-cta-secondary,
+    .hero-preview-card,
     .feature-card-icon,
     .benefit-card-icon,
     .benefit-card-icon::before,
@@ -1159,10 +1199,26 @@ a:focus-visible {
 
 /* Subtle grid pattern overlay for hero depth */
 .hero-grid-pattern {
+    position: relative;
+    isolation: isolate;
     background-image:
-        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-    background-size: 72px 72px;
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 84px 84px;
+    background-position: center top;
+}
+.hero-grid-pattern::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(9, 13, 23, 0) 52%, rgba(9, 13, 23, 0.36) 78%, rgba(9, 13, 23, 0.72) 100%);
+    z-index: 0;
+}
+
+.hero-premium > * {
+    position: relative;
+    z-index: 1;
 }
 
 .hero-premium::before {
@@ -1206,6 +1262,17 @@ a:focus-visible {
     box-shadow: 0 35px 80px -20px rgba(0, 0, 0, 0.55),
                 0 0 60px -25px rgba(0, 240, 255, 0.35),
                 inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    transform-origin: center top;
+    transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.3s ease,
+                box-shadow 0.35s ease;
+}
+.hero-preview-card:hover {
+    transform: translateY(-5px) scale(1.01);
+    border-color: rgba(0, 240, 255, 0.32);
+    box-shadow: 0 42px 90px -24px rgba(0, 0, 0, 0.6),
+                0 0 72px -22px rgba(0, 240, 255, 0.42),
+                inset 0 1px 0 rgba(255, 255, 255, 0.09);
 }
 
 .hero-status-pill {
