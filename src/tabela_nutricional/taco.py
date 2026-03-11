@@ -9,11 +9,11 @@ from __future__ import annotations
 
 import json
 import unicodedata
-from pathlib import Path
 from functools import lru_cache
+from importlib.resources import files
 from typing import TypedDict
 
-_DATA_PATH = Path(__file__).parent / "data" / "taco.json"
+_DATA_RESOURCE = files("tabela_nutricional").joinpath("data", "taco.json")
 
 
 class TacoNutrients(TypedDict, total=False):
@@ -45,7 +45,7 @@ def _strip_accents(text: str) -> str:
 @lru_cache(maxsize=1)
 def _load_taco_data() -> list[TacoFood]:
     """Load TACO JSON once and cache in memory."""
-    with open(_DATA_PATH, encoding="utf-8") as f:
+    with _DATA_RESOURCE.open("r", encoding="utf-8") as f:
         return json.load(f)
 
 
