@@ -5,11 +5,11 @@ APP_DIR="${APP_DIR:-/opt/terracota}"
 COMPOSE_FILE="${COMPOSE_FILE:-${APP_DIR}/docker-compose.prod.yml}"
 APP_ENV_FILE="${APP_ENV_FILE:-${APP_DIR}/.env}"
 STATE_FILE="${STATE_FILE:-${APP_DIR}/current-release.env}"
-DATA_DIR="${DATA_DIR:-${APP_DIR}/data}"
 BACKUP_DIR="${BACKUP_DIR:-${APP_DIR}/backups}"
 PROJECT_NAME="${PROJECT_NAME:-tabela-nutricional}"
 WEB_SERVICE="${WEB_SERVICE:-web}"
 NETWORK_NAME="${NETWORK_NAME:-terracota_network}"
+DATA_VOLUME_NAME="${DATA_VOLUME_NAME:-${PROJECT_NAME}_tabela_data}"
 BACKUP_RETENTION="${BACKUP_RETENTION:-7}"
 HEALTH_RETRIES="${HEALTH_RETRIES:-20}"
 HEALTH_DELAY_SECONDS="${HEALTH_DELAY_SECONDS:-3}"
@@ -30,7 +30,7 @@ if [[ ! -f "${APP_ENV_FILE}" ]]; then
   exit 1
 fi
 
-mkdir -p "${APP_DIR}" "${DATA_DIR}" "${BACKUP_DIR}"
+mkdir -p "${APP_DIR}" "${BACKUP_DIR}"
 
 if ! docker network ls --format '{{.Name}}' | grep -q "^${NETWORK_NAME}$"; then
   echo "[release] Creating Docker network: ${NETWORK_NAME}"
@@ -50,12 +50,16 @@ previous_image=""
 if [[ -f "${STATE_FILE}" ]]; then
   previous_image="$(sed -n 's/^IMAGE_REF=//p' "${STATE_FILE}" | tail -n 1)"
 fi
+if [[ -z "${previous_image}" ]]; then
+  previous_image="$(docker inspect -f '{{.Config.Image}}' tabela_nutricional_web 2>/dev/null || true)"
+fi
 
 timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
-if [[ -d "${DATA_DIR}" ]] && [[ -n "$(ls -A "${DATA_DIR}" 2>/dev/null)" ]]; then
+volume_mountpoint="$(docker volume inspect -f '{{.Mountpoint}}' "${DATA_VOLUME_NAME}" 2>/dev/null || true)"
+if [[ -n "${volume_mountpoint}" ]] && [[ -d "${volume_mountpoint}" ]] && [[ -n "$(ls -A "${volume_mountpoint}" 2>/dev/null)" ]]; then
   backup_file="${BACKUP_DIR}/data-${timestamp}.tar.gz"
   echo "[release] Creating data backup: ${backup_file}"
-  tar -C "${DATA_DIR}" -czf "${backup_file}" .
+  tar -C "${volume_mountpoint}" -czf "${backup_file}" .
 fi
 
 mapfile -t backup_files < <(ls -1t "${BACKUP_DIR}"/data-*.tar.gz 2>/dev/null || true)
@@ -116,4 +120,3 @@ fi
 
 echo "[release] Rollback failed or unavailable."
 exit 1
-

@@ -65,7 +65,6 @@ ssh seu_usuario@seu_host "chmod +x /opt/terracota/bootstrap_vps.sh && /opt/terra
 Ao final, estes caminhos devem existir:
 
 - `/opt/terracota/.env`
-- `/opt/terracota/data`
 - `/opt/terracota/backups`
 
 ## 4. Criar a chave SSH do deploy
@@ -232,6 +231,12 @@ Os backups do SQLite ficam em:
 
 ```text
 /opt/terracota/backups
+```
+
+O banco ativo fica no volume Docker:
+
+```text
+tabela-nutricional_tabela_data
 ```
 
 ## 13. Checklist final
