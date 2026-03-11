@@ -159,13 +159,9 @@ stripe listen --forward-to localhost:5000/billing/webhook
 
 ## Deploy com Docker
 
-O container sobe com um **entrypoint** que, na ordem:
+### Local/manual
 
-1. Aplica migrações (`flask db upgrade`)
-2. Garante planos no banco (`flask seed-plans`)
-3. Inicia o Gunicorn
-
-Não é preciso rodar migrações ou seed manualmente após o deploy.
+Para subir localmente com Docker Compose (build local):
 
 ```bash
 cd deploy
@@ -173,11 +169,43 @@ docker compose build
 docker compose up -d
 ```
 
-Ou use o script completo no VPS:
+### Produção (CI/CD automático)
 
+Produção usa este fluxo:
+
+1. GitHub Actions roda testes e smoke build em cada PR para `main`.
+2. Em push/merge para `main`, o workflow gera imagem imutável no GHCR.
+3. O workflow conecta no VPS (Hostinger) por SSH e executa `deploy/release.sh`.
+4. O script faz backup dos bancos SQLite, publica a nova imagem e valida `/health`.
+5. Se `/health` falhar, ocorre rollback automático para a imagem anterior.
+
+Arquivos principais:
+
+- `.github/workflows/ci-cd.yml`
+- `deploy/docker-compose.prod.yml`
+- `deploy/release.sh`
+- `deploy/bootstrap_vps.sh`
+
+Pré-requisitos de produção:
+
+1. Rodar bootstrap uma vez no VPS:
 ```bash
-cd deploy
-sudo ./vps_deploy.sh
+scp deploy/bootstrap_vps.sh <user>@<host>:/opt/terracota/bootstrap_vps.sh
+ssh <user>@<host> "chmod +x /opt/terracota/bootstrap_vps.sh && /opt/terracota/bootstrap_vps.sh"
 ```
+2. Subir o `.env` de produção para o VPS:
+```bash
+scp .env <user>@<host>:/opt/terracota/.env
+```
+3. Configurar os segredos do GitHub Environment `production`:
+   - `VPS_HOST`
+   - `VPS_PORT` (opcional; default `22`)
+   - `VPS_USER`
+   - `VPS_SSH_KEY`
+   - `VPS_KNOWN_HOSTS`
+   - `GHCR_USERNAME`
+   - `GHCR_READ_TOKEN`
 
-Consulte `deploy/HOSTINGER_DNS_SETUP.md` para configurar DNS no Hostinger.
+Consulte `docs/README_CONFIGURACAO_EXTERNA.md` para o passo a passo completo das configuracoes fora do codigo.
+Consulte `docs/CI_CD_HOSTINGER.md` para o fluxo tecnico resumido do CI/CD.
+Consulte `deploy/HOSTINGER_DNS_SETUP.md` para DNS no Hostinger.

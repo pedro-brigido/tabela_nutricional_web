@@ -1,0 +1,35 @@
+name: tabela-nutricional
+
+services:
+  web:
+    image: ${IMAGE_REF}
+    container_name: tabela_nutricional_web
+    restart: unless-stopped
+    networks:
+      - terracota_network
+    expose:
+      - "5000"
+    environment:
+      FLASK_ENV: production
+      DATA_DIR: /app/data
+    env_file:
+      - /opt/terracota/.env
+    volumes:
+      - /opt/terracota/data:/app/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  terracota_network:
+    external: true
+
