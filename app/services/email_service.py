@@ -83,7 +83,7 @@ def send_welcome_email(*, user_name: str, user_email: str) -> bool:
         "- O cálculo segue as regras de arredondamento e significância da ANVISA\n"
         "- Você pode salvar, imprimir e exportar suas tabelas\n\n"
         "Se precisar de ajuda, responda este e-mail ou acesse: "
-        "https://terracotacompliance.com.br/help\n\n"
+        "https://terracotacompliance.com.br/#faq\n\n"
         "Atenciosamente,\n"
         "Equipe Terracota"
     )

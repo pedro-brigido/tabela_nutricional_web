@@ -115,7 +115,8 @@ Assinaturas podem ser atribuídas manualmente via admin e também via Stripe (Ch
 ## Rotas principais
 
 - **/** — Landing
-- **/#planos** — Seção de planos e comparação simplificada na landing
+- **/#como-funciona**, **/#beneficios**, **/#planos**, **/#faq**, **/#contato** — Navegação pública canônica na landing
+- **/privacy** — Política de privacidade
 - **/health** — Health check (inclui status do banco)
 - **/login**, **/register**, **/logout** — Auth
 - **/forgot-password**, **/reset-password/<token>** — Redefinição de senha
@@ -123,7 +124,7 @@ Assinaturas podem ser atribuídas manualmente via admin e também via Stripe (Ch
 - **/account** — Minha Conta (plano, consumo, configurações, upgrade)
 - **POST /billing/checkout**, **POST /billing/portal**, **POST /billing/webhook** — Fluxos Stripe
 - **/billing/success**, **/billing/cancel** — Páginas informativas pós-checkout
-- **/help**, **/contact** — Suporte
+- **/help**, **/contact** — Redirects legados para a landing (`/#faq` e `/#contato`)
 - **/admin/** — Painel admin (requer `is_admin`); usuários, planos, quotas, logs, tickets
 - **POST /api/calculate** — Calcular tabela nutricional (requer login, respeita quota de ingredientes)
 - **POST /api/import-excel** — Importar ingredientes de Excel

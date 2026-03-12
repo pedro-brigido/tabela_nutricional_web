@@ -1,4 +1,4 @@
-{% extends "landing/base_landing.html" %}
+{% extends "public/base_public.html" %}
 
 {% block title %}Terracota — Tabela Nutricional ANVISA em Minutos | Calculadora RDC 429{% endblock %}
 
@@ -17,19 +17,14 @@
 <meta name="twitter:description" content="Gere tabelas nutricionais conforme RDC 429/2020, IN 75/2020 e RDC 26/2015 em minutos. Comece grátis.">
 {% endblock %}
 
-{% block nav_links %}
-<a href="#como-funciona" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Como Funciona</a>
-<a href="#beneficios" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Benefícios</a>
-<a href="#planos" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Planos</a>
-<a href="#faq" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">FAQ</a>
-{% endblock %}
-
-{% block mobile_nav_links %}
-<a href="#como-funciona" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">Como Funciona</a>
-<a href="#beneficios" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">Benefícios</a>
-<a href="#planos" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">Planos</a>
-<a href="#faq" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors py-2">FAQ</a>
-{% endblock %}
+{% set pf = contact_prefill if contact_prefill is defined else {} %}
+{% set contact_category = pf.get('category', 'other') %}
+{% set contact_subject_inline = pf.get('subject', 'Dúvida sobre conformidade (FAQ inline)') %}
+{% set contact_subject_modal = pf.get('subject', 'Dúvida sobre conformidade (FAQ)') %}
+{% set contact_source_inline = pf.get('source', 'faq-inline') %}
+{% set contact_source_modal = pf.get('source', 'faq') %}
+{% set contact_message = pf.get('message', '') %}
+{% set contact_conversation_id = pf.get('conversation_id', '') %}
 
 {% block content %}
 <div class="landing-home">
@@ -549,7 +544,7 @@
                         'Modelos prontos',
                     ] %}
                     {% set cta_label = 'Assinar Start' %}
-                    {% set cta_href = url_for('support.contact', category='billing', subject='Assinar ' ~ p.name, plan='flow_start') %}
+                    {% set cta_href = url_for('main.index', _anchor='contato', category='billing', subject='Assinar ' ~ p.name, plan='flow_start') %}
                     {% set cta_plan_slug = 'flow_start' %}
                 {% elif is_pro %}
                     {% set display_name = 'Pro' %}
@@ -563,7 +558,7 @@
                         'Suporte prioritário',
                     ] %}
                     {% set cta_label = 'Assinar Pro' %}
-                    {% set cta_href = url_for('support.contact', category='billing', subject='Assinar ' ~ p.name, plan='flow_pro') %}
+                    {% set cta_href = url_for('main.index', _anchor='contato', category='billing', subject='Assinar ' ~ p.name, plan='flow_pro') %}
                     {% set cta_plan_slug = 'flow_pro' %}
                 {% else %}
                     {% set display_name = 'Studio' %}
@@ -577,7 +572,7 @@
                         'Suporte prioritário',
                     ] %}
                     {% set cta_label = 'Assinar Studio' %}
-                    {% set cta_href = url_for('support.contact', category='billing', subject='Assinar ' ~ p.name, plan='flow_studio') %}
+                    {% set cta_href = url_for('main.index', _anchor='contato', category='billing', subject='Assinar ' ~ p.name, plan='flow_studio') %}
                     {% set cta_plan_slug = 'flow_studio' %}
                 {% endif %}
 
@@ -873,10 +868,10 @@
                                 <p class="faq-side-inline-kicker">Envio rápido por e-mail</p>
                                 <form id="faq-inline-contact-form" method="post" action="{{ url_for('support.contact') }}" class="faq-side-inline-form">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                    <input type="hidden" name="category" value="other">
-                                    <input type="hidden" name="subject" value="Dúvida sobre conformidade (FAQ inline)">
-                                    <input type="hidden" name="source" value="faq-inline">
-                                    <input id="faq-inline-conversation-id" type="hidden" name="conversation_id" value="">
+                                    <input type="hidden" name="category" value="{{ contact_category }}">
+                                    <input type="hidden" name="subject" value="{{ contact_subject_inline }}">
+                                    <input type="hidden" name="source" value="{{ contact_source_inline }}">
+                                    <input id="faq-inline-conversation-id" type="hidden" name="conversation_id" value="{{ contact_conversation_id }}">
 
                                     <div class="faq-side-inline-grid">
                                         <label class="faq-side-inline-field">
@@ -910,7 +905,7 @@
                                             required
                                             class="faq-contact-input faq-side-inline-textarea"
                                             placeholder="Ex.: Tenho 12 SKUs com variação de porção e preciso validar o fluxo antes da publicação."
-                                        ></textarea>
+                                        >{{ contact_message }}</textarea>
                                     </label>
 
                                     <div class="faq-side-inline-actions">
@@ -928,7 +923,7 @@
                             <p class="faq-side-proof"><i class="ph ph-clock" aria-hidden="true"></i>Resposta humana em até 24h úteis.</p>
                             {% if chatbot_enabled %}
                             <a
-                                href="{{ url_for('support.contact', category='other', subject='Ajuda via chatbot IA', source='faq-chatbot') }}"
+                                href="{{ url_for('main.index', _anchor='contato', category='other', subject='Ajuda via chatbot IA', source='faq-chatbot') }}"
                                 class="faq-cta-secondary faq-side-ai-cta inline-flex items-center justify-center gap-2 px-6 py-3 text-sm"
                                 data-chatbot-trigger
                             >
@@ -1063,10 +1058,10 @@
 
             <form id="faq-contact-form" method="post" action="{{ url_for('support.contact') }}" class="faq-contact-form mt-5">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <input id="faq-contact-category" type="hidden" name="category" value="other">
-                <input id="faq-contact-subject" type="hidden" name="subject" value="Dúvida sobre conformidade (FAQ)">
-                <input id="faq-contact-source" type="hidden" name="source" value="faq">
-                <input id="faq-contact-conversation-id" type="hidden" name="conversation_id" value="">
+                <input id="faq-contact-category" type="hidden" name="category" value="{{ contact_category }}">
+                <input id="faq-contact-subject" type="hidden" name="subject" value="{{ contact_subject_modal }}">
+                <input id="faq-contact-source" type="hidden" name="source" value="{{ contact_source_modal }}">
+                <input id="faq-contact-conversation-id" type="hidden" name="conversation_id" value="{{ contact_conversation_id }}">
 
                 <div class="grid sm:grid-cols-2 gap-3">
                     <label class="faq-contact-field">
@@ -1100,15 +1095,15 @@
                         required
                         class="faq-contact-input faq-contact-textarea"
                         placeholder="Ex.: Tenho 12 SKUs com variação de porção e preciso validar o fluxo para publicação."
-                    ></textarea>
+                    >{{ contact_message }}</textarea>
                 </label>
 
                 <div class="faq-contact-actions">
                     <button type="submit" class="faq-cta-primary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm">
                         <i class="ph ph-paper-plane-tilt"></i> Enviar para especialista
                     </button>
-                    <a href="{{ url_for('support.contact', category='other', subject='Dúvida sobre conformidade', source='faq') }}" class="faq-cta-secondary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm">
-                        Abrir formulário completo
+                    <a href="#contato" class="faq-cta-secondary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm" data-faq-contact-close>
+                        Ir para contato rápido
                     </a>
                 </div>
                 <p class="faq-contact-proof"><i class="ph ph-clock"></i>Resposta em até 24h úteis.</p>
@@ -1392,12 +1387,12 @@ const faqInlineContactStatus = document.getElementById('faq-inline-contact-statu
 const faqInlineConversationId = document.getElementById('faq-inline-conversation-id');
 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 const faqContactDefaults = {
-    category: 'other',
-    subject: 'Dúvida sobre conformidade (FAQ)',
-    source: 'faq',
-    conversationId: '',
+    category: {{ contact_category|tojson }},
+    subject: {{ contact_subject_modal|tojson }},
+    source: {{ contact_source_modal|tojson }},
+    conversationId: {{ contact_conversation_id|tojson }},
     context: 'Envie seu cenário e retornamos com orientação prática para enquadramento regulatório e fluxo de publicação.',
-    message: '',
+    message: {{ contact_message|tojson }},
 };
 let openFaqContactModal = null;
 let closeFaqContactModal = null;
