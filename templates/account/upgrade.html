@@ -35,7 +35,7 @@
 
         {% if p.slug != current_plan.slug %}
             {% if p.slug == 'flow_studio' %}
-            <a href="{{ url_for('support.contact', category='billing', subject='Teste Ilimitado (14 dias)', plan='flow_studio') }}" class="block text-center px-4 py-2.5 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">
+            <a href="{{ url_for('main.index', _anchor='contato', category='billing', subject='Teste Ilimitado (14 dias)', plan='flow_studio') }}" class="block text-center px-4 py-2.5 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">
                 Falar com vendas
             </a>
             {% elif stripe_enabled and p.slug != 'free' %}
@@ -49,7 +49,7 @@
             {% elif p.slug == 'free' %}
             {# Free plan - no action needed for downgrade #}
             {% else %}
-            <a href="{{ url_for('support.contact') }}" class="block text-center px-4 py-2.5 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">
+            <a href="{{ url_for('main.index', _anchor='contato', category='billing', subject='Upgrade de plano', source='app-upgrade') }}" class="block text-center px-4 py-2.5 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">
                 Falar com vendas
             </a>
             {% endif %}

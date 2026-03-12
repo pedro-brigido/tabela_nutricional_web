@@ -47,8 +47,8 @@
             </a>
             <div class="flex items-center gap-4">
                 <a href="{{ url_for('main.index', _anchor='planos') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Planos</a>
-                <a href="{{ url_for('support.help_page') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Ajuda</a>
-                <a href="{{ url_for('support.contact') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Contato</a>
+                <a href="{{ url_for('main.index', _anchor='faq') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Ajuda</a>
+                <a href="{{ url_for('main.index', _anchor='contato') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Contato</a>
                 {% if current_user.is_authenticated %}
                     <a href="{{ url_for('account.dashboard') }}" class="text-sm font-medium text-terracota-textMuted hover:text-white transition-colors">Minha Conta</a>
                     {% if current_user.is_admin %}
@@ -82,8 +82,8 @@
         <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <span class="text-xs text-terracota-textMuted">&copy; 2026 Terracota Compliance & Systems.</span>
             <div class="flex gap-6 text-xs text-terracota-textMuted">
-                <a href="{{ url_for('support.help_page') }}" class="hover:text-white transition-colors">Ajuda</a>
-                <a href="{{ url_for('support.contact') }}" class="hover:text-white transition-colors">Contato</a>
+                <a href="{{ url_for('main.index', _anchor='faq') }}" class="hover:text-white transition-colors">Ajuda</a>
+                <a href="{{ url_for('main.index', _anchor='contato') }}" class="hover:text-white transition-colors">Contato</a>
                 <a href="{{ url_for('main.privacy') }}" class="hover:text-white transition-colors">Privacidade</a>
             </div>
         </div>

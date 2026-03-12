@@ -3,8 +3,45 @@
 {% block content %}
 <h1 class="text-3xl font-heading font-bold mb-8">Meus Tickets</h1>
 
-<div class="mb-6">
-    <a href="{{ url_for('support.contact') }}" class="px-4 py-2 bg-terracota-cyan text-terracota-base font-semibold rounded-lg text-sm hover:bg-white transition-colors">Novo Ticket</a>
+<div class="mb-8 bg-terracota-surface border border-white/10 rounded-2xl p-6">
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-5">
+        <div>
+            <h2 class="text-xl font-heading font-semibold">Abrir novo ticket</h2>
+            <p class="text-sm text-terracota-textMuted mt-1">Use este canal dentro do `/app` para tratar conta, cobrança, bugs e solicitações.</p>
+        </div>
+    </div>
+
+    <form method="post" action="{{ url_for('support.create_ticket') }}" class="space-y-4">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="grid md:grid-cols-[1.3fr_0.7fr] gap-4">
+            <div>
+                <label for="ticket-subject" class="block text-sm text-terracota-textMuted mb-1">Assunto</label>
+                <input id="ticket-subject" type="text" name="subject" required maxlength="255"
+                    class="w-full px-4 py-3 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-white focus:outline-none focus:border-terracota-cyan/50 transition-all"
+                    placeholder="Ex.: Dúvida sobre limite do plano">
+            </div>
+            <div>
+                <label for="ticket-category" class="block text-sm text-terracota-textMuted mb-1">Categoria</label>
+                <select id="ticket-category" name="category"
+                    class="w-full px-4 py-3 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-white focus:outline-none focus:border-terracota-cyan/50 transition-all">
+                    <option value="account">Conta</option>
+                    <option value="billing">Cobrança</option>
+                    <option value="bug">Problema</option>
+                    <option value="feature">Sugestão</option>
+                    <option value="other">Geral</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <label for="ticket-message" class="block text-sm text-terracota-textMuted mb-1">Mensagem</label>
+            <textarea id="ticket-message" name="message" rows="5" required maxlength="5000"
+                class="w-full px-4 py-3 bg-terracota-surfaceHighlight border border-white/10 rounded-xl text-white focus:outline-none focus:border-terracota-cyan/50 transition-all resize-none"
+                placeholder="Descreva o contexto, o resultado esperado e o que está bloqueando você agora."></textarea>
+        </div>
+        <button type="submit" class="px-5 py-3 bg-terracota-cyan text-terracota-base font-semibold rounded-xl hover:bg-white transition-colors">
+            Criar ticket
+        </button>
+    </form>
 </div>
 
 {% if tickets %}

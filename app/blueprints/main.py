@@ -34,6 +34,7 @@ def _get_subscribers_db() -> sqlite3.Connection:
 def index():
     """Serve landing page with full pricing section."""
     from app.services.plan_service import list_plans, marketing_plans
+    from app.blueprints.support import build_contact_prefill
 
     bootstrap_warning = None
     bootstrap_error = None
@@ -73,6 +74,7 @@ def index():
         "landing/index.html",
         plans=plans,
         current_plan=current_plan,
+        contact_prefill=build_contact_prefill(request.args),
         bootstrap_warning=bootstrap_warning,
         bootstrap_error=bootstrap_error,
     )
@@ -81,7 +83,7 @@ def index():
 @main_bp.route("/privacy")
 def privacy():
     """Privacy policy (LGPD)."""
-    return render_template("main/privacy.html")
+    return render_template("main/privacy.html", active_public_nav="privacy")
 
 
 @main_bp.route("/health")
@@ -159,8 +161,6 @@ def sitemap_xml():
 
     pages = [
         {"loc": url_for("main.index", _external=True), "priority": "1.0", "changefreq": "weekly"},
-        {"loc": url_for("support.help_page", _external=True), "priority": "0.6", "changefreq": "monthly"},
-        {"loc": url_for("support.contact", _external=True), "priority": "0.5", "changefreq": "monthly"},
         {"loc": url_for("main.privacy", _external=True), "priority": "0.3", "changefreq": "yearly"},
     ]
 

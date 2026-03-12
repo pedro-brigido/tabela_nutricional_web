@@ -345,7 +345,8 @@ def build_handoff_link(conversation: ChatbotConversation, answer: str) -> str:
     from flask import url_for
 
     return url_for(
-        "support.contact",
+        "main.index",
+        _anchor="contato",
         category="other",
         subject="Conversa com especialista IA",
         message=message,

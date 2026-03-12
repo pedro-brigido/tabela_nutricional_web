@@ -1,4 +1,4 @@
-{% extends "landing/base_landing.html" %}
+{% extends "public/base_public.html" %}
 {% block title %}Política de Privacidade | Terracota{% endblock %}
 {% block meta %}
 <meta name="description" content="Política de privacidade do Terracota. Como coletamos, usamos e protegemos seus dados, em conformidade com a LGPD.">
@@ -53,7 +53,7 @@
 
         <div>
             <h2 class="text-lg font-heading font-semibold text-white mb-2">7. Contato</h2>
-            <p>Para questões sobre privacidade, entre em contato pelo formulário em <a href="{{ url_for('support.contact') }}" class="text-terracota-cyan hover:underline">/contact</a> ou pelo e-mail comercial@terracotabpo.com.</p>
+            <p>Para questões sobre privacidade, entre em contato pelo formulário em <a href="{{ url_for('main.index', _anchor='contato', subject='Privacidade e LGPD', source='privacy') }}" class="text-terracota-cyan hover:underline">/#contato</a> ou pelo e-mail comercial@terracotabpo.com.</p>
         </div>
     </div>
 </div>
