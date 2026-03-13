@@ -145,6 +145,11 @@ function calculatorStartIconSvg(name, className = 'calculator-start-icon') {
             <rect x="8" y="8" width="9" height="9" rx="2"></rect>
             <path d="M6.5 13V7.75A1.75 1.75 0 0 1 8.25 6h5.25"></path>
         `,
+        restore: `
+            <path d="M6.75 8.25H4V5.5"></path>
+            <path d="M5 8.25A7 7 0 1 1 7 17.5"></path>
+            <path d="M12 9v3.5l2.35 1.4"></path>
+        `,
         trash: `
             <path d="M6.75 8h10.5"></path>
             <path d="M9.25 8V6.75A1.25 1.25 0 0 1 10.5 5.5h3A1.25 1.25 0 0 1 14.75 6.75V8"></path>
@@ -743,13 +748,88 @@ function renderWelcome() {
                     ${calculatorStartFeaturePill('shield', 'Conformidade ANVISA', 'is-highlight')}
                 </div>
                 ${quotaBadgeFullHtml('calculator-home-quota')}
-                <button onclick="goToStep(1)" class="calculator-home-cta mt-6 px-10 py-4 bg-terracota-cyan text-terracota-deepDark text-lg font-bold rounded-xl hover:bg-white hover:scale-[1.02] shadow-[0_0_30px_rgba(0,196,204,0.24)] transition-all inline-flex items-center gap-3">
+                <button type="button" onclick="goToStep(1)" class="calculator-home-cta mt-6 px-10 py-4 bg-terracota-cyan text-terracota-deepDark text-lg font-bold rounded-xl hover:bg-white hover:scale-[1.02] shadow-[0_0_30px_rgba(0,196,204,0.24)] transition-all inline-flex items-center gap-3">
                     ${calculatorStartIconSvg('product', 'calculator-home-cta-icon')}
                     <span>Iniciar Novo Produto</span>
                 </button>
             </section>
         </div>
     `;
+}
+
+function renderDraftPrompt(draft) {
+    const content = document.getElementById('wizard-content');
+    const progress = document.getElementById('wizard-progress');
+    const btnBack = document.getElementById('btn-back');
+    const btnNext = document.getElementById('btn-next');
+    const resumeStep = Math.min(3, Math.max(1, draft.currentStep || (draft.ingredients?.length ? 2 : 1)));
+    const resumeMap = {
+        1: { label: 'Dados do produto', icon: 'product' },
+        2: { label: 'Ingredientes', icon: 'ingredients' },
+        3: { label: 'Tabela pronta', icon: 'tableShield' }
+    };
+    const resumeMeta = resumeMap[resumeStep];
+
+    state.currentStep = 0;
+    progress.style.display = 'none';
+    btnBack.style.display = 'none';
+    btnNext.style.display = 'none';
+
+    content.innerHTML = `
+        <div class="calculator-draft-shell">
+            <section class="calculator-draft-card text-center" aria-labelledby="calculator-draft-title">
+                <div class="calculator-draft-icon-shell" aria-hidden="true">
+                    <div class="calculator-draft-icon-core">
+                        ${calculatorStartIconSvg('restore', 'calculator-draft-icon')}
+                    </div>
+                    <div class="calculator-draft-icon-badge">
+                        ${calculatorStartIconSvg(resumeMeta.icon, 'calculator-draft-badge-icon')}
+                    </div>
+                </div>
+                <div class="calculator-home-kicker mb-4">
+                    <span class="calculator-home-kicker-dot"></span>
+                    Continuação de trabalho
+                </div>
+                <h3 id="calculator-draft-title" class="text-2xl sm:text-[2rem] font-bold text-white mb-3 font-heading tracking-tight">Rascunho encontrado</h3>
+                <p class="text-terracota-textLight text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+                    Retome exatamente de onde você parou ou descarte este rascunho para começar um novo cálculo com a mesma linguagem visual e fluxo do restante do app.
+                </p>
+                <div class="calculator-draft-metrics">
+                    ${calculatorInfoCard('product', 'Produto salvo', draft.product?.name || 'Sem nome')}
+                    ${calculatorInfoCard('ingredients', 'Ingredientes', `${draft.ingredients?.length || 0} na fórmula atual`)}
+                    ${calculatorInfoCard(resumeMeta.icon, 'Retomar em', resumeMeta.label)}
+                    ${calculatorInfoCard('clock', 'Último salvamento', _timeAgo(draft.savedAt))}
+                </div>
+                <div class="calculator-draft-proof-row">
+                    ${calculatorFeaturePill('restore', 'Continuidade automática')}
+                    ${calculatorFeaturePill('analytics', 'Dados preservados')}
+                    ${calculatorFeaturePill('shield', 'Fluxo seguro', 'is-highlight')}
+                </div>
+                <div class="calculator-draft-actions">
+                    <button type="button" id="btn-restore-draft" class="app-shell-button app-shell-button-primary">
+                        ${calculatorStartIconSvg('restore', 'app-shell-button-icon')}
+                        <span>Restaurar rascunho</span>
+                    </button>
+                    <button type="button" id="btn-discard-draft" class="app-shell-button app-shell-button-secondary">
+                        ${calculatorStartIconSvg('trash', 'app-shell-button-icon')}
+                        <span>Descartar rascunho</span>
+                    </button>
+                </div>
+            </section>
+        </div>
+    `;
+
+    document.getElementById('btn-restore-draft').addEventListener('click', () => {
+        state.product = draft.product;
+        state.ingredients = draft.ingredients || [];
+        state.maxStepReached = draft.currentStep || 1;
+        goToStep(draft.currentStep || 1);
+        showToast('Rascunho restaurado!', 'success');
+    });
+    document.getElementById('btn-discard-draft').addEventListener('click', () => {
+        localStorage.removeItem(AUTOSAVE_KEY);
+        renderWelcome();
+    });
 }
 
 // ---- Step 1 Feedback Helpers ------------------------------------------------
@@ -1552,11 +1632,11 @@ function renderStep2(container) {
             <div class="formula-toolbar formula-toolbar-premium">
                 <div class="formula-toolbar-top">
                     <div class="formula-toolbar-actions">
-                        <button onclick="addIngredientWithFocus()" class="formula-primary-action">
+                        <button type="button" onclick="addIngredientWithFocus()" class="formula-primary-action">
                             ${calculatorStartIconSvg('plus', 'formula-action-icon')}
                             <span>Adicionar ingrediente</span>
                         </button>
-                        <button onclick="_openImportModal()" class="formula-secondary-action">
+                        <button type="button" onclick="_openImportModal()" class="formula-secondary-action">
                             ${calculatorStartIconSvg('upload', 'formula-action-icon')}
                             <span>Importar .xlsx</span>
                         </button>
@@ -1595,13 +1675,13 @@ function renderStep2(container) {
             <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="_closeImportModal()"></div>
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md p-6">
                 <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6 shadow-2xl relative">
-                    <button onclick="_closeImportModal()" class="absolute top-3 right-3 text-terracota-textMuted hover:text-white transition-colors"><i class="ph ph-x text-lg"></i></button>
+	                    <button type="button" onclick="_closeImportModal()" class="absolute top-3 right-3 text-terracota-textMuted hover:text-white transition-colors"><i class="ph ph-x text-lg"></i></button>
                     <h4 class="text-base font-heading font-semibold text-white mb-4"><i class="ph ph-file-xls text-terracota-cyan mr-2"></i>Importar Excel</h4>
                     <div id="drop-zone" class="border-2 border-dashed border-white/15 rounded-xl p-8 text-center transition-all hover:border-terracota-cyan/50 hover:bg-terracota-cyan/[0.03] group relative">
                         <input type="file" id="file-upload" class="hidden" accept=".xlsx" onchange="handleExcelUpload(this.files[0]); _closeImportModal();">
                         <i class="ph ph-upload-simple text-3xl text-terracota-textMuted group-hover:text-terracota-cyan transition-colors mb-3 block"></i>
                         <p class="text-sm text-terracota-textLight mb-1">Arraste um arquivo .xlsx aqui</p>
-                        <p class="text-xs text-terracota-textMuted">ou <button onclick="document.getElementById('file-upload').click()" class="text-terracota-cyan hover:underline">selecione do computador</button></p>
+	                        <p class="text-xs text-terracota-textMuted">ou <button type="button" onclick="document.getElementById('file-upload').click()" class="text-terracota-cyan hover:underline">selecione do computador</button></p>
                         <div id="upload-loading" class="absolute inset-0 bg-terracota-surface/95 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center hidden">
                             <div class="w-8 h-8 border-2 border-terracota-cyan border-t-transparent rounded-full animate-spin mb-3"></div>
                             <p class="text-xs text-terracota-cyan font-medium">Processando...</p>
@@ -1855,7 +1935,7 @@ function createIngredientRow(ing, index) {
                     <div class="ingredient-field ingredient-name-field">
                         <label class="ingredient-field-label">Ingrediente</label>
                         <div class="relative">
-                            <input type="text" class="${inputClass} ingredient-name-input" value="${escapeHtml(ing.name)}" data-index="${index}" placeholder="Buscar ingrediente na TACO..." autocomplete="off">
+                            <input type="text" class="${inputClass} ingredient-name-input" value="${escapeHtml(ing.name)}" data-index="${index}" placeholder="Digite ou busque na TACO..." autocomplete="off">
                         </div>
                     </div>
                     <div class="ingredient-field ingredient-quantity-field">
@@ -1869,11 +1949,13 @@ function createIngredientRow(ing, index) {
                         <span class="ingredient-energy-value ingredient-kcal-summary">${kcalSummary}<span class="text-[10px] text-white/25 ml-1">kcal</span></span>
                     </div>
                     <div class="ingredient-actions">
-                        <button onclick="copyIngredient(${index})" class="ingredient-action" title="Duplicar">
+                        <button type="button" onclick="copyIngredient(${index})" class="ingredient-action is-secondary" title="Duplicar ingrediente">
                             ${calculatorStartIconSvg('duplicate', 'ingredient-action-icon')}
+                            <span class="ingredient-action-label">Duplicar</span>
                         </button>
-                        <button onclick="removeIngredient(${index})" class="ingredient-action is-danger" title="Remover">
+                        <button type="button" onclick="removeIngredient(${index})" class="ingredient-action is-danger" title="Excluir ingrediente">
                             ${calculatorStartIconSvg('trash', 'ingredient-action-icon')}
+                            <span class="ingredient-action-label">Excluir</span>
                         </button>
                     </div>
                 </div>
@@ -2210,6 +2292,7 @@ function removeIngredient(index) {
     }
     state.ingredients.splice(index, 1);
     renderStep2(document.getElementById('wizard-content'));
+    showToast('Ingrediente excluído.', 'info', 2000);
 }
 
 function toggleIngredientExpand(index) {
@@ -3003,37 +3086,7 @@ function _checkDraftOnLoad() {
             localStorage.removeItem(AUTOSAVE_KEY);
             return false;
         }
-        // Show restore prompt
-        const content = document.getElementById('wizard-content');
-        content.innerHTML = `
-            <div class="text-center py-12">
-                <div class="mb-6 inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-terracota-cyan/10 border border-terracota-cyan/20 text-terracota-cyan">
-                    <i class="ph ph-clock-counter-clockwise text-3xl"></i>
-                </div>
-                <h3 class="text-xl font-bold text-white mb-2 font-heading">Rascunho encontrado</h3>
-                <p class="text-terracota-textMuted text-sm mb-1">Produto: <span class="text-white">${escapeHtml(draft.product?.name || 'Sem nome')}</span></p>
-                <p class="text-terracota-textMuted text-sm mb-6">${draft.ingredients?.length || 0} ingredientes · Salvo ${_timeAgo(draft.savedAt)}</p>
-                <div class="flex justify-center gap-4">
-                    <button id="btn-restore-draft" class="px-8 py-3 bg-terracota-cyan text-terracota-deepDark font-bold rounded-lg hover:bg-white transition-all inline-flex items-center gap-2">
-                        <i class="ph-bold ph-arrow-counter-clockwise text-lg"></i> Restaurar Rascunho
-                    </button>
-                    <button id="btn-discard-draft" class="px-8 py-3 bg-white/10 border border-white/20 text-white font-bold rounded-lg hover:bg-white/20 transition-all">
-                        Descartar
-                    </button>
-                </div>
-            </div>
-        `;
-        document.getElementById('btn-restore-draft').addEventListener('click', () => {
-            state.product = draft.product;
-            state.ingredients = draft.ingredients || [];
-            state.maxStepReached = draft.currentStep || 1;
-            goToStep(draft.currentStep || 1);
-            showToast('Rascunho restaurado!', 'success');
-        });
-        document.getElementById('btn-discard-draft').addEventListener('click', () => {
-            localStorage.removeItem(AUTOSAVE_KEY);
-            renderWelcome();
-        });
+        renderDraftPrompt(draft);
         return true;
     } catch (e) { return false; }
 }
