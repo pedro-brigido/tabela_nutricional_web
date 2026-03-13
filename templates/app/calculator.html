@@ -64,26 +64,26 @@
     {% endif %}
 
     <!-- App Container -->
-    <div class="bg-terracota-base backdrop-blur-xl rounded-3xl border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden" id="app-container" role="main" aria-label="Calculadora Nutricional">
+    <div class="bg-terracota-surface/40 backdrop-blur-xl rounded-2xl border border-white/[0.06] shadow-xl overflow-hidden" id="app-container" role="main" aria-label="Calculadora Nutricional">
 
-        <div id="wizard-progress" class="border-b border-white/5 p-6 bg-terracota-surfaceHighlight/30 text-sm font-medium"></div>
+        <div id="wizard-progress" class="border-b border-white/[0.04] px-4 py-3 sm:px-6 sm:py-4 bg-white/[0.02] text-sm font-medium"></div>
 
-        <div id="wizard-content" class="p-8 sm:p-12 min-h-[500px]">
+        <div id="wizard-content" class="p-5 sm:p-8 min-h-[500px]">
             <div class="text-center py-20">
                 <div class="inline-block relative">
-                    <i class="ph ph-circle-notch text-4xl text-terracota-cyan animate-spin"></i>
-                    <div class="absolute inset-0 bg-terracota-cyan/20 blur-xl rounded-full"></div>
+                    <i class="ph ph-circle-notch text-3xl text-terracota-cyan animate-spin"></i>
+                    <div class="absolute inset-0 bg-terracota-cyan/10 blur-xl rounded-full"></div>
                 </div>
-                <p class="text-terracota-textMuted mt-4 tracking-widest uppercase text-sm font-medium">Inicializando Modulos</p>
+                <p class="text-terracota-textMuted mt-4 tracking-widest uppercase text-xs font-medium">Inicializando</p>
             </div>
         </div>
 
-        <div class="border-t border-white/5 p-6 flex justify-between items-center bg-terracota-surfaceHighlight/30">
-            <button id="btn-back" class="px-6 py-2.5 text-terracota-textMuted font-medium hover:text-white hover:bg-white/5 rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed border border-transparent hover:border-white/10">
-                <i class="ph ph-arrow-left mr-2"></i> Voltar
+        <div class="wizard-footer sticky bottom-0 border-t border-white/[0.06] px-5 py-3.5 sm:px-6 sm:py-4 flex justify-between items-center bg-terracota-base/90 backdrop-blur-lg z-20">
+            <button id="btn-back" class="px-5 py-2.5 text-white/70 font-semibold text-sm hover:text-white bg-white/[0.04] hover:bg-white/[0.08] rounded-xl transition-all disabled:opacity-30 disabled:cursor-not-allowed border border-white/[0.08] hover:border-white/[0.15] flex items-center gap-2 shadow-sm">
+                <i class="ph ph-arrow-left text-base"></i> <span>Voltar</span>
             </button>
-            <button id="btn-next" class="px-8 py-2.5 bg-gradient-to-r from-terracota-cyan to-[#009da3] hover:from-white hover:to-white text-terracota-base font-bold rounded-lg shadow-[0_0_15px_rgba(0,240,255,0.4)] hover:shadow-[0_0_20px_rgba(255,255,255,0.6)] transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:shadow-none flex items-center">
-                Avançar <i class="ph ph-arrow-right ml-2"></i>
+            <button id="btn-next" class="px-8 py-2.5 bg-gradient-to-r from-terracota-cyan to-[#00b8c0] hover:from-white hover:to-white text-terracota-base font-bold text-sm rounded-xl shadow-[0_0_16px_rgba(0,240,255,0.3)] hover:shadow-[0_0_24px_rgba(255,255,255,0.4)] transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:shadow-none flex items-center gap-2 btn-next-glow">
+                <span>Avançar</span> <i class="ph ph-arrow-right text-base"></i>
             </button>
         </div>
     </div>
