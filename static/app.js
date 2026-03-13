@@ -226,7 +226,7 @@ function printTable() {
     if (!printArea) { showToast('Nenhuma tabela para imprimir.', 'warning'); return; }
     const html = printArea.outerHTML;
     const win = window.open('', '_blank', 'width=800,height=600');
-    if (!win) { showToast('Popup bloqueado. Permita popups para imprimir.', 'warning'); return; }
+    if (!win) { showToast('Popup bloqueado. Libere pop-ups para imprimir.', 'warning'); return; }
     win.document.write(`<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -312,7 +312,7 @@ function quotaBadgeFullHtml(extraClass = '') {
     return `<div class="text-center mt-3 text-xs text-terracota-textMuted${classes}">
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10">
             <span class="w-2 h-2 rounded-full ${q.canCreate ? 'bg-emerald-400' : 'bg-red-400'}"></span>
-            ${q.tablesCreated}/${limitText} tabelas este mês · <span class="text-terracota-cyan">${escapeHtml(q.planName)}</span>
+            ${q.tablesCreated}/${limitText} neste mês · <span class="text-terracota-cyan">${escapeHtml(q.planName)}</span>
         </span>
     </div>`;
 }
@@ -459,7 +459,7 @@ async function preloadDuplicateIfAny() {
     try {
         const res = await fetch(`/app/api/tables/${duplicateId}`, { headers: withCsrfHeaders() });
         if (!res.ok) {
-            showToast('Não foi possível carregar a tabela para duplicação.', 'warning');
+            showToast('Não foi possível carregar a tabela.', 'warning');
             return false;
         }
         const data = await res.json();
@@ -484,7 +484,7 @@ async function preloadDuplicateIfAny() {
         state.currentIdempotencyKey = null;
         state.maxStepReached = 0;
         goToStep(1);
-        showToast('Tabela carregada para duplicação.', 'info');
+        showToast('Tabela carregada para edição.', 'info');
         return true;
     } catch (err) {
         console.error(err);
@@ -568,17 +568,17 @@ function updateUI() {
     switch (state.currentStep) {
         case 1:
             renderStep1(content);
-            btnNext.innerHTML = '<span>Próximo: Ingredientes</span> <i class="ph ph-arrow-right ml-2"></i>';
-            btnBack.innerHTML = '<i class="ph ph-arrow-left mr-2"></i> <span>Voltar</span>';
+            btnNext.innerHTML = '<span>Ir para ingredientes</span><i class="ph ph-arrow-right"></i>';
+            btnBack.innerHTML = '<i class="ph ph-arrow-left"></i><span>Voltar</span>';
             break;
         case 2:
             renderStep2(content);
-            btnNext.innerHTML = '<i class="ph ph-calculator mr-2"></i> <span>Calcular Tabela</span>';
-            btnBack.innerHTML = '<i class="ph ph-arrow-left mr-2"></i> <span>Voltar: Produto</span>';
+            btnNext.innerHTML = '<i class="ph ph-calculator"></i><span>Ver prévia</span>';
+            btnBack.innerHTML = '<i class="ph ph-arrow-left"></i><span>Voltar para produto</span>';
             break;
         case 3:
             renderStep3(content);
-            btnBack.innerHTML = '<i class="ph ph-arrow-left mr-2"></i> <span>Voltar: Ingredientes</span>';
+            btnBack.innerHTML = '<i class="ph ph-arrow-left"></i><span>Voltar para ingredientes</span>';
             break;
         default:
             renderWelcome();
@@ -587,9 +587,9 @@ function updateUI() {
 
 function renderProgressBar(step) {
     const steps = [
-        { label: 'Produto', sub: 'Nome, porção e conformidade', icon: 'product' },
-        { label: 'Ingredientes', sub: 'Receita, macros e revisão', icon: 'ingredients' },
-        { label: 'Tabela', sub: 'Prévia e geração final', icon: 'tableShield' }
+        { label: 'Produto', sub: 'Nome, porção e rótulo', icon: 'product' },
+        { label: 'Ingredientes', sub: 'Receita e nutrientes', icon: 'ingredients' },
+        { label: 'Tabela', sub: 'Prévia e geração', icon: 'tableShield' }
     ];
     const ingredientCount = state.ingredients.length;
 
@@ -678,7 +678,7 @@ function renderQuotaExhausted() {
         const tbl = state.lastTable;
         tableHtml = `
             <div class="mt-6 mb-2">
-                <p class="text-sm text-terracota-textMuted mb-3">Sua última tabela: <span class="text-white font-medium">${escapeHtml(tbl.title)}</span></p>
+                <p class="text-sm text-terracota-textMuted mb-3">Última tabela gerada: <span class="text-white font-medium">${escapeHtml(tbl.title)}</span></p>
                 ${buildNutritionTableHtml(tbl.result_data, tbl.product_data || {})}
             </div>
             <div class="flex justify-center gap-4 mt-6 no-print">
@@ -689,7 +689,7 @@ function renderQuotaExhausted() {
             </div>
         `;
     } else {
-        tableHtml = '<p class="text-terracota-textMuted text-sm mt-4">Nenhuma tabela gerada ainda neste período.</p>';
+        tableHtml = '<p class="text-terracota-textMuted text-sm mt-4">Nenhuma tabela gerada neste período.</p>';
     }
 
     content.innerHTML = `
@@ -697,18 +697,18 @@ function renderQuotaExhausted() {
             <div class="mb-6 inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500/20 to-orange-500/20 border border-red-500/30 text-red-400">
                 <i class="ph-bold ph-lock text-3xl"></i>
             </div>
-            <h2 class="text-2xl font-bold text-white mb-3 font-heading">Limite de Tabelas Atingido</h2>
+            <h2 class="text-2xl font-bold text-white mb-3 font-heading">Limite mensal atingido</h2>
             <p class="text-terracota-textMuted mb-2">
-                Você já utilizou <span class="text-white font-bold">${q ? q.tablesCreated : '?'}/${limitText}</span> tabelas disponíveis no plano <span class="text-terracota-cyan font-semibold">${escapeHtml(planName)}</span> este mês.
+                Você já usou <span class="text-white font-bold">${q ? q.tablesCreated : '?'}/${limitText}</span> tabelas do plano <span class="text-terracota-cyan font-semibold">${escapeHtml(planName)}</span> neste mês.
             </p>
             <p class="text-terracota-textMuted text-sm mb-6">
-                Faça upgrade para gerar mais tabelas ou aguarde o próximo período.
+                Faça upgrade para gerar mais ou aguarde a renovação do plano.
             </p>
             <a href="/account/upgrade" class="inline-block px-10 py-4 bg-gradient-to-r from-terracota-purple to-terracota-cyan text-white text-lg font-bold rounded-xl hover:scale-105 shadow-[0_0_30px_rgba(123,44,191,0.3)] transition-all">
-                Fazer Upgrade
+                Fazer upgrade
             </a>
             <div class="mt-3">
-                <a href="/account/" class="text-sm text-terracota-textMuted hover:text-white transition-colors underline">Minha Conta →</a>
+                <a href="/account/" class="text-sm text-terracota-textMuted hover:text-white transition-colors underline">Ver conta →</a>
             </div>
             ${tableHtml}
         </div>
@@ -728,7 +728,7 @@ function renderWelcome() {
             <section class="calculator-home-hero text-center" aria-labelledby="calculator-home-title">
                 <div class="calculator-home-kicker">
                     <span class="calculator-home-kicker-dot"></span>
-                    Plataforma de cálculo e conformidade
+                    Tabela nutricional em poucos passos
                 </div>
                 <div class="calculator-home-hero-icon-shell" aria-hidden="true">
                     <div class="calculator-home-hero-icon-core">
@@ -740,17 +740,17 @@ function renderWelcome() {
                 </div>
                 <h2 id="calculator-home-title" class="text-4xl sm:text-[2.75rem] font-bold text-white mb-5 font-heading tracking-tight">Calculadora Nutricional</h2>
                 <p class="text-lg sm:text-xl text-terracota-textLight mb-7 max-w-2xl mx-auto font-light leading-relaxed">
-                    Gere tabelas nutricionais com uma jornada guiada para <span class="text-white font-medium">dados do produto</span>, <span class="text-white font-medium">ingredientes</span> e saída final em conformidade com a <span class="text-terracota-cyan font-medium">RDC 429/2020</span> e a <span class="text-terracota-cyan font-medium">IN 75/2020</span>.
+                    Preencha os dados do produto, monte a receita e gere a tabela conforme a <span class="text-terracota-cyan font-medium">RDC 429/2020</span> e a <span class="text-terracota-cyan font-medium">IN 75/2020</span>.
                 </p>
                 <div class="calculator-home-proof-row">
-                    ${calculatorStartFeaturePill('calculator', 'Cálculo guiado')}
-                    ${calculatorStartFeaturePill('table', 'Tabela nutricional')}
-                    ${calculatorStartFeaturePill('shield', 'Conformidade ANVISA', 'is-highlight')}
+                    ${calculatorStartFeaturePill('calculator', 'Fluxo guiado')}
+                    ${calculatorStartFeaturePill('table', 'Tabela pronta')}
+                    ${calculatorStartFeaturePill('shield', 'Conforme ANVISA', 'is-highlight')}
                 </div>
                 ${quotaBadgeFullHtml('calculator-home-quota')}
                 <button type="button" onclick="goToStep(1)" class="calculator-home-cta mt-6 px-10 py-4 bg-terracota-cyan text-terracota-deepDark text-lg font-bold rounded-xl hover:bg-white hover:scale-[1.02] shadow-[0_0_30px_rgba(0,196,204,0.24)] transition-all inline-flex items-center gap-3">
                     ${calculatorStartIconSvg('product', 'calculator-home-cta-icon')}
-                    <span>Iniciar Novo Produto</span>
+                    <span>Começar</span>
                 </button>
             </section>
         </div>
@@ -788,31 +788,31 @@ function renderDraftPrompt(draft) {
                 </div>
                 <div class="calculator-home-kicker mb-4">
                     <span class="calculator-home-kicker-dot"></span>
-                    Continuação de trabalho
+                    Rascunho salvo
                 </div>
-                <h3 id="calculator-draft-title" class="text-2xl sm:text-[2rem] font-bold text-white mb-3 font-heading tracking-tight">Rascunho encontrado</h3>
+                <h3 id="calculator-draft-title" class="text-2xl sm:text-[2rem] font-bold text-white mb-3 font-heading tracking-tight">Continuar de onde você parou?</h3>
                 <p class="text-terracota-textLight text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-                    Retome exatamente de onde você parou ou descarte este rascunho para começar um novo cálculo com a mesma linguagem visual e fluxo do restante do app.
+                    Você tem um rascunho recente. Continue de onde parou ou comece uma nova tabela.
                 </p>
                 <div class="calculator-draft-metrics">
-                    ${calculatorInfoCard('product', 'Produto salvo', draft.product?.name || 'Sem nome')}
-                    ${calculatorInfoCard('ingredients', 'Ingredientes', `${draft.ingredients?.length || 0} na fórmula atual`)}
+                    ${calculatorInfoCard('product', 'Produto', draft.product?.name || 'Sem nome')}
+                    ${calculatorInfoCard('ingredients', 'Ingredientes', `${draft.ingredients?.length || 0} na receita`)}
                     ${calculatorInfoCard(resumeMeta.icon, 'Retomar em', resumeMeta.label)}
-                    ${calculatorInfoCard('clock', 'Último salvamento', _timeAgo(draft.savedAt))}
+                    ${calculatorInfoCard('clock', 'Salvo', _timeAgo(draft.savedAt))}
                 </div>
                 <div class="calculator-draft-proof-row">
-                    ${calculatorFeaturePill('restore', 'Continuidade automática')}
-                    ${calculatorFeaturePill('analytics', 'Dados preservados')}
-                    ${calculatorFeaturePill('shield', 'Fluxo seguro', 'is-highlight')}
+                    ${calculatorFeaturePill('restore', 'Retomada rápida')}
+                    ${calculatorFeaturePill('analytics', 'Dados salvos')}
+                    ${calculatorFeaturePill('shield', 'Pronto para continuar', 'is-highlight')}
                 </div>
                 <div class="calculator-draft-actions">
                     <button type="button" id="btn-restore-draft" class="app-shell-button app-shell-button-primary">
                         ${calculatorStartIconSvg('restore', 'app-shell-button-icon')}
-                        <span>Restaurar rascunho</span>
+                        <span>Continuar rascunho</span>
                     </button>
                     <button type="button" id="btn-discard-draft" class="app-shell-button app-shell-button-secondary">
                         ${calculatorStartIconSvg('trash', 'app-shell-button-icon')}
-                        <span>Descartar rascunho</span>
+                        <span>Começar do zero</span>
                     </button>
                 </div>
             </section>
@@ -824,7 +824,7 @@ function renderDraftPrompt(draft) {
         state.ingredients = draft.ingredients || [];
         state.maxStepReached = draft.currentStep || 1;
         goToStep(draft.currentStep || 1);
-        showToast('Rascunho restaurado!', 'success');
+        showToast('Rascunho restaurado.', 'success');
     });
     document.getElementById('btn-discard-draft').addEventListener('click', () => {
         localStorage.removeItem(AUTOSAVE_KEY);
@@ -842,9 +842,9 @@ function _refreshPortionFeedback() {
 
     const msgs = [];
     if (portion < 0.1) {
-        msgs.push({ text: `Porção (${portion}${state.product.portionUnit}) abaixo do mínimo regulatório (0,1${state.product.portionUnit})`, color: 'text-red-400', icon: 'ph-x-circle' });
+        msgs.push({ text: `Porção abaixo do mínimo regulatório (0,1${state.product.portionUnit}).`, color: 'text-red-400', icon: 'ph-x-circle' });
     } else if (portion > 10000) {
-        msgs.push({ text: `Porção muito elevada (${portion}${state.product.portionUnit})`, color: 'text-yellow-400', icon: 'ph-warning' });
+        msgs.push({ text: 'Porção muito alta. Revise o valor.', color: 'text-yellow-400', icon: 'ph-warning' });
     }
 
     // Compare against selected group reference (±30% tolerance)
@@ -854,9 +854,9 @@ function _refreshPortionFeedback() {
             const ref = parseFloat(group.portion_g);
             const low = ref * 0.7, high = ref * 1.3;
             if (portion < low || portion > high) {
-                msgs.push({ text: `Porção (${portion}) fora da faixa de referência do grupo "${group.name}" (${ref}${state.product.portionUnit} ±30%)`, color: 'text-yellow-400', icon: 'ph-warning' });
+                msgs.push({ text: `Porção fora da faixa do grupo "${group.name}" (${ref}${state.product.portionUnit} ±30%).`, color: 'text-yellow-400', icon: 'ph-warning' });
             } else {
-                msgs.push({ text: `Porção dentro da faixa do grupo "${group.name}" (ref: ${ref}${state.product.portionUnit})`, color: 'text-emerald-400', icon: 'ph-check-circle' });
+                msgs.push({ text: `Porção dentro da faixa do grupo "${group.name}".`, color: 'text-emerald-400', icon: 'ph-check-circle' });
             }
         }
     }
@@ -880,9 +880,9 @@ function _refreshPackageFeedback() {
     const msgs = [];
     const totalUsed = portion * servings;
     if (totalUsed > pkgWeight * 1.05) {
-        msgs.push({ text: `Porção × porções (${totalUsed.toFixed(1)}) excede o peso da embalagem (${pkgWeight})`, color: 'text-red-400', icon: 'ph-x-circle' });
+        msgs.push({ text: 'Porção × porções passa do peso da embalagem.', color: 'text-red-400', icon: 'ph-x-circle' });
     } else if (totalUsed < pkgWeight * 0.5) {
-        msgs.push({ text: `Porção × porções (${totalUsed.toFixed(1)}) é menos da metade do peso da embalagem (${pkgWeight}). Verifique.`, color: 'text-yellow-400', icon: 'ph-warning' });
+        msgs.push({ text: 'Porção × porções está bem abaixo do peso da embalagem. Revise.', color: 'text-yellow-400', icon: 'ph-warning' });
     }
 
     if (msgs.length > 0) {
@@ -925,7 +925,7 @@ function renderStep1(container) {
         }).join('');
         allergenTagsHtml = `<div class="flex flex-wrap gap-1.5">${tags}</div>`;
     } else {
-        allergenTagsHtml = `<textarea id="input-allergens-fallback" rows="2" class="${inputClass}" placeholder="Ex: CONTÉM OVO E TRIGO">${escapeHtml(state.product.allergens)}</textarea>`;
+        allergenTagsHtml = `<textarea id="input-allergens-fallback" rows="2" class="${inputClass}" placeholder="Ex.: CONTÉM OVO E TRIGO">${escapeHtml(state.product.allergens)}</textarea>`;
     }
 
     // ---- Gluten options ----
@@ -954,9 +954,9 @@ function renderStep1(container) {
             : '';
         portionGroupHtml = `
             <div>
-                <label class="${labelClass}">Grupo de Alimento (Anexo V) ${filterBadge}</label>
+                <label class="${labelClass}">Grupo do alimento (Anexo V) ${filterBadge}</label>
                 <select id="input-group-code" class="${inputClass} appearance-none cursor-pointer">
-                    <option value="" class="bg-terracota-deepDark">— Selecione (opcional) —</option>
+                    <option value="" class="bg-terracota-deepDark">— Selecione —</option>
                     ${options}
                 </select>
             </div>`;
@@ -970,9 +970,9 @@ function renderStep1(container) {
             <div class="calculator-hero-card">
                 ${calculatorSectionIcon('calculatorShield', 'section-icon-lg', 'product')}
                 <div class="min-w-0">
-                    <p class="calculator-eyebrow">Calculadora nutricional</p>
-                    <h3 class="text-xl sm:text-2xl font-bold text-white font-heading">Informações do produto</h3>
-                    <p class="text-sm text-white/55 mt-1">Organize os dados obrigatórios com clareza antes de calcular a tabela. O foco aqui é definir porção, rendimento e conformidade regulatória sem esconder campos importantes.</p>
+                    <p class="calculator-eyebrow">Dados do produto</p>
+                    <h3 class="text-xl sm:text-2xl font-bold text-white font-heading">Dados do produto</h3>
+                    <p class="text-sm text-white/55 mt-1">Preencha os dados principais para calcular a tabela.</p>
                 </div>
             </div>
 
@@ -981,20 +981,20 @@ function renderStep1(container) {
                     ${calculatorSectionIcon('product')}
                     <div class="min-w-0">
                         <p class="text-sm font-semibold text-white">Produto</p>
-                        <p class="text-xs text-white/45">Nome comercial, forma do alimento e grupo de referência.</p>
+                        <p class="text-xs text-white/45">Nome, tipo e grupo do alimento.</p>
                     </div>
                     <div class="ml-auto">
-                        ${sectionStatus(prodComplete, 'Essencial')}
+                        ${sectionStatus(prodComplete, 'Obrigatório')}
                     </div>
                 </div>
                 <div class="px-4 pb-4 pt-1 space-y-4">
                     <div>
                         <label class="${labelClass}">Nome do Produto</label>
-                        <input type="text" id="input-name" value="${escapeHtml(state.product.name)}" class="${inputClass}" placeholder="Ex: Bolo de Chocolate">
+                        <input type="text" id="input-name" value="${escapeHtml(state.product.name)}" class="${inputClass}" placeholder="Ex.: Bolo de chocolate">
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="${labelClass}">Tipo</label>
+                            <label class="${labelClass}">Tipo do alimento</label>
                             <select id="input-food-form" class="${inputClass} appearance-none cursor-pointer">
                                 <option value="solid" class="bg-terracota-deepDark" ${state.product.foodForm === 'solid' ? 'selected' : ''}>Sólido</option>
                                 <option value="liquid" class="bg-terracota-deepDark" ${state.product.foodForm === 'liquid' ? 'selected' : ''}>Líquido</option>
@@ -1011,40 +1011,40 @@ function renderStep1(container) {
                 <summary class="calculator-section-summary">
                     ${calculatorSectionIcon('scales')}
                     <div class="min-w-0">
-                        <p class="text-sm font-semibold text-white">Porção & Embalagem</p>
-                        <p class="text-xs text-white/45">Defina a porção de referência, medida caseira e rendimento da embalagem.</p>
+                        <p class="text-sm font-semibold text-white">Porção e embalagem</p>
+                        <p class="text-xs text-white/45">Defina porção, medida caseira e rendimento.</p>
                     </div>
                     <div class="calculator-section-summary-side">
-                        ${sectionStatus(portionComplete, 'Configurar')}
+                        ${sectionStatus(portionComplete, 'Preencher')}
                         <i class="ph ph-caret-down calculator-summary-caret"></i>
                     </div>
                 </summary>
                 <div class="px-4 pb-4 space-y-4">
                     <div class="calculator-section-callout">
                         <i class="ph ph-ruler text-sm"></i>
-                        <span>A porção selecionada orienta o cálculo por porção e a checagem de consistência com o grupo do Anexo V.</span>
+                        <span>A porção define o cálculo por porção e ajuda a conferir a referência do Anexo V.</span>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="${labelClass}">Porção (${portionUnitLabel})</label>
-                            <input type="number" id="input-portion" value="${escapeHtml(state.product.portionSize)}" class="${inputClass}" placeholder="Ex: 60" min="0.1" step="0.1">
+                            <input type="number" id="input-portion" value="${escapeHtml(state.product.portionSize)}" class="${inputClass}" placeholder="Ex.: 60" min="0.1" step="0.1">
                             <div id="portion-feedback" class="mt-1"></div>
                         </div>
                         <div>
-                            <label class="${labelClass}">Medida Caseira</label>
-                            <input type="text" id="input-desc" value="${escapeHtml(state.product.portionDesc)}" class="${inputClass}" placeholder="Ex: 1 fatia">
+                            <label class="${labelClass}">Medida caseira</label>
+                            <input type="text" id="input-desc" value="${escapeHtml(state.product.portionDesc)}" class="${inputClass}" placeholder="Ex.: 1 fatia">
                         </div>
                     </div>
                     <div id="package-feedback" class="hidden"></div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="${labelClass}">Peso da Embalagem (${portionUnitLabel})</label>
-                            <input type="number" id="input-package-weight" value="${escapeHtml(state.product.packageWeight || '')}" class="${inputClass}" placeholder="Ex: 500" min="0.1" step="0.1">
+                            <label class="${labelClass}">Peso da embalagem (${portionUnitLabel})</label>
+                            <input type="number" id="input-package-weight" value="${escapeHtml(state.product.packageWeight || '')}" class="${inputClass}" placeholder="Ex.: 500" min="0.1" step="0.1">
                         </div>
                         <div>
-                            <label class="${labelClass}">Porções/Embalagem</label>
-                            <input type="number" id="input-servings-per-package" value="${escapeHtml(state.product.servingsPerPackage)}" class="${inputClass}" placeholder="Ex: 5" min="1" step="1" ${state.product.packageWeight ? 'readonly' : ''}>
-                            ${state.product.packageWeight ? '<p class="text-[9px] text-terracota-textMuted mt-0.5">auto-calculado</p>' : ''}
+                            <label class="${labelClass}">Porções por embalagem</label>
+                            <input type="number" id="input-servings-per-package" value="${escapeHtml(state.product.servingsPerPackage)}" class="${inputClass}" placeholder="Ex.: 5" min="1" step="1" ${state.product.packageWeight ? 'readonly' : ''}>
+                            ${state.product.packageWeight ? '<p class="text-[9px] text-terracota-textMuted mt-0.5">calculado automaticamente</p>' : ''}
                         </div>
                     </div>
                 </div>
@@ -1054,8 +1054,8 @@ function renderStep1(container) {
                 <summary class="calculator-section-summary">
                     ${calculatorSectionIcon('shield')}
                     <div class="min-w-0">
-                        <p class="text-sm font-semibold text-white">Declarações Regulatórias</p>
-                        <p class="text-xs text-white/45">Alergênicos, glúten e avisos obrigatórios para a rotulagem final.</p>
+                        <p class="text-sm font-semibold text-white">Declarações obrigatórias</p>
+                        <p class="text-xs text-white/45">Alergênicos e glúten para o rótulo final.</p>
                     </div>
                     <div class="calculator-section-summary-side">
                         ${sectionStatus(regComplete, 'Revisar')}
@@ -1065,13 +1065,13 @@ function renderStep1(container) {
                 <div class="px-4 pb-4 space-y-4">
                     <div class="calculator-section-callout">
                         <i class="ph ph-warning-diamond text-sm"></i>
-                        <span>Preencha as declarações obrigatórias agora para evitar retrabalho quando a prévia estiver pronta.</span>
+                        <span>Preencha agora para evitar ajustes no final.</span>
                     </div>
                     <div>
                         <label class="${labelClass}">Alérgenos (RDC 26/2015)</label>
                         ${allergenTagsHtml}
                         <div class="mt-2">
-                            <input type="text" id="input-custom-allergens" value="${escapeHtml(state.product.customAllergens)}" class="${inputClass}" placeholder="Outros alérgenos: ex. kiwi, gergelim">
+                            <input type="text" id="input-custom-allergens" value="${escapeHtml(state.product.customAllergens)}" class="${inputClass}" placeholder="Outros alérgenos, ex.: gergelim">
                         </div>
                     </div>
                     <div>
@@ -1087,27 +1087,27 @@ function renderStep1(container) {
                 <summary class="cursor-pointer px-4 py-3 flex items-center gap-2.5 select-none">
                     ${calculatorSectionIcon('checklist', 'section-icon section-icon-amber')}
                     <div class="min-w-0">
-                        <p class="text-sm font-semibold text-white/75 group-hover/tips:text-white transition-colors">Checklist rápido de conformidade</p>
-                        <p class="text-xs text-white/35">Use este bloco para revisar os principais pontos antes do cálculo.</p>
+                        <p class="text-sm font-semibold text-white/75 group-hover/tips:text-white transition-colors">Checklist de revisão</p>
+                        <p class="text-xs text-white/35">Revise antes de calcular.</p>
                     </div>
                     <i class="ph ph-caret-down text-xs text-white/30 ml-auto transition-transform duration-300 group-open/tips:rotate-180 group-hover/tips:text-terracota-cyan"></i>
                 </summary>
                 <div class="px-4 pb-4 pt-1 space-y-2 text-[11px] text-terracota-textMuted leading-relaxed border-t border-white/[0.04]">
                     <div class="flex items-start gap-2 py-1.5">
                         <i class="ph ph-scales text-terracota-cyan text-sm mt-0.5 flex-shrink-0"></i>
-                        <p><strong class="text-white/80">Porção:</strong> Referência pelo grupo de alimento (Anexo V, IN 75). Tolerância de ±30%.</p>
+                        <p><strong class="text-white/80">Porção:</strong> use a referência do Anexo V. Tolerância de ±30%.</p>
                     </div>
                     <div class="flex items-start gap-2 py-1.5">
                         <i class="ph ph-warning-diamond text-amber-400 text-sm mt-0.5 flex-shrink-0"></i>
-                        <p><strong class="text-white/80">Alérgenos:</strong> Obrigatório conforme RDC 26/2015, mesmo em traços.</p>
+                        <p><strong class="text-white/80">Alérgenos:</strong> obrigatórios pela RDC 26/2015.</p>
                     </div>
                     <div class="flex items-start gap-2 py-1.5">
                         <i class="ph ph-spoon text-terracota-cyan text-sm mt-0.5 flex-shrink-0"></i>
-                        <p><strong class="text-white/80">Medida caseira:</strong> Ex: "1 fatia", "2 colheres de sopa". Obrigatória (RDC 429).</p>
+                        <p><strong class="text-white/80">Medida caseira:</strong> ex.: "1 fatia" ou "2 colheres".</p>
                     </div>
                     <div class="flex items-start gap-2 py-1.5">
                         <i class="ph ph-package text-terracota-cyan text-sm mt-0.5 flex-shrink-0"></i>
-                        <p><strong class="text-white/80">Porções/embalagem:</strong> Obrigatório (Art. 22). Auto-calculado se peso preenchido.</p>
+                        <p><strong class="text-white/80">Porções por embalagem:</strong> obrigatório; calculado automaticamente se houver peso.</p>
                     </div>
                 </div>
             </details>
@@ -1210,9 +1210,6 @@ function renderStep1(container) {
                 state.product.portionDesc = '';
             }
         }
-        const newFiltered = getFilteredPortionGroups();
-        const formLabel = state.product.foodForm === 'liquid' ? 'líquido' : 'sólido';
-        showToast(`Categorias filtradas para produto ${formLabel} (${newFiltered.length} disponíveis)`, 'info', 3000);
         renderStep1(container);
     });
 
@@ -1319,7 +1316,7 @@ function showTacoDropdown(inputEl, results, index) {
     _activeTacoDropdown = dd;
 
     if (!results.length) {
-        dd.innerHTML = '<div class="px-3 py-3 text-sm text-terracota-textMuted text-center">Nenhum resultado encontrado</div>';
+        dd.innerHTML = '<div class="px-3 py-3 text-sm text-terracota-textMuted text-center">Nenhum ingrediente encontrado.</div>';
         const wrapper = inputEl.closest('.relative');
         if (wrapper) wrapper.appendChild(dd);
         return;
@@ -1372,7 +1369,7 @@ function applyTacoFood(index, food) {
             setTimeout(() => row.classList.remove('border-emerald-400/50'), 1200);
         }
     });
-    showToast(`"${food.name}" preenchido via TACO`, 'success', 2500);
+    showToast(`"${food.name}" adicionado via TACO.`, 'success', 2500);
 }
 
 // ---- Auto Kcal Estimation ---------------------------------------------------
@@ -1395,6 +1392,19 @@ const _NUTRIENT_RANGES = {
     sodium: 100000, energyKcal: 900
 };
 
+const _NUTRIENT_LABELS = {
+    energyKcal: 'Energia',
+    carbs: 'Carboidratos',
+    proteins: 'Proteínas',
+    totalFat: 'Gorduras totais',
+    saturatedFat: 'Gorduras saturadas',
+    transFat: 'Gorduras trans',
+    fiber: 'Fibra',
+    sodium: 'Sódio',
+    totalSugars: 'Açúcares totais',
+    addedSugars: 'Açúcares adicionados'
+};
+
 function getIngredientWarnings(nutri, ing) {
     const warnings = [];
     const sat = parseFloat(nutri.saturatedFat);
@@ -1412,14 +1422,14 @@ function getIngredientWarnings(nutri, ing) {
 
     if (!isNaN(sat) && !isNaN(trans) && !isNaN(totalFat) && totalFat > 0) {
         if (sat + trans > totalFat) {
-            warnings.push({ fields: ['saturatedFat', 'transFat', 'totalFat'], msg: 'Sat + Trans excede Gorduras Totais' });
+            warnings.push({ fields: ['saturatedFat', 'transFat', 'totalFat'], msg: 'Gordura saturada + trans não pode passar da gordura total.' });
         }
     }
     if (!isNaN(addedSugars) && !isNaN(totalSugars) && addedSugars > totalSugars) {
-        warnings.push({ fields: ['addedSugars', 'totalSugars'], msg: 'Açúcares Adic. excede Açúcares Totais' });
+        warnings.push({ fields: ['addedSugars', 'totalSugars'], msg: 'Açúcares adicionados não podem passar dos açúcares totais.' });
     }
     if (!isNaN(totalSugars) && !isNaN(carbs) && totalSugars > carbs && carbs > 0) {
-        warnings.push({ fields: ['totalSugars', 'carbs'], msg: 'Açúcares Totais excede Carboidratos' });
+        warnings.push({ fields: ['totalSugars', 'carbs'], msg: 'Açúcares totais não podem passar dos carboidratos.' });
     }
 
     // --- Macro sum plausibility (per 100g) ---
@@ -1429,7 +1439,7 @@ function getIngredientWarnings(nutri, ing) {
                    + (isNaN(totalFat) ? 0 : totalFat)
                    + (isNaN(fiber) ? 0 : fiber);
     if (macroSum > 105) {
-        warnings.push({ fields: ['carbs', 'proteins', 'totalFat', 'fiber'], msg: `Soma dos macros (${macroSum.toFixed(1)}g) excede 100g/100g` });
+        warnings.push({ fields: ['carbs', 'proteins', 'totalFat', 'fiber'], msg: `A soma dos nutrientes passa de 100g por 100g (${macroSum.toFixed(1)}g).` });
     }
 
     // --- Individual range warnings ---
@@ -1438,7 +1448,7 @@ function getIngredientWarnings(nutri, ing) {
         const v = parseFloat(nutri[field]);
         if (!isNaN(v) && v > max) {
             const unit = field === 'sodium' ? 'mg' : (field === 'energyKcal' ? 'kcal' : 'g');
-            warnings.push({ fields: [field], msg: `${field === 'energyKcal' ? 'Kcal' : field} (${v}) acima do máximo esperado (${max}${unit})` });
+            warnings.push({ fields: [field], msg: `${_NUTRIENT_LABELS[field]} acima do valor esperado (${max}${unit}).` });
         }
     }
 
@@ -1449,7 +1459,7 @@ function getIngredientWarnings(nutri, ing) {
         if (estimated !== null && estimated > 0) {
             const diff = Math.abs(kcal - estimated) / estimated;
             if (diff > 0.20) {
-                warnings.push({ fields: ['energyKcal'], msg: `Kcal informado (${kcal}) diverge >20% do estimado (${estimated} kcal)` });
+                warnings.push({ fields: ['energyKcal'], msg: `Energia muito diferente da estimativa pelos macros (${estimated} kcal).` });
             }
         }
     }
@@ -1457,7 +1467,7 @@ function getIngredientWarnings(nutri, ing) {
     // --- Trans fat insignificance hint (Anexo IV) ---
 
     if (!isNaN(sat) && !isNaN(trans) && sat >= 0 && trans >= 0 && (sat + trans) > 0 && sat <= 0.2 && trans <= 0.2 && (sat + trans) <= 0.2) {
-        warnings.push({ fields: [], msg: 'Sat + Trans ≤ 0,2g — serão declarados como 0 (Anexo IV)', type: 'info' });
+        warnings.push({ fields: [], msg: 'Será declarado como 0 na tabela (Anexo IV).', type: 'info' });
     }
 
     return warnings;
@@ -1535,7 +1545,7 @@ function renderRunningTotals() {
     const nutCell = (label, value, key, decPlaces = 1, unitStr = 'g') => {
         const isZero = insig[key];
         const valClass = isZero ? 'text-white/40 line-through decoration-yellow-500/60' : 'text-white';
-        const labelExtra = isZero ? ' title="Será declarado como 0 ou não significativo (Anexo IV)"' : '';
+        const labelExtra = isZero ? ' title="Será declarado como 0 na tabela (Anexo IV)"' : '';
         const badge = isZero ? '<span class="text-[8px] text-yellow-500/80 font-normal ml-0.5">~0</span>' : '';
         return `<div${labelExtra}>
             <div class="text-[10px] text-terracota-textMuted uppercase">${label}</div>
@@ -1550,18 +1560,18 @@ function renderRunningTotals() {
     const fatPct = totalMacroKcal > 0 ? Math.round((p.totalFat * 9 / totalMacroKcal) * 100) : 0;
 
     const insigNote = hasInsig
-        ? `<div class="text-[10px] text-yellow-500/70 mt-2 flex items-center gap-1"><i class="ph ph-info text-xs"></i>Nutrientes riscados serão declarados como 0 ou não significativo (Anexo IV)</div>`
+        ? `<div class="text-[10px] text-yellow-500/70 mt-2 flex items-center gap-1"><i class="ph ph-info text-xs"></i>Riscados serão declarados como 0 na tabela.</div>`
         : '';
     const portionNote = portionSize > 0
         ? `<span class="text-[10px] text-terracota-textMuted ml-2">· porção: ${portionSize}${unit}</span>`
         : '';
 
     el.innerHTML = `
-        <div class="bg-black/30 border border-white/[0.12] rounded-xl p-4">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-[10px] font-bold text-terracota-cyan uppercase tracking-wider"><i class="ph ph-chart-bar text-xs mr-1"></i>Resumo da Receita</span>
-                <span class="text-xs text-terracota-textMuted">${totals.count} ingrediente${totals.count > 1 ? 's' : ''} · ${fmt(totals.totalWeight, 0)}${unit} total${portionNote}</span>
-            </div>
+            <div class="bg-black/30 border border-white/[0.12] rounded-xl p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-[10px] font-bold text-terracota-cyan uppercase tracking-wider"><i class="ph ph-chart-bar text-xs mr-1"></i>Resumo da receita</span>
+                    <span class="text-xs text-terracota-textMuted">${totals.count} ingrediente${totals.count > 1 ? 's' : ''} · ${fmt(totals.totalWeight, 0)}${unit} total${portionNote}</span>
+                </div>
             <div class="grid grid-cols-5 sm:grid-cols-10 gap-2 text-center mb-3">
                 ${nutCell('Kcal', p.energyKcal, 'energyKcal', 0, '')}
                 ${nutCell('Carb', p.carbs, 'carbs', 1, 'g')}
@@ -1575,7 +1585,7 @@ function renderRunningTotals() {
                 ${nutCell('Aç Adic', p.addedSugars, 'addedSugars', 1, 'g')}
             </div>
             <div class="flex items-center gap-2 text-[10px]">
-                <span class="text-terracota-textMuted">Macro:</span>
+                <span class="text-terracota-textMuted">Macros:</span>
                 <div class="flex-1 h-2.5 rounded-full overflow-hidden bg-white/5 flex">
                     <div style="width: ${carbPct}%" class="bg-blue-400 transition-all" title="Carb ${carbPct}%"></div>
                     <div style="width: ${protPct}%" class="bg-emerald-400 transition-all" title="Prot ${protPct}%"></div>
@@ -1585,7 +1595,7 @@ function renderRunningTotals() {
                 <span class="text-emerald-400">${protPct}%P</span>
                 <span class="text-orange-400">${fatPct}%G</span>
             </div>
-            <div class="text-[10px] text-terracota-textMuted mt-2 text-right">valores por 100${unit} da receita</div>
+            <div class="text-[10px] text-terracota-textMuted mt-2 text-right">Valores por 100${unit}.</div>
             ${insigNote}
         </div>
     `;
@@ -1606,98 +1616,108 @@ function renderStep2(container) {
         state.summaryDockCollapsed = false;
     }
 
+    const ingredientCount = state.ingredients.length;
+    const ingredientLabel = ingredientCount === 1 ? '1 ingrediente' : `${ingredientCount} ingredientes`;
+    const subtitle = hasIngredients
+        ? `${ingredientLabel} na receita. Continue adicionando ou ajuste as linhas abaixo.`
+        : 'Adicione ingredientes, busque na TACO ou importe uma planilha .xlsx.';
+    const floatingAddHtml = hasIngredients ? `
+        <div class="ingredients-floating-add">
+            <button type="button" onclick="addIngredientWithFocus()" class="ingredients-floating-add-btn" aria-label="Adicionar novo ingrediente">
+                ${calculatorStartIconSvg('plus', 'ingredients-floating-add-icon')}
+                <span>Adicionar ingrediente</span>
+            </button>
+        </div>` : '';
     const emptyStateHtml = !hasIngredients ? `
-        <div class="calculator-empty-state calculator-empty-state-premium">
-            <div class="calculator-empty-icon">
-                <span class="calculator-empty-icon-core">
-                    ${calculatorStartIconSvg('ingredients', 'calculator-empty-main-icon')}
-                </span>
-                <span class="calculator-empty-icon-badge">
-                    ${calculatorStartIconSvg('search', 'calculator-empty-badge-icon')}
-                </span>
-            </div>
-            <p class="text-white text-base font-medium mb-1.5">Monte a fórmula ingrediente por ingrediente</p>
-            <p class="text-terracota-textMuted text-sm mb-6 max-w-xl mx-auto">Use os botões acima para começar. Depois de adicionar uma linha, você pode pesquisar na TACO no campo do ingrediente ou preencher os dados manualmente.</p>
-            <div class="calculator-empty-pills">
-                ${calculatorFeaturePill('search', 'Busca TACO no campo')}
-                ${calculatorFeaturePill('product', 'Entrada manual disponível')}
-                ${calculatorFeaturePill('upload', 'Importação .xlsx')}
-            </div>
-            <div class="calculator-empty-note">
-                <strong>Importação recomendada:</strong> planilha <code>.xlsx</code> com <code>Nome/Ingrediente</code> e <code>Quantidade</code>; se quiser, inclua kcal, carboidratos, proteínas, gorduras, fibras, sódio e açúcares.
-            </div>
+        <div class="ingredients-empty-minimal">
+            <p class="ingredients-empty-title">Nenhum ingrediente adicionado</p>
+            <p class="ingredients-empty-text">Clique em <strong>Adicionar ingrediente</strong> para começar. Depois você pode editar os nutrientes em cada linha.</p>
         </div>` : '';
 
-    const toolbarHtml = `
-            <div class="formula-toolbar formula-toolbar-premium">
-                <div class="formula-toolbar-top">
-                    <div class="formula-toolbar-actions">
-                        <button type="button" onclick="addIngredientWithFocus()" class="formula-primary-action">
-                            ${calculatorStartIconSvg('plus', 'formula-action-icon')}
-                            <span>Adicionar ingrediente</span>
-                        </button>
-                        <button type="button" onclick="_openImportModal()" class="formula-secondary-action">
-                            ${calculatorStartIconSvg('upload', 'formula-action-icon')}
-                            <span>Importar .xlsx</span>
-                        </button>
-                    </div>
-                    <p class="formula-toolbar-caption">Depois de adicionar uma linha, você pode digitar manualmente ou pesquisar na TACO no próprio campo do ingrediente.</p>
-                </div>
-                <div class="formula-toolbar-info-grid">
-                    ${calculatorInfoCard('search', 'TACO e entrada manual', 'A busca na TACO e o preenchimento manual acontecem dentro de cada linha do ingrediente, sem botões extras na tela.')}
-                    ${calculatorInfoCard('upload', 'Formato do arquivo', 'Use .xlsx com cabeçalho mínimo Nome ou Ingrediente e Quantidade. Nutrientes são opcionais e mapeados automaticamente quando presentes.')}
-                </div>
-            </div>`;
-
     container.innerHTML = `
-        <div class="space-y-4 pb-8">
-            <div class="calculator-hero-card calculator-hero-card-premium">
-                ${calculatorSectionIcon('ingredients', 'section-icon-lg', 'search')}
-                <div class="min-w-0">
-                    <p class="calculator-eyebrow">Composição da receita</p>
-                    <h3 class="text-xl sm:text-2xl font-bold text-white font-heading">Ingredientes</h3>
-                    <p class="text-sm text-white/55 mt-1">Monte a fórmula com linhas claras de ingrediente, busca TACO dentro do campo quando precisar e um resumo nutricional vivo da receita enquanto você edita.</p>
-                    <div class="calculator-hero-pill-row">
-                        ${calculatorFeaturePill('search', 'Busca TACO no campo')}
-                        ${calculatorFeaturePill('product', 'Entrada manual')}
-                        ${calculatorFeaturePill('analytics', 'Resumo nutricional ao vivo', 'is-highlight')}
-                    </div>
+        <div class="ingredients-step-layout${hasIngredients ? ' has-floating-add' : ''}">
+            <div class="ingredients-central-card">
+                <p class="calculator-eyebrow">Composição da receita</p>
+                <h3 class="ingredients-central-title">Ingredientes</h3>
+                <p class="ingredients-central-subtitle">${subtitle}</p>
+                <div class="ingredients-central-actions">
+                    <button type="button" onclick="addIngredientWithFocus()" class="formula-primary-action">
+                        ${calculatorStartIconSvg('plus', 'formula-action-icon')}
+                        <span>Adicionar ingrediente</span>
+                    </button>
+                    <button type="button" onclick="_openImportModal()" class="formula-secondary-action">
+                        ${calculatorStartIconSvg('upload', 'formula-action-icon')}
+                        <span>Importar .xlsx</span>
+                    </button>
                 </div>
             </div>
-            ${toolbarHtml}
-            <div id="ingredients-list" class="space-y-3">
+            <div id="ingredients-list" class="ingredients-list-stack">
                 ${emptyStateHtml}
             </div>
             <div id="summary-dock"></div>
+            ${floatingAddHtml}
         </div>
         <!-- Import modal (hidden) -->
         <div id="import-modal" class="fixed inset-0 z-50 hidden">
             <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="_closeImportModal()"></div>
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md p-6">
                 <div class="bg-terracota-surface border border-white/10 rounded-2xl p-6 shadow-2xl relative">
-	                    <button type="button" onclick="_closeImportModal()" class="absolute top-3 right-3 text-terracota-textMuted hover:text-white transition-colors"><i class="ph ph-x text-lg"></i></button>
-                    <h4 class="text-base font-heading font-semibold text-white mb-4"><i class="ph ph-file-xls text-terracota-cyan mr-2"></i>Importar Excel</h4>
+                    <button type="button" onclick="_closeImportModal()" class="absolute top-3 right-3 text-terracota-textMuted hover:text-white transition-colors" aria-label="Fechar importação"><i class="ph ph-x text-lg"></i></button>
+                    <h4 class="text-base font-heading font-semibold text-white mb-4"><i class="ph ph-file-xls text-terracota-cyan mr-2"></i>Importar planilha</h4>
                     <div id="drop-zone" class="border-2 border-dashed border-white/15 rounded-xl p-8 text-center transition-all hover:border-terracota-cyan/50 hover:bg-terracota-cyan/[0.03] group relative">
                         <input type="file" id="file-upload" class="hidden" accept=".xlsx" onchange="handleExcelUpload(this.files[0]); _closeImportModal();">
                         <i class="ph ph-upload-simple text-3xl text-terracota-textMuted group-hover:text-terracota-cyan transition-colors mb-3 block"></i>
-                        <p class="text-sm text-terracota-textLight mb-1">Arraste um arquivo .xlsx aqui</p>
-	                        <p class="text-xs text-terracota-textMuted">ou <button type="button" onclick="document.getElementById('file-upload').click()" class="text-terracota-cyan hover:underline">selecione do computador</button></p>
+                        <p class="text-sm text-terracota-textLight mb-1">Arraste o arquivo .xlsx aqui</p>
+                        <p class="text-xs text-terracota-textMuted">ou <button type="button" onclick="document.getElementById('file-upload').click()" class="text-terracota-cyan hover:underline">selecione o arquivo</button></p>
                         <div id="upload-loading" class="absolute inset-0 bg-terracota-surface/95 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center hidden">
                             <div class="w-8 h-8 border-2 border-terracota-cyan border-t-transparent rounded-full animate-spin mb-3"></div>
-                            <p class="text-xs text-terracota-cyan font-medium">Processando...</p>
+                            <p class="text-xs text-terracota-cyan font-medium">Importando...</p>
                         </div>
+                    </div>
+                    <div class="import-modal-actions">
+                        <button type="button" onclick="_closeImportModal()" class="import-action-secondary">Fechar</button>
+                        <button type="button" onclick="document.getElementById('file-upload').click()" class="import-action-primary">Selecionar arquivo</button>
                     </div>
                     <div class="import-format-stack mt-4">
                         <div class="import-format-card">
-                            <strong>Cabeçalho mínimo</strong>
+                            <strong>Obrigatório</strong>
                             <span><code>Nome</code> ou <code>Ingrediente</code> e <code>Quantidade</code>.</span>
                         </div>
                         <div class="import-format-card">
-                            <strong>Colunas opcionais</strong>
+                            <strong>Opcional</strong>
                             <span><code>Kcal</code>, <code>Carboidratos</code>, <code>Proteínas</code>, <code>Gordura total</code>, <code>Saturada</code>, <code>Trans</code>, <code>Fibra</code>, <code>Sódio</code>, <code>Açúcares totais</code> e <code>Açúcares adicionados</code>.</span>
                         </div>
                     </div>
-                    <p class="text-[10px] text-terracota-textMuted mt-3">Formato: .xlsx · Máx 5MB · Até 500 linhas · Variações de cabeçalho também são reconhecidas</p>
+                    <div class="import-preview-card mt-4">
+                        <div class="import-preview-head">
+                            <strong>Preview da planilha</strong>
+                            <span>Exemplo de linhas válidas</span>
+                        </div>
+                        <div class="import-preview-grid-wrap">
+                            <div class="import-preview-grid" role="table" aria-label="Exemplo de tabela para importação">
+                                <div class="import-preview-row is-head" role="row">
+                                    <span role="columnheader">Nome</span>
+                                    <span role="columnheader">Quantidade</span>
+                                    <span role="columnheader">Kcal</span>
+                                    <span role="columnheader">Carboidratos</span>
+                                </div>
+                                <div class="import-preview-row" role="row">
+                                    <span role="cell">Açúcar</span>
+                                    <span role="cell">120</span>
+                                    <span role="cell">387</span>
+                                    <span role="cell">99.8</span>
+                                </div>
+                                <div class="import-preview-row" role="row">
+                                    <span role="cell">Farinha de trigo</span>
+                                    <span role="cell">300</span>
+                                    <span role="cell">364</span>
+                                    <span role="cell">76.3</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="import-preview-note">Nutrientes são opcionais. Se preferir, envie só <code>Nome</code> e <code>Quantidade</code>.</p>
+                    </div>
+                    <p class="text-[10px] text-terracota-textMuted mt-3">Formato .xlsx · até 5MB · até 500 linhas</p>
                 </div>
             </div>
         </div>
@@ -1739,7 +1759,7 @@ function _toggleInlineNutri(index) {
             prevTrigger.classList.remove('active');
             prevTrigger.setAttribute('aria-expanded', 'false');
         }
-        if (prevAction) prevAction.textContent = 'Abrir painel';
+        if (prevAction) prevAction.textContent = 'Abrir';
         if (prevWrapper) prevWrapper.classList.remove('is-expanded');
     }
 
@@ -1752,7 +1772,7 @@ function _toggleInlineNutri(index) {
             trigger.classList.add('active');
             trigger.setAttribute('aria-expanded', 'true');
         }
-        if (action) action.textContent = 'Ocultar painel';
+        if (action) action.textContent = 'Fechar';
         requestAnimationFrame(() => {
             if (wrapper) wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         });
@@ -1764,7 +1784,7 @@ function _toggleInlineNutri(index) {
             trigger.classList.remove('active');
             trigger.setAttribute('aria-expanded', 'false');
         }
-        if (action) action.textContent = 'Abrir painel';
+        if (action) action.textContent = 'Abrir';
     }
 }
 
@@ -1797,7 +1817,7 @@ function _renderInlineNutriContent(index) {
                     ${calculatorSectionIcon('analytics', 'section-icon', 'table')}
                     <div>
                         <p class="text-[11px] font-semibold text-white uppercase tracking-wider">Nutrientes por 100${unit}</p>
-                        <p class="text-[11px] text-white/40">Revise macros, subtipos e avisos de consistência para este ingrediente.</p>
+                        <p class="text-[11px] text-white/40">Preencha ou revise os valores deste ingrediente.</p>
                     </div>
                 </div>
                 ${hasTaco ? '<span class="macro-pill macro-pill-source">TACO</span>' : ''}
@@ -1805,12 +1825,12 @@ function _renderInlineNutriContent(index) {
             <div class="p-4 space-y-4">
                 <div class="calculator-section-callout">
                     <i class="ph ph-chart-pie-slice text-sm"></i>
-                    <span>${kcalIsAuto ? 'A energia está sendo estimada automaticamente a partir dos macros preenchidos.' : 'A energia está manual. Ajuste os macros abaixo e revise os avisos de consistência.'}</span>
+                    <span>${kcalIsAuto ? 'Energia calculada automaticamente pelos macros.' : 'Energia preenchida manualmente. Revise se bate com os macros.'}</span>
                 </div>
                 <div class="grid grid-cols-3 gap-3">
                     <div>
                         <label class="${labelClass}">Energia (kcal) ${kcalIsAuto ? '<span class="text-terracota-cyan/80">auto</span>' : ''}</label>
-                        <input type="number" class="${inputClass} ${kcalIsAuto ? 'text-terracota-cyan' : ''}" value="${kcalDisplay}" oninput="updateIngredientNutri(${index}, 'energyKcal', this.value); _refreshInlineNutriWarnings(${index});" min="0" step="0.1" title="Auto: Carb×4 + Prot×4 + Gord×9 + Fibra×2">
+                        <input type="number" class="${inputClass} ${kcalIsAuto ? 'text-terracota-cyan' : ''}" value="${kcalDisplay}" oninput="updateIngredientNutri(${index}, 'energyKcal', this.value); _refreshInlineNutriWarnings(${index});" min="0" step="0.1" title="Energia calculada pelos macros">
                     </div>
                     <div>
                         <label class="${labelClass}">Carboidratos (g)</label>
@@ -1836,7 +1856,7 @@ function _renderInlineNutriContent(index) {
                     </div>
                 </div>
                 <div class="border-t border-white/[0.04] pt-3">
-                    <p class="text-[10px] text-terracota-textMuted uppercase tracking-wider mb-2">Subtipos</p>
+                    <p class="text-[10px] text-terracota-textMuted uppercase tracking-wider mb-2">Detalhes</p>
                     <div class="grid grid-cols-4 gap-3">
                         <div>
                             <label class="${labelClass}">↳ Saturada (g)</label>
@@ -1935,7 +1955,7 @@ function createIngredientRow(ing, index) {
                     <div class="ingredient-field ingredient-name-field">
                         <label class="ingredient-field-label">Ingrediente</label>
                         <div class="relative">
-                            <input type="text" class="${inputClass} ingredient-name-input" value="${escapeHtml(ing.name)}" data-index="${index}" placeholder="Digite ou busque na TACO..." autocomplete="off">
+                            <input type="text" class="${inputClass} ingredient-name-input" value="${escapeHtml(ing.name)}" data-index="${index}" placeholder="Digite o ingrediente ou busque na TACO" autocomplete="off">
                         </div>
                     </div>
                     <div class="ingredient-field ingredient-quantity-field">
@@ -1960,19 +1980,19 @@ function createIngredientRow(ing, index) {
                     </div>
                 </div>
             </div>
-            <button type="button" onclick="_toggleInlineNutri(${index})" class="macro-disclosure ${isExpanded ? 'active' : ''}" data-nutri-trigger="${index}" aria-expanded="${isExpanded ? 'true' : 'false'}" aria-controls="ingredient-nutri-${index}" title="Abrir painel de macronutrientes e detalhes nutricionais">
+            <button type="button" onclick="_toggleInlineNutri(${index})" class="macro-disclosure ${isExpanded ? 'active' : ''}" data-nutri-trigger="${index}" aria-expanded="${isExpanded ? 'true' : 'false'}" aria-controls="ingredient-nutri-${index}" title="Ver nutrientes e detalhes">
                 <div class="macro-disclosure-copy">
                     <span class="macro-disclosure-icon">
                         ${calculatorStartIconSvg('analytics', 'macro-disclosure-svg')}
                     </span>
                     <div class="min-w-0">
-                        <span class="macro-disclosure-kicker">Painel nutricional</span>
-                        <span class="macro-disclosure-title">Macronutrientes e detalhes nutricionais</span>
-                        <span class="macro-disclosure-sub">Carboidratos, proteínas, gorduras, açúcares, fibras e sódio por 100${unit}</span>
+                        <span class="macro-disclosure-kicker">Nutrientes</span>
+                        <span class="macro-disclosure-title">Ver nutrientes e detalhes</span>
+                        <span class="macro-disclosure-sub">Carboidratos, proteínas, gorduras, fibras, sódio e açúcares por 100${unit}</span>
                     </div>
                 </div>
                 <div class="macro-disclosure-meta">
-                    <span class="macro-disclosure-action" data-nutri-action="${index}">${isExpanded ? 'Ocultar painel' : 'Abrir painel'}</span>
+                    <span class="macro-disclosure-action" data-nutri-action="${index}">${isExpanded ? 'Fechar' : 'Abrir'}</span>
                     <span class="${completionClass}" data-ing-completion="${index}">${completionLabel}</span>
                     ${warningBadge}
                     ${hasTaco ? '<span class="macro-pill macro-pill-source">TACO</span>' : ''}
@@ -2083,24 +2103,30 @@ function _renderFullRunningTotals() {
     const portionMetric = portionSize > 0 ? `${fmt(portionSize, portionSize % 1 === 0 ? 0 : 1)}${unit}` : 'Não definida';
 
     const insigNote = hasInsig
-        ? `<div class="text-[10px] text-yellow-500/70 mt-3 flex items-center gap-1"><i class="ph ph-info text-xs"></i>Nutrientes riscados serão declarados como 0 ou não significativo (Anexo IV).</div>`
+        ? `<div class="text-[10px] text-yellow-500/70 mt-3 flex items-center gap-1"><i class="ph ph-info text-xs"></i>Riscados serão declarados como 0 na tabela.</div>`
         : '';
 
     if (isCollapsed) {
         el.innerHTML = `
             <div class="summary-dock-shell is-collapsed">
-                <button type="button" class="summary-dock-toggle" onclick="_toggleRunningTotals()" aria-expanded="false">
-                    <div class="summary-dock-toggle-copy">
-                        <span class="summary-dock-toggle-icon">${calculatorStartIconSvg('analytics', 'summary-dock-toggle-svg')}</span>
-                        <span class="summary-dock-toggle-title">Resumo da fórmula</span>
-                    </div>
-                    <div class="summary-dock-toggle-metrics">
-                        <span>${totals.count} ingrediente${totals.count > 1 ? 's' : ''}</span>
-                        <span>${fmt(totals.totalWeight, 0)}${unit}</span>
-                        <span>${fmt(p.energyKcal, 0)} kcal</span>
-                    </div>
-                    <span class="summary-dock-toggle-action">Expandir</span>
-                </button>
+                <div class="summary-dock-collapsed-row">
+                    <button type="button" class="summary-dock-toggle" onclick="_toggleRunningTotals()" aria-expanded="false">
+                        <div class="summary-dock-toggle-copy">
+                            <span class="summary-dock-toggle-icon">${calculatorStartIconSvg('analytics', 'summary-dock-toggle-svg')}</span>
+                            <span class="summary-dock-toggle-title">Resumo da receita</span>
+                        </div>
+                        <div class="summary-dock-toggle-metrics">
+                            <span>${totals.count} ingrediente${totals.count > 1 ? 's' : ''}</span>
+                            <span>${fmt(totals.totalWeight, 0)}${unit}</span>
+                            <span>${fmt(p.energyKcal, 0)} kcal</span>
+                        </div>
+                        <span class="summary-dock-toggle-action">Abrir</span>
+                    </button>
+                    <button type="button" class="summary-dock-add" onclick="addIngredientWithFocus()">
+                        ${calculatorStartIconSvg('plus', 'summary-dock-add-icon')}
+                        <span>Adicionar</span>
+                    </button>
+                </div>
             </div>
         `;
         return;
@@ -2113,13 +2139,19 @@ function _renderFullRunningTotals() {
                     <div class="flex items-center gap-3 min-w-0">
                         ${calculatorSectionIcon('analytics', 'section-icon', 'table')}
                         <div class="min-w-0">
-                            <p class="text-sm font-semibold text-white">Resumo da fórmula</p>
-                            <p class="text-xs text-white/45">Painel vivo da receita atual por 100${unit}, com peso total, energia e distribuição de macros atualizados em tempo real.</p>
+                            <p class="text-sm font-semibold text-white">Resumo da receita</p>
+                            <p class="text-xs text-white/45">Totais da receita por 100${unit}.</p>
                         </div>
                     </div>
-                    <button type="button" class="summary-dock-minimize" onclick="_toggleRunningTotals()" aria-expanded="true">
-                        <i class="ph ph-caret-down text-sm"></i> Minimizar
-                    </button>
+                    <div class="summary-dock-head-actions">
+                        <button type="button" class="summary-dock-add" onclick="addIngredientWithFocus()">
+                            ${calculatorStartIconSvg('plus', 'summary-dock-add-icon')}
+                            <span>Adicionar ingrediente</span>
+                        </button>
+                        <button type="button" class="summary-dock-minimize" onclick="_toggleRunningTotals()" aria-expanded="true">
+                            <i class="ph ph-caret-down text-sm"></i> Fechar
+                        </button>
+                    </div>
                 </div>
                 <div class="summary-dock-metrics">
                     <div class="summary-dock-metric">
@@ -2135,14 +2167,14 @@ function _renderFullRunningTotals() {
                         <strong>${fmt(p.energyKcal, 0)} kcal</strong>
                     </div>
                     <div class="summary-dock-metric">
-                        <span class="summary-dock-metric-label">Porção atual</span>
+                        <span class="summary-dock-metric-label">Porção</span>
                         <strong>${portionMetric}</strong>
                     </div>
                 </div>
                 <div class="summary-dock-distribution">
                     <div class="flex items-center justify-between gap-3 mb-2">
-                        <span class="text-[11px] font-semibold text-white/70 uppercase tracking-wider">Distribuição de macros</span>
-                        <span class="text-[11px] text-white/40">Base energética da fórmula</span>
+                        <span class="text-[11px] font-semibold text-white/70 uppercase tracking-wider">Macros</span>
+                        <span class="text-[11px] text-white/40">Base energética</span>
                     </div>
                     <div class="flex items-center gap-2 text-[10px]">
                         <div class="flex-1 h-3 rounded-full overflow-hidden bg-white/5 flex">
@@ -2168,8 +2200,8 @@ function _renderFullRunningTotals() {
                 ${nutCell('Aç Adic', p.addedSugars, 'addedSugars')}
                 </div>
                 <div class="summary-dock-foot">
-                    <span>Valores por 100${unit} da receita atual.</span>
-                    <span>${state.product.portionDesc ? `Porção: ${escapeHtml(state.product.portionDesc)}` : 'Preencha a porção para revisar a leitura final.'}</span>
+                    <span>Valores por 100${unit}.</span>
+                    <span>${state.product.portionDesc ? `Porção: ${escapeHtml(state.product.portionDesc)}` : 'Defina a porção para revisar o resultado final.'}</span>
                 </div>
                 ${insigNote}
             </div>
@@ -2292,7 +2324,7 @@ function removeIngredient(index) {
     }
     state.ingredients.splice(index, 1);
     renderStep2(document.getElementById('wizard-content'));
-    showToast('Ingrediente excluído.', 'info', 2000);
+    showToast('Ingrediente removido.', 'info', 2000);
 }
 
 function toggleIngredientExpand(index) {
@@ -2319,23 +2351,23 @@ function fillZeroNutrients() {
     });
     if (filled > 0) {
         renderStep2(document.getElementById('wizard-content'));
-        showToast(`${filled} campo${filled > 1 ? 's' : ''} preenchido${filled > 1 ? 's' : ''} com 0`, 'success');
+        showToast(`${filled} campo${filled > 1 ? 's' : ''} preenchido${filled > 1 ? 's' : ''} com 0.`, 'success');
     } else {
-        showToast('Todos os campos já estão preenchidos', 'info');
+        showToast('Nenhum campo vazio.', 'info');
     }
 }
 
 function confirmClearAllIngredients() {
     if (state.ingredients.length === 0) return;
     const count = state.ingredients.length;
-    if (confirm(`Remover todos os ${count} ingredientes? Esta ação pode ser desfeita com Ctrl+Z.`)) {
+    if (confirm(`Remover todos os ${count} ingredientes? Você pode desfazer com Ctrl+Z.`)) {
         pushUndo();
         state.ingredients = [];
         _activeInlineNutriIndex = -1;
         state.summaryDockCollapsed = false;
         state.summaryDockManual = false;
         renderStep2(document.getElementById('wizard-content'));
-        showToast(`${count} ingrediente${count > 1 ? 's' : ''} removido${count > 1 ? 's' : ''}`, 'info');
+        showToast(`${count} ingrediente${count > 1 ? 's' : ''} removido${count > 1 ? 's' : ''}.`, 'info');
     }
 }
 
@@ -2396,27 +2428,26 @@ function _refreshIngredientFeedback(index) {
 function validateStep(step) {
     if (step === 1) {
         if (!state.product.name) { showToast('Informe o nome do produto.', 'warning'); return false; }
-        if (!state.product.portionSize) { showToast('Informe o tamanho da porção.', 'warning'); return false; }
+        if (!state.product.portionSize) { showToast('Informe a porção.', 'warning'); return false; }
         if ((parseFloat(state.product.portionSize) || 0) <= 0) {
             showToast('A porção deve ser um número positivo.', 'warning');
             return false;
         }
-        // Collect non-blocking recommendations
         const hints = [];
         if (!state.product.portionDesc?.trim()) {
-            hints.push('medida caseira não informada');
+            hints.push('medida caseira');
         }
         if ((!state.product.allergenKeys || state.product.allergenKeys.length === 0) && !state.product.allergens?.trim() && !state.product.customAllergens?.trim()) {
-            hints.push('declaração de alérgenos vazia (RDC 26/2015)');
+            hints.push('alérgenos');
         }
         if (!state.product.groupCode) {
-            hints.push('grupo de alimento não selecionado');
+            hints.push('grupo do alimento');
         }
         if (!state.product.servingsPerPackage) {
-            hints.push('porções por embalagem não informada (RDC 429/2020)');
+            hints.push('porções por embalagem');
         }
         if (hints.length > 0) {
-            showToast(`Recomendações: ${hints.join('; ')}.`, 'info', 5000);
+            showToast(`Antes de gerar, revise: ${hints.join('; ')}.`, 'info', 4500);
         }
         return true;
     }
@@ -2446,7 +2477,7 @@ function validateStep(step) {
             }
         });
         if (issues.length > 0) {
-            showToast(`Corrija os ingredientes: ${issues.join(' | ')}`, 'warning', 6000);
+            showToast('Revise os ingredientes destacados.', 'warning', 4000);
             return false;
         }
         return true;
@@ -2511,7 +2542,7 @@ async function calculateResult() {
         const data = await res.json();
 
         if (!res.ok) {
-            showToast(data.error || 'Erro ao calcular.', 'error');
+            showToast(data.error || 'Não foi possível calcular.', 'error');
             return;
         }
 
@@ -2528,13 +2559,6 @@ async function calculateResult() {
         state.saveTableError = '';
         state.currentIdempotencyKey = generateIdempotencyKey();
 
-        // Show calculation warnings (validation, portion, etc.)
-        if (data.calculationWarnings && data.calculationWarnings.length > 0) {
-            for (const w of data.calculationWarnings) {
-                showToast(w, 'warning');
-            }
-        }
-
         // Check for quota warning from server
         if (data.warning === 'QUOTA_EXHAUSTED') {
             state.quotaInfo = state.quotaInfo || {};
@@ -2544,7 +2568,7 @@ async function calculateResult() {
         goToStep(3);
     } catch (e) {
         console.error(e);
-        showToast('Erro ao calcular. Verifique a conexão.', 'error');
+        showToast('Não foi possível calcular. Verifique a conexão.', 'error');
     } finally {
         btn.innerHTML = origHtml;
         btn.disabled = false;
@@ -2555,7 +2579,7 @@ async function calculateResult() {
 
 function renderStep3(container) {
     if (!state.calculatedData) {
-        container.innerHTML = '<div class="text-red-400 text-center">Erro ao carregar dados calculados.</div>';
+        container.innerHTML = '<div class="text-red-400 text-center">Não foi possível carregar a prévia.</div>';
         return;
     }
 
@@ -2570,13 +2594,13 @@ function _buildComplianceChecklist() {
     const product = state.product;
     const checks = [];
 
-    checks.push({ ok: !!product.name?.trim(), label: 'Nome do produto informado' });
-    checks.push({ ok: !!product.portionDesc?.trim(), label: 'Medida caseira informada' });
+    checks.push({ ok: !!product.name?.trim(), label: 'Nome do produto' });
+    checks.push({ ok: !!product.portionDesc?.trim(), label: 'Medida caseira' });
 
     const hasAllergens = (product.allergenKeys?.length > 0) || !!product.allergens?.trim() || !!product.customAllergens?.trim();
-    checks.push({ ok: hasAllergens, label: 'Declaração de alérgenos' });
+    checks.push({ ok: hasAllergens, label: 'Alergênicos' });
 
-    checks.push({ ok: !!product.groupCode, label: 'Grupo de alimento selecionado' });
+    checks.push({ ok: !!product.groupCode, label: 'Grupo do alimento' });
 
     let portionOk = false;
     if (product.groupCode && state.portionGroups) {
@@ -2587,14 +2611,14 @@ function _buildComplianceChecklist() {
             portionOk = portion >= ref * 0.7 && portion <= ref * 1.3;
         }
     }
-    checks.push({ ok: portionOk, label: 'Porção dentro da referência (Anexo V)' });
+    checks.push({ ok: portionOk, label: 'Porção dentro da faixa do Anexo V' });
 
     let hasIngWarnings = false;
     for (const ing of state.ingredients) {
         const w = getIngredientWarnings(ing.nutritionalInfo || {}, ing);
         if (w.some(x => x.type !== 'info')) { hasIngWarnings = true; break; }
     }
-    checks.push({ ok: !hasIngWarnings, label: 'Nenhum aviso de consistência nos ingredientes' });
+    checks.push({ ok: !hasIngWarnings, label: 'Ingredientes sem avisos críticos' });
 
     let kcalOk = true;
     for (const ing of state.ingredients) {
@@ -2604,13 +2628,13 @@ function _buildComplianceChecklist() {
             if (est && manual > 0 && Math.abs(manual - est) / est > 0.2) { kcalOk = false; break; }
         }
     }
-    checks.push({ ok: kcalOk, label: 'Kcal coerente com macronutrientes' });
+    checks.push({ ok: kcalOk, label: 'Energia coerente com os macros' });
 
     const passCount = checks.filter(c => c.ok).length;
     const allPass = passCount === checks.length;
     const headerColor = allPass ? 'text-emerald-400' : 'text-yellow-400';
     const icon = allPass ? 'ph-shield-check' : 'ph-shield-warning';
-    const summaryText = allPass ? `${passCount}/${checks.length} verificações OK` : `${checks.length - passCount} pendência${checks.length - passCount > 1 ? 's' : ''}`;
+    const summaryText = allPass ? 'Tudo pronto para gerar' : `${checks.length - passCount} ponto${checks.length - passCount > 1 ? 's' : ''} para revisar`;
 
     return `
         <details class="mb-4 bg-white/[0.02] border border-white/[0.06] rounded-xl overflow-hidden group/comp hover:border-white/[0.1] transition-all duration-300">
@@ -2640,8 +2664,8 @@ function renderStep3Preview(container) {
     const warningHtml = !canGenerate
         ? `<div class="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-xl text-center">
                 <p class="text-yellow-300 text-sm font-medium">Limite de tabelas atingido.</p>
-                <p class="text-yellow-300/70 text-xs mt-1">Visualize a prévia, mas para salvar faça upgrade.</p>
-                <a href="/account/upgrade" class="inline-block mt-2 px-5 py-2 bg-gradient-to-r from-terracota-purple to-terracota-cyan text-white text-xs font-bold rounded-lg hover:scale-105 transition-all">Fazer Upgrade</a>
+                <p class="text-yellow-300/70 text-xs mt-1">Você pode revisar a prévia, mas precisa de upgrade para gerar a tabela.</p>
+                <a href="/account/upgrade" class="inline-block mt-2 px-5 py-2 bg-gradient-to-r from-terracota-purple to-terracota-cyan text-white text-xs font-bold rounded-lg hover:scale-105 transition-all">Fazer upgrade</a>
            </div>`
         : '';
 
@@ -2652,7 +2676,7 @@ function renderStep3Preview(container) {
         ? `<details class="mb-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl overflow-hidden group/warn hover:border-yellow-500/30 transition-all duration-300">
               <summary class="px-3 py-2 cursor-pointer text-[10px] font-bold text-yellow-400 uppercase tracking-wider flex items-center gap-2 select-none hover:bg-yellow-500/5 transition-colors">
                 <div class="w-5 h-5 rounded-md bg-yellow-500/15 flex items-center justify-center flex-shrink-0"><i class="ph ph-warning text-xs text-yellow-400"></i></div>
-                Avisos do cálculo (${calcWarnings.length})
+                Avisos para revisar (${calcWarnings.length})
                 <i class="ph ph-caret-down text-xs text-yellow-400/50 ml-auto transition-transform duration-300 group-open/warn:rotate-180"></i>
               </summary>
               <div class="px-3 pb-2">${calcWarnings.map(w => `<p class="text-[11px] text-yellow-300/80 flex items-center gap-1 mt-1"><i class="ph ph-caret-right text-xs"></i>${escapeHtml(w)}</p>`).join('')}</div>
@@ -2663,7 +2687,7 @@ function renderStep3Preview(container) {
         <div class="space-y-3">
             <div class="text-center">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs">
-                    <i class="ph ph-eye text-sm"></i> Prévia — revise antes de gerar
+                    <i class="ph ph-eye text-sm"></i> Prévia da tabela
                 </span>
             </div>
             ${complianceHtml}
@@ -2676,18 +2700,18 @@ function renderStep3Preview(container) {
             <div class="flex justify-center gap-3 pt-2 no-print">
                 ${canGenerate ? `
                 <button id="btn-generate" onclick="finalizeTable()" class="px-8 py-3 bg-gradient-to-r from-terracota-purple to-purple-600 text-white font-bold rounded-xl hover:scale-[1.03] shadow-lg shadow-purple-500/20 transition-all flex items-center gap-2 text-sm">
-                    <i class="ph-bold ph-check text-lg"></i> Gerar Tabela
+                    <i class="ph-bold ph-check text-lg"></i> Gerar tabela
                 </button>` : ''}
             </div>
             <div class="flex justify-center gap-2 no-print">
                 <button onclick="copyTableToClipboard()" class="px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white/50 hover:text-white hover:bg-white/[0.08] hover:border-white/[0.15] transition-all flex items-center gap-1.5 text-xs" title="Copiar texto">
-                    <i class="ph ph-clipboard-text text-sm"></i> Copiar
+                    <i class="ph ph-clipboard-text text-sm"></i> Copiar texto
                 </button>
                 <button onclick="goToStep(2)" class="px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white/50 hover:text-white hover:bg-white/[0.08] hover:border-white/[0.15] transition-all flex items-center gap-1.5 text-xs" title="Editar ingredientes">
-                    <i class="ph ph-pencil-simple text-sm"></i> Ingredientes
+                    <i class="ph ph-pencil-simple text-sm"></i> Editar ingredientes
                 </button>
                 <button onclick="goToStep(1)" class="px-3 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white/50 hover:text-white hover:bg-white/[0.08] hover:border-white/[0.15] transition-all flex items-center gap-1.5 text-xs" title="Editar produto">
-                    <i class="ph ph-gear text-sm"></i> Produto
+                    <i class="ph ph-gear text-sm"></i> Editar produto
                 </button>
             </div>
         </div>
@@ -2705,7 +2729,7 @@ function renderStep3Finalized(container) {
             <div class="text-center">
                 <div class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full celebration-glow">
                     <i class="ph-bold ph-check-circle text-lg text-emerald-400"></i>
-                    <span class="text-emerald-300 text-sm font-semibold">Tabela gerada com sucesso!</span>
+                    <span class="text-emerald-300 text-sm font-semibold">Tabela pronta</span>
                 </div>
             </div>
             ${quotaBadgeFullHtml()}
@@ -2716,11 +2740,11 @@ function renderStep3Finalized(container) {
             <div id="comparison-container"></div>
             <div class="flex justify-center gap-3 pt-2 no-print">
                 <button onclick="printTable()" class="px-6 py-2.5 bg-terracota-cyan text-terracota-deepDark font-bold rounded-xl hover:bg-white shadow-lg shadow-cyan-500/20 transition-all flex items-center gap-2 text-sm">
-                    <i class="ph-bold ph-printer text-lg"></i> Imprimir / PDF
+                    <i class="ph-bold ph-printer text-lg"></i> Imprimir / salvar PDF
                 </button>
                 ${canCreateMore ? `
                 <button onclick="startNewTable()" class="px-6 py-2.5 bg-terracota-purple/80 text-white font-semibold rounded-xl hover:bg-terracota-purple transition-all flex items-center gap-2 text-sm">
-                    <i class="ph ph-plus text-lg"></i> Nova Tabela
+                    <i class="ph ph-plus text-lg"></i> Nova tabela
                 </button>` : `
                 <a href="/account/upgrade" class="px-6 py-2.5 bg-gradient-to-r from-terracota-purple to-terracota-cyan text-white font-semibold rounded-xl hover:scale-[1.03] transition-all flex items-center gap-2 text-sm no-underline">
                     <i class="ph ph-trend-up text-lg"></i> Upgrade
@@ -2736,7 +2760,7 @@ function renderStep3Finalized(container) {
                 <button onclick="openTableComparison()" class="p-2 rounded-lg text-terracota-textMuted hover:text-white hover:bg-white/[0.06] transition-colors" title="Comparar">
                     <i class="ph ph-arrows-left-right text-base"></i>
                 </button>
-                <a href="/account/" class="p-2 rounded-lg text-terracota-textMuted hover:text-white hover:bg-white/[0.06] transition-colors no-underline" title="Minha Conta">
+                <a href="/account/" class="p-2 rounded-lg text-terracota-textMuted hover:text-white hover:bg-white/[0.06] transition-colors no-underline" title="Conta">
                     <i class="ph ph-user-circle text-base"></i>
                 </a>
             </div>
@@ -2763,20 +2787,20 @@ async function finalizeTable() {
     if (result.ok) {
         state.isFinalized = true;
         clearDraft();
-        showToast('Tabela gerada com sucesso!', 'success');
+        showToast('Tabela gerada.', 'success');
         // Re-fetch quota so buttons update
         await fetchQuota();
         renderStep3(document.getElementById('wizard-content'));
     } else if (result.code === 'QUOTA_EXCEEDED') {
-        showToast('Limite de tabelas atingido. Faça upgrade para continuar.', 'error', 6000);
+        showToast('Seu limite do plano acabou. Faça upgrade para gerar mais tabelas.', 'error', 6000);
         if (state.quotaInfo) state.quotaInfo.canCreate = false;
         renderStep3(document.getElementById('wizard-content'));
     } else {
-        showToast(result.error || 'Erro ao gerar tabela.', 'error');
+        showToast(result.error || 'Não foi possível gerar a tabela.', 'error');
         btn.disabled = false;
         btn.innerHTML = `
             <i class="ph-bold ph-arrow-clockwise text-lg"></i>
-            Tentar Novamente
+            Tentar novamente
         `;
     }
 }
@@ -2953,7 +2977,7 @@ function setupDragAndDrop() {
 async function handleExcelUpload(file) {
     if (!file) return;
     if (!file.name.toLowerCase().endsWith('.xlsx')) {
-        showToast('Use um arquivo Excel (.xlsx)', 'warning');
+        showToast('Use um arquivo .xlsx.', 'warning');
         return;
     }
 
@@ -2976,7 +3000,7 @@ async function handleExcelUpload(file) {
         const data = await res.json();
 
         if (!res.ok) {
-            showToast(data.error || 'Erro ao importar.', 'error');
+            showToast(data.error || 'Não foi possível importar.', 'error');
             return;
         }
 
@@ -2984,7 +3008,7 @@ async function handleExcelUpload(file) {
         _activeInlineNutriIndex = -1;
         state.summaryDockCollapsed = false;
         state.summaryDockManual = false;
-        showToast(`${data.ingredients.length} ingredientes importados!`, 'success');
+        showToast(`${data.ingredients.length} ingrediente${data.ingredients.length > 1 ? 's' : ''} importado${data.ingredients.length > 1 ? 's' : ''}.`, 'success');
         if (data.warnings && data.warnings.length > 0) {
             for (const w of data.warnings) {
                 showToast(w, 'warning');
@@ -2995,7 +3019,7 @@ async function handleExcelUpload(file) {
         renderStep2(document.getElementById('wizard-content'));
     } catch (e) {
         console.error(e);
-        showToast('Erro ao ler o arquivo Excel.', 'error');
+        showToast('Não foi possível ler o arquivo.', 'error');
     } finally {
         if (loading) loading.classList.add('hidden');
     }
@@ -3064,7 +3088,7 @@ function _autosave() {
             localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(draft));
             const indicator = document.getElementById('autosave-indicator');
             if (indicator) {
-                indicator.textContent = 'Rascunho salvo';
+                indicator.textContent = 'Salvo';
                 indicator.classList.remove('opacity-0');
                 setTimeout(() => indicator.classList.add('opacity-0'), 2000);
             }
@@ -3220,9 +3244,9 @@ function copyTableToClipboard() {
     if (footerP) lines.push('', footerP.textContent.trim());
 
     navigator.clipboard.writeText(lines.join('\n')).then(() => {
-        showToast('Tabela copiada para a área de transferência!', 'success');
+        showToast('Texto copiado.', 'success');
     }).catch(() => {
-        showToast('Não foi possível copiar. Tente novamente.', 'error');
+        showToast('Não foi possível copiar.', 'error');
     });
 }
 
@@ -3253,7 +3277,7 @@ async function exportTableAsPng() {
     const el = document.getElementById('nutritional-table-print-area');
     if (!el) return;
 
-    showToast('Gerando imagem...', 'info', 2000);
+    showToast('Gerando PNG...', 'info', 2000);
     try {
         const html2canvas = await _loadHtml2Canvas();
         const canvas = await html2canvas(el, {
@@ -3266,10 +3290,10 @@ async function exportTableAsPng() {
         link.download = `${name}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
-        showToast('PNG baixado com sucesso!', 'success');
+        showToast('PNG baixado.', 'success');
     } catch (err) {
         console.error('PNG export failed:', err);
-        showToast('Erro ao exportar PNG. Tente novamente.', 'error');
+        showToast('Não foi possível exportar o PNG.', 'error');
     }
 }
 
@@ -3286,10 +3310,10 @@ async function openTableComparison() {
     }
 
     container.innerHTML = `
-        <div class="mt-6 p-4 bg-white/[0.04] border border-white/[0.1] rounded-xl">
+                <div class="mt-6 p-4 bg-white/[0.04] border border-white/[0.1] rounded-xl">
             <div class="text-center py-4">
                 <div class="w-6 h-6 border-2 border-terracota-cyan border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                <p class="text-xs text-terracota-textMuted">Carregando tabelas anteriores...</p>
+                <p class="text-xs text-terracota-textMuted">Carregando tabelas...</p>
             </div>
         </div>
     `;
@@ -3309,7 +3333,7 @@ async function openTableComparison() {
             container.innerHTML = `
                 <div class="mt-6 p-4 bg-white/[0.04] border border-white/[0.1] rounded-xl text-center">
                     <i class="ph ph-info text-xl text-terracota-textMuted mb-2"></i>
-                    <p class="text-sm text-terracota-textMuted">Nenhuma tabela anterior encontrada para comparação.</p>
+                    <p class="text-sm text-terracota-textMuted">Nenhuma outra tabela para comparar.</p>
                 </div>
             `;
             return;
@@ -3319,11 +3343,11 @@ async function openTableComparison() {
         container.innerHTML = `
             <div class="mt-6 p-4 bg-white/[0.04] border border-white/[0.1] rounded-xl">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs font-bold text-terracota-cyan uppercase tracking-wider"><i class="ph ph-arrows-left-right mr-1"></i>Comparar com</span>
+                    <span class="text-xs font-bold text-terracota-cyan uppercase tracking-wider"><i class="ph ph-arrows-left-right mr-1"></i>Comparar com outra tabela</span>
                     <button onclick="document.getElementById('comparison-container').innerHTML=''" class="text-terracota-textMuted hover:text-white text-xs"><i class="ph ph-x"></i></button>
                 </div>
                 <select id="compare-table-select" class="w-full text-sm bg-black/30 border border-white/10 rounded-lg text-white px-3 py-2 mb-3" onchange="loadComparisonTable(this.value)">
-                    <option value="">Selecione uma tabela...</option>
+                    <option value="">Selecione uma tabela</option>
                     ${options}
                 </select>
                 <div id="comparison-result"></div>
@@ -3332,7 +3356,7 @@ async function openTableComparison() {
     } catch (err) {
         container.innerHTML = `
             <div class="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-center">
-                <p class="text-sm text-red-300">Erro ao carregar tabelas. Tente novamente.</p>
+                <p class="text-sm text-red-300">Não foi possível carregar as tabelas.</p>
             </div>
         `;
     }
@@ -3392,14 +3416,14 @@ async function loadComparisonTable(tableId) {
                     <tr class="border-b border-white/[0.1]">
                         <th class="py-1 text-left text-[10px] text-terracota-textMuted uppercase">Nutriente</th>
                         <th class="py-1 text-right text-[10px] text-terracota-cyan uppercase">Atual</th>
-                        <th class="py-1 text-right text-[10px] text-terracota-textMuted uppercase">Anterior</th>
-                        <th class="py-1 text-right text-[10px] text-terracota-textMuted uppercase">Δ</th>
+                        <th class="py-1 text-right text-[10px] text-terracota-textMuted uppercase">Comparada</th>
+                        <th class="py-1 text-right text-[10px] text-terracota-textMuted uppercase">Dif.</th>
                     </tr>
                 </thead>
                 <tbody>${rowsHtml}</tbody>
             </table>
         `;
     } catch (err) {
-        resultEl.innerHTML = '<p class="text-xs text-red-300 text-center">Erro ao carregar tabela.</p>';
+        resultEl.innerHTML = '<p class="text-xs text-red-300 text-center">Não foi possível carregar a comparação.</p>';
     }
 }

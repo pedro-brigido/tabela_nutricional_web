@@ -294,6 +294,8 @@ body {
 .wizard-footer {
     transition: box-shadow 0.2s ease, border-color 0.2s ease;
     box-shadow: 0 -18px 40px -34px rgba(0, 0, 0, 0.92);
+    gap: 0.75rem;
+    align-items: center;
 }
 @supports (backdrop-filter: blur(12px)) {
     .wizard-footer {
@@ -313,8 +315,25 @@ body {
     border-radius: 1rem;
     font-size: 0.92rem;
     font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
     letter-spacing: 0.01em;
     transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.wizard-footer .wizard-nav-btn {
+    min-width: 12.25rem;
+}
+
+.wizard-nav-btn span {
+    display: inline-flex;
+    align-items: center;
+}
+
+.wizard-nav-btn i {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
 }
 
 .wizard-nav-btn:disabled,
@@ -654,50 +673,204 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.65rem;
-    min-height: 2.85rem;
-    padding: 0.78rem 1.15rem;
-    border-radius: 1rem;
-    font-size: 0.92rem;
+    min-height: 2.95rem;
+    padding: 0.82rem 1.28rem;
+    border-radius: 1.02rem;
+    font-size: 0.9rem;
     font-weight: 700;
-    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+    letter-spacing: 0.01em;
+    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
 }
 
 .formula-primary-action {
-    color: #04111a;
-    border: 1px solid rgba(0, 240, 255, 0.3);
-    background: linear-gradient(135deg, rgba(0, 240, 255, 0.94), rgba(0, 200, 214, 0.92));
-    box-shadow: 0 18px 34px -28px rgba(0, 240, 255, 0.65);
+    color: #031218;
+    border: 1px solid rgba(0, 240, 255, 0.34);
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 45%),
+        linear-gradient(140deg, rgba(0, 240, 255, 0.98), rgba(0, 196, 214, 0.94));
+    box-shadow: 0 24px 34px -28px rgba(0, 240, 255, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.34);
 }
 
 .formula-primary-action:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 22px 40px -30px rgba(0, 240, 255, 0.75);
+    transform: translateY(-1px) scale(1.01);
+    box-shadow: 0 28px 40px -30px rgba(0, 240, 255, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.42);
+    filter: saturate(1.05);
 }
 
 .formula-secondary-action {
-    color: rgba(233, 242, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));
+    color: rgba(236, 246, 255, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
+        radial-gradient(circle at top right, rgba(0, 240, 255, 0.08), rgba(0, 0, 0, 0) 48%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .formula-secondary-action:hover {
     transform: translateY(-1px);
     color: #fff;
-    border-color: rgba(0, 240, 255, 0.18);
-    background: linear-gradient(180deg, rgba(0,240,255,0.09), rgba(255,255,255,0.03));
+    border-color: rgba(0, 240, 255, 0.24);
+    background:
+        linear-gradient(180deg, rgba(0, 240, 255, 0.14), rgba(255, 255, 255, 0.05)),
+        radial-gradient(circle at top right, rgba(0, 240, 255, 0.12), rgba(0, 0, 0, 0) 52%);
+    box-shadow: 0 20px 30px -26px rgba(0, 240, 255, 0.42);
+}
+
+.formula-primary-action:focus-visible,
+.formula-secondary-action:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.36), 0 0 0 5px rgba(0, 240, 255, 0.12);
 }
 
 .formula-action-icon {
-    width: 1rem;
-    height: 1rem;
+    width: 1.03rem;
+    height: 1.03rem;
 }
 
 .formula-primary-action .formula-action-icon {
-    color: #04111a;
+    color: #031218;
 }
 
 .formula-secondary-action .formula-action-icon {
     color: #00f0ff;
+}
+
+.ingredients-step-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 0.95rem;
+    padding-bottom: 0.9rem;
+}
+
+.ingredients-step-layout.has-floating-add {
+    padding-bottom: 6.2rem;
+}
+
+.ingredients-central-card {
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 46rem;
+    padding: 1.3rem 1.3rem 1.2rem;
+    border-radius: 1.3rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    background:
+        radial-gradient(circle at 18% 12%, rgba(0, 240, 255, 0.12), rgba(0, 240, 255, 0) 40%),
+        radial-gradient(circle at 90% 8%, rgba(123, 44, 191, 0.14), rgba(123, 44, 191, 0) 28%),
+        linear-gradient(140deg, rgba(14, 19, 34, 0.98), rgba(8, 12, 23, 0.98));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 26px 44px -36px rgba(0, 0, 0, 0.95);
+}
+
+.ingredients-central-card .calculator-eyebrow {
+    text-align: center;
+}
+
+.ingredients-central-title {
+    font-family: 'Space Grotesk', sans-serif;
+    color: #fff;
+    font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+    font-weight: 700;
+    margin-bottom: 0.45rem;
+}
+
+.ingredients-central-subtitle {
+    margin: 0 auto;
+    max-width: 38rem;
+    color: rgba(232, 244, 255, 0.68);
+    font-size: 0.86rem;
+    line-height: 1.5;
+}
+
+.ingredients-central-actions {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.ingredients-list-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.ingredients-empty-minimal {
+    padding: 2.1rem 1.3rem;
+    border-radius: 1.15rem;
+    border: 1px dashed rgba(255, 255, 255, 0.13);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    text-align: center;
+}
+
+.ingredients-empty-title {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.45rem;
+}
+
+.ingredients-empty-text {
+    margin: 0 auto;
+    max-width: 34rem;
+    color: rgba(233, 242, 255, 0.58);
+    font-size: 0.84rem;
+    line-height: 1.55;
+}
+
+.ingredients-empty-text strong {
+    color: rgba(220, 251, 255, 0.94);
+}
+
+.ingredients-floating-add {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(5.85rem + env(safe-area-inset-bottom));
+    width: min(21rem, calc(100vw - 2rem));
+    z-index: 34;
+    pointer-events: none;
+}
+
+.ingredients-floating-add-btn {
+    pointer-events: auto;
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.58rem;
+    min-height: 3rem;
+    padding: 0.82rem 1.1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 240, 255, 0.34);
+    color: #031218;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 46%),
+        linear-gradient(140deg, rgba(0, 240, 255, 0.98), rgba(0, 196, 214, 0.94));
+    box-shadow: 0 24px 36px -26px rgba(0, 240, 255, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.ingredients-floating-add-btn:hover {
+    transform: translateY(-1px) scale(1.01);
+    box-shadow: 0 28px 40px -26px rgba(0, 240, 255, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.42);
+    filter: saturate(1.05);
+}
+
+.ingredients-floating-add-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.36), 0 0 0 5px rgba(0, 240, 255, 0.12);
+}
+
+.ingredients-floating-add-icon {
+    width: 1rem;
+    height: 1rem;
 }
 
 .calculator-info-card {
@@ -1698,6 +1871,25 @@ body {
     margin-bottom: 1rem;
 }
 
+.summary-dock-head-actions {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+}
+
+.summary-dock-collapsed-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0.6rem;
+}
+
+.summary-dock-shell.is-collapsed .summary-dock-collapsed-row .summary-dock-toggle {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
 .summary-dock-metrics {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1757,7 +1949,8 @@ body {
 }
 
 .summary-dock-minimize,
-.summary-dock-toggle {
+.summary-dock-toggle,
+.summary-dock-add {
     border-radius: 1rem;
     transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
 }
@@ -1773,9 +1966,45 @@ body {
 }
 
 .summary-dock-minimize:hover,
-.summary-dock-toggle:hover {
+.summary-dock-toggle:hover,
+.summary-dock-add:hover {
     border-color: rgba(0, 240, 255, 0.2);
     color: #fff;
+}
+
+.summary-dock-add {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.42rem;
+    padding: 0.72rem 0.95rem;
+    min-height: 2.65rem;
+    border: 1px solid rgba(0, 240, 255, 0.24);
+    color: #021218;
+    background:
+        radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0) 46%),
+        linear-gradient(140deg, rgba(0, 240, 255, 0.96), rgba(0, 199, 214, 0.92));
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 20px 32px -28px rgba(0, 240, 255, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.summary-dock-add:hover {
+    transform: translateY(-1px);
+    filter: saturate(1.05);
+    color: #021218;
+    border-color: rgba(0, 240, 255, 0.32);
+}
+
+.summary-dock-add:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.36), 0 0 0 5px rgba(0, 240, 255, 0.12);
+}
+
+.summary-dock-add-icon {
+    width: 0.9rem;
+    height: 0.9rem;
 }
 
 .summary-dock-shell.is-collapsed .summary-dock-toggle {
@@ -1816,6 +2045,127 @@ body {
 .import-format-stack {
     display: grid;
     gap: 0.55rem;
+}
+
+.import-modal-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.55rem;
+    margin-top: 0.85rem;
+}
+
+.import-action-primary,
+.import-action-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 2.35rem;
+    padding: 0.58rem 0.95rem;
+    border-radius: 0.85rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+}
+
+.import-action-secondary {
+    color: rgba(233, 242, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.import-action-secondary:hover {
+    transform: translateY(-1px);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.import-action-primary {
+    color: #031218;
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 45%),
+        linear-gradient(140deg, rgba(0, 240, 255, 0.98), rgba(0, 196, 214, 0.94));
+    box-shadow: 0 16px 26px -20px rgba(0, 240, 255, 0.68), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.import-action-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 20px 30px -22px rgba(0, 240, 255, 0.74), inset 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
+.import-preview-card {
+    border-radius: 0.95rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.82rem 0.82rem 0.75rem;
+}
+
+.import-preview-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+}
+
+.import-preview-head strong {
+    color: #fff;
+    font-size: 0.74rem;
+    font-weight: 600;
+}
+
+.import-preview-head span {
+    color: rgba(255, 255, 255, 0.46);
+    font-size: 0.66rem;
+}
+
+.import-preview-grid-wrap {
+    overflow-x: auto;
+    border-radius: 0.72rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(6, 10, 19, 0.55);
+}
+
+.import-preview-grid {
+    min-width: 26rem;
+}
+
+.import-preview-row {
+    display: grid;
+    grid-template-columns: 1.4fr 0.8fr 0.65fr 1fr;
+}
+
+.import-preview-row span {
+    padding: 0.46rem 0.54rem;
+    color: rgba(232, 244, 255, 0.78);
+    font-size: 0.68rem;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    white-space: nowrap;
+}
+
+.import-preview-row span:last-child {
+    border-right: 0;
+}
+
+.import-preview-row.is-head span {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-top: 0;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.import-preview-note {
+    margin-top: 0.52rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.68rem;
+    line-height: 1.4;
 }
 
 .import-format-card {
@@ -2961,6 +3311,11 @@ body::after {
         flex: 0 0 1rem;
     }
 
+    .wizard-footer .wizard-nav-btn {
+        min-width: 0;
+        flex: 1 1 0;
+    }
+
     .calculator-hero-card,
     .formula-toolbar,
     .summary-dock-head,
@@ -2982,6 +3337,31 @@ body::after {
     .formula-primary-action,
     .formula-secondary-action {
         width: 100%;
+    }
+
+    .ingredients-central-card {
+        padding: 1.15rem 1rem 1.05rem;
+        border-radius: 1.12rem;
+    }
+
+    .ingredients-central-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ingredients-floating-add {
+        width: calc(100vw - 1.2rem);
+        max-width: 24rem;
+        bottom: calc(5.35rem + env(safe-area-inset-bottom));
+    }
+
+    .import-modal-actions {
+        justify-content: stretch;
+    }
+
+    .import-action-primary,
+    .import-action-secondary {
+        flex: 1 1 0;
     }
 
     .ingredient-quantity-field,
@@ -3011,6 +3391,26 @@ body::after {
 
     .summary-dock-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .summary-dock-head-actions {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .summary-dock-head-actions .summary-dock-add,
+    .summary-dock-head-actions .summary-dock-minimize {
+        flex: 1 1 0;
+        justify-content: center;
+    }
+
+    .summary-dock-collapsed-row {
+        flex-direction: column;
+    }
+
+    .summary-dock-shell.is-collapsed .summary-dock-collapsed-row .summary-dock-toggle,
+    .summary-dock-shell.is-collapsed .summary-dock-collapsed-row .summary-dock-add {
+        width: 100%;
     }
 
     .ingredient-detail-card .grid-cols-3 {
@@ -3059,6 +3459,7 @@ body::after {
 
 @media (max-width: 640px) {
     .calculator-hero-card,
+    .ingredients-central-card,
     .calculator-empty-state,
     .summary-dock-card,
     .summary-dock-toggle {
@@ -3067,6 +3468,11 @@ body::after {
 
     .summary-dock-metrics {
         grid-template-columns: 1fr;
+    }
+
+    .ingredients-floating-add-btn {
+        min-height: 2.85rem;
+        font-size: 0.84rem;
     }
 
     .ingredient-detail-card .grid-cols-4 {
