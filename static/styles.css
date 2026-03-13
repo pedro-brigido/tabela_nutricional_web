@@ -167,6 +167,11 @@ body {
     font-size: 1.15rem;
 }
 
+.wizard-step-svg {
+    width: 1.12rem;
+    height: 1.12rem;
+}
+
 .wizard-step-check {
     position: absolute;
     right: -0.2rem;
@@ -317,6 +322,7 @@ body {
 /* ---- Calculator Surfaces ---- */
 .section-icon,
 .section-icon-lg {
+    position: relative;
     border-radius: 999px;
     display: inline-flex;
     align-items: center;
@@ -339,6 +345,42 @@ body {
 .section-icon-lg {
     width: 3.15rem;
     height: 3.15rem;
+}
+
+.section-icon-svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.section-icon-svg.is-large {
+    width: 1.38rem;
+    height: 1.38rem;
+}
+
+.section-icon-badge {
+    position: absolute;
+    right: -0.12rem;
+    bottom: -0.1rem;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: linear-gradient(135deg, rgba(123, 44, 191, 0.98), rgba(0, 240, 255, 0.82));
+    box-shadow: 0 12px 24px -16px rgba(0, 240, 255, 0.5);
+}
+
+.section-icon-badge.is-large {
+    width: 1.18rem;
+    height: 1.18rem;
+}
+
+.section-icon-badge-svg {
+    width: 0.58rem;
+    height: 0.58rem;
 }
 
 .section-icon-amber {
@@ -369,6 +411,26 @@ body {
     gap: 1rem;
     padding: 1.2rem 1.25rem;
     border-radius: 1.3rem;
+}
+
+.calculator-hero-card-premium {
+    position: relative;
+    overflow: hidden;
+}
+
+.calculator-hero-card-premium::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(0, 240, 255, 0.08), transparent 26%),
+        radial-gradient(circle at 85% 0%, rgba(123, 44, 191, 0.08), transparent 24%);
+    pointer-events: none;
+}
+
+.calculator-hero-card-premium > * {
+    position: relative;
+    z-index: 1;
 }
 
 .calculator-eyebrow {
@@ -499,7 +561,23 @@ body {
     text-align: center;
 }
 
+.calculator-empty-state-premium {
+    position: relative;
+    overflow: hidden;
+}
+
+.calculator-empty-state-premium::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at top, rgba(0, 240, 255, 0.08), transparent 34%),
+        radial-gradient(circle at bottom left, rgba(123, 44, 191, 0.08), transparent 28%);
+    pointer-events: none;
+}
+
 .calculator-empty-icon {
+    position: relative;
     width: 4.25rem;
     height: 4.25rem;
     margin: 0 auto 1.2rem;
@@ -511,6 +589,80 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.08);
     background: linear-gradient(135deg, rgba(0, 240, 255, 0.14), rgba(123, 44, 191, 0.12));
     box-shadow: 0 16px 28px -24px rgba(0, 240, 255, 0.45);
+}
+
+.calculator-empty-icon-core,
+.calculator-empty-icon-badge {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calculator-empty-icon-core {
+    inset: 0;
+}
+
+.calculator-empty-main-icon {
+    width: 1.8rem;
+    height: 1.8rem;
+}
+
+.calculator-empty-icon-badge {
+    right: -0.32rem;
+    bottom: -0.28rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: linear-gradient(135deg, rgba(123, 44, 191, 1), rgba(0, 240, 255, 0.88));
+    box-shadow: 0 16px 24px -18px rgba(0, 240, 255, 0.58);
+}
+
+.calculator-empty-badge-icon {
+    width: 0.78rem;
+    height: 0.78rem;
+}
+
+.calculator-empty-pills,
+.calculator-hero-pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.65rem;
+    margin: 0 auto 1.1rem;
+}
+
+.calculator-hero-pill-row {
+    justify-content: flex-start;
+    margin-top: 1rem;
+    margin-bottom: 0;
+}
+
+.calculator-feature-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.58rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.76rem;
+    font-weight: 600;
+}
+
+.calculator-feature-pill.is-highlight {
+    color: #fff;
+    border-color: rgba(0, 240, 255, 0.16);
+    background: linear-gradient(135deg, rgba(123, 44, 191, 0.16), rgba(0, 240, 255, 0.08));
+}
+
+.calculator-feature-pill-icon {
+    width: 0.95rem;
+    height: 0.95rem;
+    color: #00f0ff;
 }
 
 .calculator-start-icon {
@@ -1228,6 +1380,11 @@ body {
     border: 1px solid rgba(0, 240, 255, 0.18);
     background: rgba(0, 240, 255, 0.08);
     color: #00f0ff;
+}
+
+.summary-dock-toggle-svg {
+    width: 0.95rem;
+    height: 0.95rem;
 }
 
 .summary-dock-toggle-title,
@@ -2407,7 +2564,17 @@ body::after {
         align-items: stretch;
     }
 
+    .calculator-empty-pills,
+    .calculator-hero-pill-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
     .calculator-home-proof {
+        justify-content: center;
+    }
+
+    .calculator-feature-pill {
         justify-content: center;
     }
 

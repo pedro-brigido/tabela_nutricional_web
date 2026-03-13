@@ -121,6 +121,32 @@ function calculatorStartIconSvg(name, className = 'calculator-start-icon') {
             <path d="M15.6 13.1c0-.88.49-1.49 1.28-1.82l1.22-.58 1.22.58c.79.33 1.29.94 1.29 1.82v1.08c0 1.66-.95 2.8-2.51 3.58-1.56-.78-2.5-1.92-2.5-3.58Z"></path>
             <path d="m17.45 14.35.65.65 1.35-1.35"></path>
         `,
+        search: `
+            <circle cx="11" cy="11" r="5.25"></circle>
+            <path d="m15 15 4 4"></path>
+        `,
+        analytics: `
+            <path d="M5.5 18.5h13"></path>
+            <path d="M8 16V10.5"></path>
+            <path d="M12 16V7.5"></path>
+            <path d="M16 16v-3.5"></path>
+            <path d="m7.75 8.75 3 2 3.5-4 2.5 1.75"></path>
+        `,
+        scales: `
+            <path d="M12 5v11"></path>
+            <path d="M8 7h8"></path>
+            <path d="m8 7-3 5h6L8 7Z"></path>
+            <path d="m16 7-3 5h6l-3-5Z"></path>
+            <path d="M8.5 19h7"></path>
+        `,
+        checklist: `
+            <path d="M9 6h6"></path>
+            <path d="M9 11.25h6"></path>
+            <path d="M9 16.5h6"></path>
+            <path d="m5.4 6.1.8.8 1.4-1.4"></path>
+            <path d="m5.4 11.35.8.8 1.4-1.4"></path>
+            <path d="m5.4 16.6.8.8 1.4-1.4"></path>
+        `,
         clock: `
             <circle cx="12" cy="12" r="7.5"></circle>
             <path d="M12 8.5v4l2.5 1.5"></path>
@@ -134,6 +160,22 @@ function calculatorStartFeaturePill(iconName, label, extraClass = '') {
     return `<span class="calculator-home-proof ${extraClass}">
         ${calculatorStartIconSvg(iconName, 'calculator-home-proof-icon')}
         <span>${escapeHtml(label)}</span>
+    </span>`;
+}
+
+function calculatorFeaturePill(iconName, label, extraClass = '') {
+    return `<span class="calculator-feature-pill ${extraClass}">
+        ${calculatorStartIconSvg(iconName, 'calculator-feature-pill-icon')}
+        <span>${escapeHtml(label)}</span>
+    </span>`;
+}
+
+function calculatorSectionIcon(iconName, shellClass = 'section-icon', badgeIconName = '') {
+    const iconClass = shellClass.includes('section-icon-lg') ? 'section-icon-svg is-large' : 'section-icon-svg';
+    const badgeClass = shellClass.includes('section-icon-lg') ? 'section-icon-badge is-large' : 'section-icon-badge';
+    return `<span class="${shellClass}" aria-hidden="true">
+        ${calculatorStartIconSvg(iconName, iconClass)}
+        ${badgeIconName ? `<span class="${badgeClass}">${calculatorStartIconSvg(badgeIconName, 'section-icon-badge-svg')}</span>` : ''}
     </span>`;
 }
 
@@ -510,9 +552,9 @@ function updateUI() {
 
 function renderProgressBar(step) {
     const steps = [
-        { label: 'Produto', sub: 'Nome, porção e conformidade', icon: 'ph-package' },
-        { label: 'Ingredientes', sub: 'Receita, macros e revisão', icon: 'ph-bowl-food' },
-        { label: 'Tabela', sub: 'Prévia e geração final', icon: 'ph-calculator' }
+        { label: 'Produto', sub: 'Nome, porção e conformidade', icon: 'product' },
+        { label: 'Ingredientes', sub: 'Receita, macros e revisão', icon: 'ingredients' },
+        { label: 'Tabela', sub: 'Prévia e geração final', icon: 'tableShield' }
     ];
     const ingredientCount = state.ingredients.length;
 
@@ -545,7 +587,7 @@ function renderProgressBar(step) {
                 <div class="wizard-step-medallion">
                     <span class="wizard-step-number">0${sNum}</span>
                     <span class="wizard-step-icon">
-                        <i class="ph ${s.icon}"></i>
+                        ${calculatorStartIconSvg(s.icon, 'wizard-step-svg')}
                     </span>
                     ${completed ? '<span class="wizard-step-check"><i class="ph ph-check"></i></span>' : ''}
                 </div>
@@ -816,9 +858,7 @@ function renderStep1(container) {
     container.innerHTML = `
         <div class="space-y-4 max-w-3xl mx-auto">
             <div class="calculator-hero-card">
-                <div class="section-icon-lg">
-                    <i class="ph ph-calculator text-xl"></i>
-                </div>
+                ${calculatorSectionIcon('calculatorShield', 'section-icon-lg', 'product')}
                 <div class="min-w-0">
                     <p class="calculator-eyebrow">Calculadora nutricional</p>
                     <h3 class="text-xl sm:text-2xl font-bold text-white font-heading">Informações do produto</h3>
@@ -828,9 +868,7 @@ function renderStep1(container) {
 
             <div class="calculator-surface-card">
                 <div class="calculator-section-header">
-                    <div class="section-icon">
-                        <i class="ph ph-package text-sm"></i>
-                    </div>
+                    ${calculatorSectionIcon('product')}
                     <div class="min-w-0">
                         <p class="text-sm font-semibold text-white">Produto</p>
                         <p class="text-xs text-white/45">Nome comercial, forma do alimento e grupo de referência.</p>
@@ -861,9 +899,7 @@ function renderStep1(container) {
 
             <details id="section-portion" class="group/sec calculator-surface-card calculator-surface-card-details" ${portionOpen ? 'open' : ''}>
                 <summary class="calculator-section-summary">
-                    <div class="section-icon">
-                        <i class="ph ph-scales text-sm"></i>
-                    </div>
+                    ${calculatorSectionIcon('scales')}
                     <div class="min-w-0">
                         <p class="text-sm font-semibold text-white">Porção & Embalagem</p>
                         <p class="text-xs text-white/45">Defina a porção de referência, medida caseira e rendimento da embalagem.</p>
@@ -906,9 +942,7 @@ function renderStep1(container) {
 
             <details id="section-regulatory" class="group/sec calculator-surface-card calculator-surface-card-details" ${regOpen ? 'open' : ''}>
                 <summary class="calculator-section-summary">
-                    <div class="section-icon">
-                        <i class="ph ph-shield-check text-sm"></i>
-                    </div>
+                    ${calculatorSectionIcon('shield')}
                     <div class="min-w-0">
                         <p class="text-sm font-semibold text-white">Declarações Regulatórias</p>
                         <p class="text-xs text-white/45">Alergênicos, glúten e avisos obrigatórios para a rotulagem final.</p>
@@ -941,9 +975,7 @@ function renderStep1(container) {
 
             <details class="group/tips tips-card calculator-surface-card bg-white/[0.02]">
                 <summary class="cursor-pointer px-4 py-3 flex items-center gap-2.5 select-none">
-                    <div class="section-icon section-icon-amber">
-                        <i class="ph ph-warning-diamond text-sm"></i>
-                    </div>
+                    ${calculatorSectionIcon('checklist', 'section-icon section-icon-amber')}
                     <div class="min-w-0">
                         <p class="text-sm font-semibold text-white/75 group-hover/tips:text-white transition-colors">Checklist rápido de conformidade</p>
                         <p class="text-xs text-white/35">Use este bloco para revisar os principais pontos antes do cálculo.</p>
@@ -1465,12 +1497,22 @@ function renderStep2(container) {
     }
 
     const emptyStateHtml = !hasIngredients ? `
-        <div class="calculator-empty-state">
+        <div class="calculator-empty-state calculator-empty-state-premium">
             <div class="calculator-empty-icon">
-                <i class="ph ph-bowl-food text-3xl"></i>
+                <span class="calculator-empty-icon-core">
+                    ${calculatorStartIconSvg('ingredients', 'calculator-empty-main-icon')}
+                </span>
+                <span class="calculator-empty-icon-badge">
+                    ${calculatorStartIconSvg('search', 'calculator-empty-badge-icon')}
+                </span>
             </div>
             <p class="text-white text-base font-medium mb-1.5">Monte a fórmula ingrediente por ingrediente</p>
             <p class="text-terracota-textMuted text-sm mb-6 max-w-sm mx-auto">Pesquise na Tabela TACO, ajuste a quantidade usada na receita e abra os detalhes nutricionais quando precisar revisar macros e alertas.</p>
+            <div class="calculator-empty-pills">
+                ${calculatorFeaturePill('search', 'Busca TACO')}
+                ${calculatorFeaturePill('analytics', 'Resumo ao vivo')}
+                ${calculatorFeaturePill('tableShield', 'Revisão técnica')}
+            </div>
             <button onclick="addIngredientWithFocus()" class="px-6 py-2.5 bg-terracota-cyan/15 border border-terracota-cyan/30 text-terracota-cyan text-sm font-semibold rounded-xl hover:bg-terracota-cyan/25 transition-all inline-flex items-center gap-2">
                 <i class="ph ph-magnifying-glass text-base"></i> Buscar na TACO
             </button>
@@ -1500,14 +1542,17 @@ function renderStep2(container) {
 
     container.innerHTML = `
         <div class="space-y-4 pb-8">
-            <div class="calculator-hero-card">
-                <div class="section-icon-lg">
-                    <i class="ph ph-bowl-food text-xl"></i>
-                </div>
+            <div class="calculator-hero-card calculator-hero-card-premium">
+                ${calculatorSectionIcon('ingredients', 'section-icon-lg', 'search')}
                 <div class="min-w-0">
                     <p class="calculator-eyebrow">Composição da receita</p>
                     <h3 class="text-xl sm:text-2xl font-bold text-white font-heading">Ingredientes</h3>
-                    <p class="text-sm text-white/55 mt-1">Cada ingrediente agora mostra um resumo claro da contribuição energética e uma área óbvia para abrir macros e detalhes nutricionais.</p>
+                    <p class="text-sm text-white/55 mt-1">Monte a fórmula com pesquisa TACO, revisão nutricional por ingrediente e um resumo vivo da receita enquanto você edita.</p>
+                    <div class="calculator-hero-pill-row">
+                        ${calculatorFeaturePill('search', 'Busca TACO')}
+                        ${calculatorFeaturePill('analytics', 'Macros ao vivo')}
+                        ${calculatorFeaturePill('tableShield', 'Revisão nutricional', 'is-highlight')}
+                    </div>
                 </div>
             </div>
             ${toolbarHtml}
@@ -1622,12 +1667,10 @@ function _renderInlineNutriContent(index) {
     if (!inner) return;
 
     inner.innerHTML = `
-        <div class="ingredient-detail-card">
+            <div class="ingredient-detail-card">
             <div class="px-4 py-3 flex items-center justify-between border-b border-white/[0.04]">
                 <div class="flex items-center gap-2.5">
-                    <div class="section-icon" style="width:1.75rem;height:1.75rem;">
-                        <i class="ph ph-chart-pie-slice" style="font-size:0.8rem;"></i>
-                    </div>
+                    ${calculatorSectionIcon('analytics', 'section-icon', 'table')}
                     <div>
                         <p class="text-[11px] font-semibold text-white uppercase tracking-wider">Nutrientes por 100${unit}</p>
                         <p class="text-[11px] text-white/40">Revise macros, subtipos e avisos de consistência para este ingrediente.</p>
@@ -1920,7 +1963,7 @@ function _renderFullRunningTotals() {
             <div class="summary-dock-shell is-collapsed">
                 <button type="button" class="summary-dock-toggle" onclick="_toggleRunningTotals()" aria-expanded="false">
                     <div class="summary-dock-toggle-copy">
-                        <span class="summary-dock-toggle-icon"><i class="ph ph-chart-bar-horizontal"></i></span>
+                        <span class="summary-dock-toggle-icon">${calculatorStartIconSvg('analytics', 'summary-dock-toggle-svg')}</span>
                         <span class="summary-dock-toggle-title">Resumo da fórmula</span>
                     </div>
                     <div class="summary-dock-toggle-metrics">
@@ -1940,12 +1983,10 @@ function _renderFullRunningTotals() {
             <div class="summary-dock-card">
                 <div class="summary-dock-head">
                     <div class="flex items-center gap-3 min-w-0">
-                        <div class="section-icon">
-                            <i class="ph ph-chart-bar-horizontal text-sm"></i>
-                        </div>
+                        ${calculatorSectionIcon('analytics', 'section-icon', 'table')}
                         <div class="min-w-0">
                             <p class="text-sm font-semibold text-white">Resumo da fórmula</p>
-                            <p class="text-xs text-white/45">Valores vivos da receita atual por 100${unit}. Atualizado em tempo real enquanto você edita os ingredientes.</p>
+                            <p class="text-xs text-white/45">Painel vivo da receita atual por 100${unit}, com peso total, energia e distribuição de macros atualizados em tempo real.</p>
                         </div>
                     </div>
                     <button type="button" class="summary-dock-minimize" onclick="_toggleRunningTotals()" aria-expanded="true">
