@@ -11,15 +11,15 @@
 
     {% if usage.tables_created == 0 %}
     <!-- First-use onboarding banner -->
-    <div id="onboarding-banner" class="mb-6 bg-gradient-to-r from-terracota-purple/20 to-terracota-cyan/20 border border-terracota-cyan/30 rounded-2xl p-6 sm:p-8 relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-48 h-48 bg-terracota-cyan/5 blur-[80px] rounded-full pointer-events-none"></div>
+    <div id="onboarding-banner" class="calculator-onboarding-banner mb-6 p-6 sm:p-8 relative overflow-hidden">
         <div class="relative z-10">
-            <div class="flex items-start justify-between gap-4">
-                <div>
-                    <h2 class="text-xl sm:text-2xl font-heading font-bold mb-2">
-                        <i class="ph ph-hand-waving text-terracota-cyan mr-2"></i>Bem-vindo(a), {{ current_user.name.split(' ')[0] }}!
+            <div class="flex items-start justify-between gap-4 mb-5">
+                <div class="max-w-2xl">
+                    <span class="calculator-onboarding-kicker">Fluxo guiado Terracota</span>
+                    <h2 class="text-xl sm:text-2xl font-heading font-bold mb-2 text-white">
+                        Bem-vindo(a), {{ current_user.name.split(' ')[0] }}!
                     </h2>
-                    <p class="text-terracota-textLight text-sm sm:text-base mb-4">
+                    <p class="text-terracota-textLight text-sm sm:text-base">
                         Sua primeira tabela nutricional em conformidade com a ANVISA está a poucos cliques.
                     </p>
                 </div>
@@ -27,38 +27,65 @@
                     <i class="ph ph-x text-lg"></i>
                 </button>
             </div>
-            <div class="grid sm:grid-cols-3 gap-4 mb-5">
-                <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-terracota-cyan/20 flex items-center justify-center flex-shrink-0">
-                        <span class="text-terracota-cyan font-bold text-sm">1</span>
+            <div class="calculator-onboarding-grid mb-5">
+                <article class="calculator-onboarding-card">
+                    <div class="calculator-onboarding-card-head">
+                        <span class="calculator-onboarding-step">Passo 01</span>
+                        <span class="calculator-onboarding-card-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="calculator-start-icon">
+                                <path d="M9 5.25h6"></path>
+                                <path d="M9.25 4h5.5a1 1 0 0 1 1 1v.75h1A2.25 2.25 0 0 1 19 8v10A2.25 2.25 0 0 1 16.75 20.25h-9.5A2.25 2.25 0 0 1 5 18V8a2.25 2.25 0 0 1 2.25-2.25h1V5a1 1 0 0 1 1-1Z"></path>
+                                <path d="M9 10h6"></path>
+                                <path d="M9 13.5h6"></path>
+                                <path d="M9 17h4"></path>
+                            </svg>
+                        </span>
                     </div>
-                    <div>
-                        <p class="text-sm font-semibold">Dados do produto</p>
-                        <p class="text-xs text-terracota-textMuted">Nome, porção e medida caseira</p>
+                    <p class="calculator-onboarding-card-title">Dados do produto</p>
+                    <p class="calculator-onboarding-card-copy">Nome, porção, medida caseira e base do cadastro para começar com clareza.</p>
+                </article>
+                <article class="calculator-onboarding-card">
+                    <div class="calculator-onboarding-card-head">
+                        <span class="calculator-onboarding-step">Passo 02</span>
+                        <span class="calculator-onboarding-card-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="calculator-start-icon">
+                                <path d="M5.5 12h13"></path>
+                                <path d="M7 12c.2 3 2.6 5.25 5.6 5.25h.8c3 0 5.4-2.25 5.6-5.25"></path>
+                                <path d="M9.2 9.25c.2-1.1.9-2 1.95-2.75"></path>
+                                <path d="M12.05 8.5c.25-1.5 1.2-2.8 2.55-3.5"></path>
+                                <path d="M14.85 9.2c.15-.75.55-1.35 1.15-1.9"></path>
+                            </svg>
+                        </span>
                     </div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-terracota-cyan/20 flex items-center justify-center flex-shrink-0">
-                        <span class="text-terracota-cyan font-bold text-sm">2</span>
+                    <p class="calculator-onboarding-card-title">Ingredientes</p>
+                    <p class="calculator-onboarding-card-copy">Adicione a fórmula, ajuste quantidades e revise os valores nutricionais.</p>
+                </article>
+                <article class="calculator-onboarding-card">
+                    <div class="calculator-onboarding-card-head">
+                        <span class="calculator-onboarding-step">Passo 03</span>
+                        <span class="calculator-onboarding-card-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="calculator-start-icon">
+                                <rect x="4.5" y="5.5" width="11" height="13" rx="2.5"></rect>
+                                <path d="M4.5 9.5h11"></path>
+                                <path d="M9 9.5v9"></path>
+                                <path d="M15.5 12.8c0-.85.48-1.42 1.25-1.73L18 10.5l1.25.57c.77.31 1.25.88 1.25 1.73v1.08c0 1.65-.95 2.77-2.5 3.54-1.55-.77-2.5-1.89-2.5-3.54Z"></path>
+                                <path d="m17.35 14.1.65.65 1.35-1.35"></path>
+                            </svg>
+                        </span>
                     </div>
-                    <div>
-                        <p class="text-sm font-semibold">Ingredientes</p>
-                        <p class="text-xs text-terracota-textMuted">Adicione e informe os valores</p>
-                    </div>
-                </div>
-                <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-terracota-cyan/20 flex items-center justify-center flex-shrink-0">
-                        <span class="text-terracota-cyan font-bold text-sm">3</span>
-                    </div>
-                    <div>
-                        <p class="text-sm font-semibold">Tabela pronta</p>
-                        <p class="text-xs text-terracota-textMuted">Conforme RDC 429 e IN 75</p>
-                    </div>
-                </div>
+                    <p class="calculator-onboarding-card-title">Tabela pronta</p>
+                    <p class="calculator-onboarding-card-copy">Saída final com tabela nutricional e conferência para RDC 429 e IN 75.</p>
+                </article>
             </div>
-            <p class="text-xs text-terracota-textMuted">
-                <i class="ph ph-arrow-down mr-1"></i>Comece preenchendo os dados abaixo. Leva menos de 5 minutos.
-            </p>
+            <div class="calculator-onboarding-note">
+                <span class="calculator-onboarding-note-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="calculator-start-icon">
+                        <circle cx="12" cy="12" r="7.5"></circle>
+                        <path d="M12 8.5v4l2.5 1.5"></path>
+                    </svg>
+                </span>
+                <span>Comece preenchendo os dados abaixo. Em geral, leva menos de 5 minutos.</span>
+            </div>
         </div>
     </div>
     {% endif %}

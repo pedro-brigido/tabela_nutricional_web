@@ -66,6 +66,77 @@ function escapeHtml(str) {
     return div.innerHTML;
 }
 
+function calculatorStartIconSvg(name, className = 'calculator-start-icon') {
+    const icons = {
+        product: `
+            <path d="M9 5.25h6"></path>
+            <path d="M9.25 4h5.5a1 1 0 0 1 1 1v.75h1A2.25 2.25 0 0 1 19 8v10A2.25 2.25 0 0 1 16.75 20.25h-9.5A2.25 2.25 0 0 1 5 18V8a2.25 2.25 0 0 1 2.25-2.25h1V5a1 1 0 0 1 1-1Z"></path>
+            <path d="M9 10h6"></path>
+            <path d="M9 13.5h6"></path>
+            <path d="M9 17h4"></path>
+        `,
+        ingredients: `
+            <path d="M5.5 12h13"></path>
+            <path d="M7 12c.2 3 2.6 5.25 5.6 5.25h.8c3 0 5.4-2.25 5.6-5.25"></path>
+            <path d="M9.2 9.25c.2-1.1.9-2 1.95-2.75"></path>
+            <path d="M12.05 8.5c.25-1.5 1.2-2.8 2.55-3.5"></path>
+            <path d="M14.85 9.2c.15-.75.55-1.35 1.15-1.9"></path>
+        `,
+        table: `
+            <rect x="4.5" y="5.5" width="15" height="13" rx="2.5"></rect>
+            <path d="M4.5 9.5h15"></path>
+            <path d="M9.5 9.5v9"></path>
+            <path d="M14.5 9.5v9"></path>
+        `,
+        shield: `
+            <path d="M12 4.5 18 7v4.5c0 4.1-2.4 7.05-6 8.5-3.6-1.45-6-4.4-6-8.5V7l6-2.5Z"></path>
+            <path d="m9.45 12.15 1.75 1.75 3.55-3.55"></path>
+        `,
+        tableShield: `
+            <rect x="4.5" y="5.5" width="11" height="13" rx="2.5"></rect>
+            <path d="M4.5 9.5h11"></path>
+            <path d="M9 9.5v9"></path>
+            <path d="M15.5 12.8c0-.85.48-1.42 1.25-1.73L18 10.5l1.25.57c.77.31 1.25.88 1.25 1.73v1.08c0 1.65-.95 2.77-2.5 3.54-1.55-.77-2.5-1.89-2.5-3.54Z"></path>
+            <path d="m17.35 14.1.65.65 1.35-1.35"></path>
+        `,
+        calculator: `
+            <rect x="5.5" y="4.5" width="13" height="15" rx="2.5"></rect>
+            <path d="M8.5 8.25h7"></path>
+            <circle cx="9" cy="12" r=".45" fill="currentColor" stroke="none"></circle>
+            <circle cx="12" cy="12" r=".45" fill="currentColor" stroke="none"></circle>
+            <circle cx="15" cy="12" r=".45" fill="currentColor" stroke="none"></circle>
+            <circle cx="9" cy="15" r=".45" fill="currentColor" stroke="none"></circle>
+            <circle cx="12" cy="15" r=".45" fill="currentColor" stroke="none"></circle>
+            <circle cx="15" cy="15" r=".45" fill="currentColor" stroke="none"></circle>
+        `,
+        calculatorShield: `
+            <rect x="4.25" y="4.5" width="10.5" height="15" rx="2.5"></rect>
+            <path d="M7.4 8.3h4.2"></path>
+            <circle cx="8" cy="12.1" r=".42" fill="currentColor" stroke="none"></circle>
+            <circle cx="10" cy="12.1" r=".42" fill="currentColor" stroke="none"></circle>
+            <circle cx="12" cy="12.1" r=".42" fill="currentColor" stroke="none"></circle>
+            <circle cx="8" cy="14.9" r=".42" fill="currentColor" stroke="none"></circle>
+            <circle cx="10" cy="14.9" r=".42" fill="currentColor" stroke="none"></circle>
+            <circle cx="12" cy="14.9" r=".42" fill="currentColor" stroke="none"></circle>
+            <path d="M15.6 13.1c0-.88.49-1.49 1.28-1.82l1.22-.58 1.22.58c.79.33 1.29.94 1.29 1.82v1.08c0 1.66-.95 2.8-2.51 3.58-1.56-.78-2.5-1.92-2.5-3.58Z"></path>
+            <path d="m17.45 14.35.65.65 1.35-1.35"></path>
+        `,
+        clock: `
+            <circle cx="12" cy="12" r="7.5"></circle>
+            <path d="M12 8.5v4l2.5 1.5"></path>
+        `
+    };
+
+    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="${className}" aria-hidden="true">${icons[name] || icons.product}</svg>`;
+}
+
+function calculatorStartFeaturePill(iconName, label, extraClass = '') {
+    return `<span class="calculator-home-proof ${extraClass}">
+        ${calculatorStartIconSvg(iconName, 'calculator-home-proof-icon')}
+        <span>${escapeHtml(label)}</span>
+    </span>`;
+}
+
 function announceToSR(message) {
     const el = document.getElementById('sr-announcer');
     if (!el) return;
@@ -156,14 +227,15 @@ function quotaBadgeHtml() {
     </span>`;
 }
 
-function quotaBadgeFullHtml() {
+function quotaBadgeFullHtml(extraClass = '') {
     const q = state.quotaInfo;
     if (!q) return '';
     const limitText = q.tablesLimit === null ? '∞' : q.tablesLimit;
-    return `<div class="text-center mt-3 text-xs text-terracota-textMuted">
+    const classes = extraClass ? ` ${extraClass}` : '';
+    return `<div class="text-center mt-3 text-xs text-terracota-textMuted${classes}">
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10">
             <span class="w-2 h-2 rounded-full ${q.canCreate ? 'bg-emerald-400' : 'bg-red-400'}"></span>
-            ${q.tablesCreated}/${limitText} tabelas este mês · <span class="text-terracota-cyan">${q.planName}</span>
+            ${q.tablesCreated}/${limitText} tabelas este mês · <span class="text-terracota-cyan">${escapeHtml(q.planName)}</span>
         </span>
     </div>`;
 }
@@ -575,18 +647,35 @@ function renderWelcome() {
     document.getElementById('btn-next').style.display = 'none';
 
     content.innerHTML = `
-        <div class="text-center py-10">
-            <div class="mb-8 inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-terracota-purple to-terracota-cyan shadow-lg shadow-terracota-cyan/20 text-white transform rotate-3 hover:rotate-6 transition-transform">
-                <i class="ph-bold ph-file-text text-4xl"></i>
-            </div>
-            <h2 class="text-4xl font-bold text-white mb-6 font-heading">Calculadora Nutricional</h2>
-            <p class="text-xl text-terracota-textLight mb-10 max-w-lg mx-auto font-light leading-relaxed">
-                Gere tabelas nutricionais em conformidade com a <span class="text-terracota-cyan font-medium">RDC 429/2020</span> com a inteligência e design da Terracota.
-            </p>
-            ${quotaBadgeFullHtml()}
-            <button onclick="goToStep(1)" class="mt-6 px-10 py-4 bg-terracota-cyan text-terracota-deepDark text-lg font-bold rounded-xl hover:bg-white hover:scale-105 shadow-[0_0_30px_rgba(0,196,204,0.3)] transition-all inline-flex items-center gap-2">
-                <i class="ph-bold ph-play text-xl"></i> Iniciar Novo Produto
-            </button>
+        <div class="calculator-home-shell">
+            <section class="calculator-home-hero text-center" aria-labelledby="calculator-home-title">
+                <div class="calculator-home-kicker">
+                    <span class="calculator-home-kicker-dot"></span>
+                    Plataforma de cálculo e conformidade
+                </div>
+                <div class="calculator-home-hero-icon-shell" aria-hidden="true">
+                    <div class="calculator-home-hero-icon-core">
+                        ${calculatorStartIconSvg('calculatorShield', 'calculator-home-hero-icon')}
+                    </div>
+                    <div class="calculator-home-hero-icon-badge">
+                        ${calculatorStartIconSvg('tableShield', 'calculator-home-hero-badge-icon')}
+                    </div>
+                </div>
+                <h2 id="calculator-home-title" class="text-4xl sm:text-[2.75rem] font-bold text-white mb-5 font-heading tracking-tight">Calculadora Nutricional</h2>
+                <p class="text-lg sm:text-xl text-terracota-textLight mb-7 max-w-2xl mx-auto font-light leading-relaxed">
+                    Gere tabelas nutricionais com uma jornada guiada para <span class="text-white font-medium">dados do produto</span>, <span class="text-white font-medium">ingredientes</span> e saída final em conformidade com a <span class="text-terracota-cyan font-medium">RDC 429/2020</span> e a <span class="text-terracota-cyan font-medium">IN 75/2020</span>.
+                </p>
+                <div class="calculator-home-proof-row">
+                    ${calculatorStartFeaturePill('calculator', 'Cálculo guiado')}
+                    ${calculatorStartFeaturePill('table', 'Tabela nutricional')}
+                    ${calculatorStartFeaturePill('shield', 'Conformidade ANVISA', 'is-highlight')}
+                </div>
+                ${quotaBadgeFullHtml('calculator-home-quota')}
+                <button onclick="goToStep(1)" class="calculator-home-cta mt-6 px-10 py-4 bg-terracota-cyan text-terracota-deepDark text-lg font-bold rounded-xl hover:bg-white hover:scale-[1.02] shadow-[0_0_30px_rgba(0,196,204,0.24)] transition-all inline-flex items-center gap-3">
+                    ${calculatorStartIconSvg('product', 'calculator-home-cta-icon')}
+                    <span>Iniciar Novo Produto</span>
+                </button>
+            </section>
         </div>
     `;
 }
