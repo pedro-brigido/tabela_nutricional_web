@@ -132,6 +132,26 @@ function calculatorStartIconSvg(name, className = 'calculator-start-icon') {
             <path d="M16 16v-3.5"></path>
             <path d="m7.75 8.75 3 2 3.5-4 2.5 1.75"></path>
         `,
+        plus: `
+            <path d="M12 6.5v11"></path>
+            <path d="M6.5 12h11"></path>
+        `,
+        upload: `
+            <path d="M12 15V6.5"></path>
+            <path d="m8.75 9.75 3.25-3.25 3.25 3.25"></path>
+            <path d="M6 17.5h12"></path>
+        `,
+        duplicate: `
+            <rect x="8" y="8" width="9" height="9" rx="2"></rect>
+            <path d="M6.5 13V7.75A1.75 1.75 0 0 1 8.25 6h5.25"></path>
+        `,
+        trash: `
+            <path d="M6.75 8h10.5"></path>
+            <path d="M9.25 8V6.75A1.25 1.25 0 0 1 10.5 5.5h3A1.25 1.25 0 0 1 14.75 6.75V8"></path>
+            <path d="M8.25 8 9 17.25A1.5 1.5 0 0 0 10.5 18.5h3A1.5 1.5 0 0 0 15 17.25L15.75 8"></path>
+            <path d="M10.5 11v4"></path>
+            <path d="M13.5 11v4"></path>
+        `,
         scales: `
             <path d="M12 5v11"></path>
             <path d="M8 7h8"></path>
@@ -168,6 +188,16 @@ function calculatorFeaturePill(iconName, label, extraClass = '') {
         ${calculatorStartIconSvg(iconName, 'calculator-feature-pill-icon')}
         <span>${escapeHtml(label)}</span>
     </span>`;
+}
+
+function calculatorInfoCard(iconName, title, description, extraClass = '') {
+    return `<div class="calculator-info-card ${extraClass}">
+        <span class="calculator-info-card-icon">${calculatorStartIconSvg(iconName, 'calculator-info-card-icon-svg')}</span>
+        <div class="calculator-info-card-copy">
+            <strong>${escapeHtml(title)}</strong>
+            <span>${escapeHtml(description)}</span>
+        </div>
+    </div>`;
 }
 
 function calculatorSectionIcon(iconName, shellClass = 'section-icon', badgeIconName = '') {
@@ -1507,38 +1537,37 @@ function renderStep2(container) {
                 </span>
             </div>
             <p class="text-white text-base font-medium mb-1.5">Monte a fórmula ingrediente por ingrediente</p>
-            <p class="text-terracota-textMuted text-sm mb-6 max-w-sm mx-auto">Pesquise na Tabela TACO, ajuste a quantidade usada na receita e abra os detalhes nutricionais quando precisar revisar macros e alertas.</p>
+            <p class="text-terracota-textMuted text-sm mb-6 max-w-xl mx-auto">Use os botões acima para começar. Depois de adicionar uma linha, você pode pesquisar na TACO no campo do ingrediente ou preencher os dados manualmente.</p>
             <div class="calculator-empty-pills">
-                ${calculatorFeaturePill('search', 'Busca TACO')}
-                ${calculatorFeaturePill('analytics', 'Resumo ao vivo')}
-                ${calculatorFeaturePill('tableShield', 'Revisão técnica')}
+                ${calculatorFeaturePill('search', 'Busca TACO no campo')}
+                ${calculatorFeaturePill('product', 'Entrada manual disponível')}
+                ${calculatorFeaturePill('upload', 'Importação .xlsx')}
             </div>
-            <button onclick="addIngredientWithFocus()" class="px-6 py-2.5 bg-terracota-cyan/15 border border-terracota-cyan/30 text-terracota-cyan text-sm font-semibold rounded-xl hover:bg-terracota-cyan/25 transition-all inline-flex items-center gap-2">
-                <i class="ph ph-magnifying-glass text-base"></i> Buscar na TACO
-            </button>
-            <p class="mt-3"><button onclick="addIngredient()" class="text-xs text-terracota-textMuted hover:text-white transition-colors">ou criar uma linha manualmente</button></p>
+            <div class="calculator-empty-note">
+                <strong>Importação recomendada:</strong> planilha <code>.xlsx</code> com <code>Nome/Ingrediente</code> e <code>Quantidade</code>; se quiser, inclua kcal, carboidratos, proteínas, gorduras, fibras, sódio e açúcares.
+            </div>
         </div>` : '';
 
-    const toolbarHtml = hasIngredients ? `
-            <div class="formula-toolbar">
-                <div class="formula-toolbar-actions">
-                <button onclick="addIngredientWithFocus()" class="px-3 py-1.5 bg-terracota-cyan/10 border border-terracota-cyan/25 text-terracota-cyan rounded-xl hover:bg-terracota-cyan/20 transition-colors font-medium inline-flex items-center gap-1.5">
-                    <i class="ph ph-plus text-sm"></i> Adicionar
-                </button>
-                <button onclick="_openImportModal()" class="px-3 py-1.5 bg-white/[0.04] border border-white/[0.08] text-terracota-textMuted rounded-xl hover:bg-white/[0.08] hover:text-white transition-colors inline-flex items-center gap-1.5">
-                    <i class="ph ph-file-xls text-sm"></i> Importar
-                </button>
+    const toolbarHtml = `
+            <div class="formula-toolbar formula-toolbar-premium">
+                <div class="formula-toolbar-top">
+                    <div class="formula-toolbar-actions">
+                        <button onclick="addIngredientWithFocus()" class="formula-primary-action">
+                            ${calculatorStartIconSvg('plus', 'formula-action-icon')}
+                            <span>Adicionar ingrediente</span>
+                        </button>
+                        <button onclick="_openImportModal()" class="formula-secondary-action">
+                            ${calculatorStartIconSvg('upload', 'formula-action-icon')}
+                            <span>Importar .xlsx</span>
+                        </button>
+                    </div>
+                    <p class="formula-toolbar-caption">Depois de adicionar uma linha, você pode digitar manualmente ou pesquisar na TACO no próprio campo do ingrediente.</p>
                 </div>
-                <div class="formula-toolbar-secondary">
-                <button onclick="fillZeroNutrients()" class="text-terracota-textMuted hover:text-white transition-colors px-2.5 py-1.5 rounded-lg hover:bg-white/[0.06]" title="Preencher campos vazios com 0"><i class="ph ph-cursor-text text-sm"></i></button>
-                <button onclick="confirmClearAllIngredients()" class="text-red-400/50 hover:text-red-400 transition-colors px-2.5 py-1.5 rounded-lg hover:bg-red-500/10" title="Remover todos"><i class="ph ph-trash text-sm"></i></button>
-                ${state.ingredients.length > 5 ? `
-                <div class="relative">
-                    <i class="ph ph-magnifying-glass text-sm absolute left-2 top-1/2 -translate-y-1/2 text-terracota-textMuted pointer-events-none"></i>
-                    <input type="text" id="ing-search" class="w-40 text-xs bg-black/25 border border-white/[0.08] rounded-xl pl-7 pr-2 py-1.5 text-white placeholder:text-white/20 focus:ring-1 focus:ring-terracota-cyan focus:border-terracota-cyan" placeholder="Filtrar ingrediente..." oninput="filterIngredients(this.value)">
-                </div>` : ''}
+                <div class="formula-toolbar-info-grid">
+                    ${calculatorInfoCard('search', 'TACO e entrada manual', 'A busca na TACO e o preenchimento manual acontecem dentro de cada linha do ingrediente, sem botões extras na tela.')}
+                    ${calculatorInfoCard('upload', 'Formato do arquivo', 'Use .xlsx com cabeçalho mínimo Nome ou Ingrediente e Quantidade. Nutrientes são opcionais e mapeados automaticamente quando presentes.')}
                 </div>
-            </div>` : '';
+            </div>`;
 
     container.innerHTML = `
         <div class="space-y-4 pb-8">
@@ -1547,11 +1576,11 @@ function renderStep2(container) {
                 <div class="min-w-0">
                     <p class="calculator-eyebrow">Composição da receita</p>
                     <h3 class="text-xl sm:text-2xl font-bold text-white font-heading">Ingredientes</h3>
-                    <p class="text-sm text-white/55 mt-1">Monte a fórmula com pesquisa TACO, revisão nutricional por ingrediente e um resumo vivo da receita enquanto você edita.</p>
+                    <p class="text-sm text-white/55 mt-1">Monte a fórmula com linhas claras de ingrediente, busca TACO dentro do campo quando precisar e um resumo nutricional vivo da receita enquanto você edita.</p>
                     <div class="calculator-hero-pill-row">
-                        ${calculatorFeaturePill('search', 'Busca TACO')}
-                        ${calculatorFeaturePill('analytics', 'Macros ao vivo')}
-                        ${calculatorFeaturePill('tableShield', 'Revisão nutricional', 'is-highlight')}
+                        ${calculatorFeaturePill('search', 'Busca TACO no campo')}
+                        ${calculatorFeaturePill('product', 'Entrada manual')}
+                        ${calculatorFeaturePill('analytics', 'Resumo nutricional ao vivo', 'is-highlight')}
                     </div>
                 </div>
             </div>
@@ -1578,7 +1607,17 @@ function renderStep2(container) {
                             <p class="text-xs text-terracota-cyan font-medium">Processando...</p>
                         </div>
                     </div>
-                    <p class="text-[10px] text-terracota-textMuted mt-3">Formato: .xlsx · Máx 5MB · Até 500 linhas · Colunas mapeadas automaticamente</p>
+                    <div class="import-format-stack mt-4">
+                        <div class="import-format-card">
+                            <strong>Cabeçalho mínimo</strong>
+                            <span><code>Nome</code> ou <code>Ingrediente</code> e <code>Quantidade</code>.</span>
+                        </div>
+                        <div class="import-format-card">
+                            <strong>Colunas opcionais</strong>
+                            <span><code>Kcal</code>, <code>Carboidratos</code>, <code>Proteínas</code>, <code>Gordura total</code>, <code>Saturada</code>, <code>Trans</code>, <code>Fibra</code>, <code>Sódio</code>, <code>Açúcares totais</code> e <code>Açúcares adicionados</code>.</span>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-terracota-textMuted mt-3">Formato: .xlsx · Máx 5MB · Até 500 linhas · Variações de cabeçalho também são reconhecidas</p>
                 </div>
             </div>
         </div>
@@ -1607,17 +1646,20 @@ function _toggleInlineNutri(index) {
     const panel = document.querySelector(`[data-nutri-panel="${index}"]`);
     if (!panel) return;
     const trigger = document.querySelector(`[data-nutri-trigger="${index}"]`);
+    const action = document.querySelector(`[data-nutri-action="${index}"]`);
     const wrapper = panel.closest('.ing-row-wrapper');
     const isExpanding = !panel.classList.contains('expanded');
     if (isExpanding && _activeInlineNutriIndex !== -1 && _activeInlineNutriIndex !== index) {
         const prevPanel = document.querySelector(`[data-nutri-panel="${_activeInlineNutriIndex}"]`);
         const prevTrigger = document.querySelector(`[data-nutri-trigger="${_activeInlineNutriIndex}"]`);
+        const prevAction = document.querySelector(`[data-nutri-action="${_activeInlineNutriIndex}"]`);
         const prevWrapper = prevPanel?.closest('.ing-row-wrapper');
         if (prevPanel) prevPanel.classList.remove('expanded');
         if (prevTrigger) {
             prevTrigger.classList.remove('active');
             prevTrigger.setAttribute('aria-expanded', 'false');
         }
+        if (prevAction) prevAction.textContent = 'Abrir painel';
         if (prevWrapper) prevWrapper.classList.remove('is-expanded');
     }
 
@@ -1630,6 +1672,7 @@ function _toggleInlineNutri(index) {
             trigger.classList.add('active');
             trigger.setAttribute('aria-expanded', 'true');
         }
+        if (action) action.textContent = 'Ocultar painel';
         requestAnimationFrame(() => {
             if (wrapper) wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         });
@@ -1641,6 +1684,7 @@ function _toggleInlineNutri(index) {
             trigger.classList.remove('active');
             trigger.setAttribute('aria-expanded', 'false');
         }
+        if (action) action.textContent = 'Abrir painel';
     }
 }
 
@@ -1826,25 +1870,27 @@ function createIngredientRow(ing, index) {
                     </div>
                     <div class="ingredient-actions">
                         <button onclick="copyIngredient(${index})" class="ingredient-action" title="Duplicar">
-                            <i class="ph ph-copy text-sm"></i>
+                            ${calculatorStartIconSvg('duplicate', 'ingredient-action-icon')}
                         </button>
                         <button onclick="removeIngredient(${index})" class="ingredient-action is-danger" title="Remover">
-                            <i class="ph ph-trash text-sm"></i>
+                            ${calculatorStartIconSvg('trash', 'ingredient-action-icon')}
                         </button>
                     </div>
                 </div>
             </div>
-            <button type="button" onclick="_toggleInlineNutri(${index})" class="macro-disclosure ${isExpanded ? 'active' : ''}" data-nutri-trigger="${index}" aria-expanded="${isExpanded ? 'true' : 'false'}" aria-controls="ingredient-nutri-${index}" title="Ver/editar nutrientes">
+            <button type="button" onclick="_toggleInlineNutri(${index})" class="macro-disclosure ${isExpanded ? 'active' : ''}" data-nutri-trigger="${index}" aria-expanded="${isExpanded ? 'true' : 'false'}" aria-controls="ingredient-nutri-${index}" title="Abrir painel de macronutrientes e detalhes nutricionais">
                 <div class="macro-disclosure-copy">
                     <span class="macro-disclosure-icon">
-                        <i class="ph ph-chart-pie-slice text-sm"></i>
+                        ${calculatorStartIconSvg('analytics', 'macro-disclosure-svg')}
                     </span>
                     <div class="min-w-0">
-                        <span class="macro-disclosure-title">Ver macros e detalhes nutricionais</span>
+                        <span class="macro-disclosure-kicker">Painel nutricional</span>
+                        <span class="macro-disclosure-title">Macronutrientes e detalhes nutricionais</span>
                         <span class="macro-disclosure-sub">Carboidratos, proteínas, gorduras, açúcares, fibras e sódio por 100${unit}</span>
                     </div>
                 </div>
                 <div class="macro-disclosure-meta">
+                    <span class="macro-disclosure-action" data-nutri-action="${index}">${isExpanded ? 'Ocultar painel' : 'Abrir painel'}</span>
                     <span class="${completionClass}" data-ing-completion="${index}">${completionLabel}</span>
                     ${warningBadge}
                     ${hasTaco ? '<span class="macro-pill macro-pill-source">TACO</span>' : ''}

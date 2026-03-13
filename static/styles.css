@@ -540,11 +540,17 @@ body {
 
 .formula-toolbar {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: stretch;
     gap: 0.75rem;
     padding: 0.9rem 1rem;
     border-radius: 1.15rem;
+}
+
+.formula-toolbar-top {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
 }
 
 .formula-toolbar-actions,
@@ -553,6 +559,122 @@ body {
     align-items: center;
     gap: 0.55rem;
     flex-wrap: wrap;
+}
+
+.formula-toolbar-premium {
+    gap: 1rem;
+    padding: 1rem 1rem 1.05rem;
+}
+
+.formula-toolbar-caption {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.78rem;
+    line-height: 1.5;
+}
+
+.formula-toolbar-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.formula-primary-action,
+.formula-secondary-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    min-height: 2.85rem;
+    padding: 0.78rem 1.15rem;
+    border-radius: 1rem;
+    font-size: 0.92rem;
+    font-weight: 700;
+    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.formula-primary-action {
+    color: #04111a;
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.94), rgba(0, 200, 214, 0.92));
+    box-shadow: 0 18px 34px -28px rgba(0, 240, 255, 0.65);
+}
+
+.formula-primary-action:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 22px 40px -30px rgba(0, 240, 255, 0.75);
+}
+
+.formula-secondary-action {
+    color: rgba(233, 242, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));
+}
+
+.formula-secondary-action:hover {
+    transform: translateY(-1px);
+    color: #fff;
+    border-color: rgba(0, 240, 255, 0.18);
+    background: linear-gradient(180deg, rgba(0,240,255,0.09), rgba(255,255,255,0.03));
+}
+
+.formula-action-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.formula-primary-action .formula-action-icon {
+    color: #04111a;
+}
+
+.formula-secondary-action .formula-action-icon {
+    color: #00f0ff;
+}
+
+.calculator-info-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.72rem;
+    padding: 0.9rem 0.95rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.calculator-info-card-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #00f0ff;
+    border: 1px solid rgba(0, 240, 255, 0.16);
+    background: rgba(0, 240, 255, 0.08);
+}
+
+.calculator-info-card-icon-svg {
+    width: 0.92rem;
+    height: 0.92rem;
+}
+
+.calculator-info-card-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.calculator-info-card-copy strong {
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.calculator-info-card-copy span {
+    color: rgba(255, 255, 255, 0.48);
+    font-size: 0.74rem;
+    line-height: 1.45;
 }
 
 .calculator-empty-state {
@@ -638,6 +760,34 @@ body {
     justify-content: flex-start;
     margin-top: 1rem;
     margin-bottom: 0;
+}
+
+.calculator-empty-note {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 0.85rem 0.95rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(255, 255, 255, 0.56);
+    font-size: 0.76rem;
+    line-height: 1.5;
+}
+
+.calculator-empty-note strong {
+    color: #fff;
+    font-weight: 600;
+}
+
+.calculator-empty-note code,
+.import-format-card code {
+    font-family: 'Space Grotesk', sans-serif;
+    color: rgba(220, 251, 255, 0.96);
+    background: rgba(0, 240, 255, 0.08);
+    border: 1px solid rgba(0, 240, 255, 0.14);
+    border-radius: 0.45rem;
+    padding: 0.08rem 0.34rem;
+    font-size: 0.68rem;
 }
 
 .calculator-feature-pill {
@@ -1137,6 +1287,11 @@ body {
     transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 }
 
+.ingredient-action-icon {
+    width: 0.92rem;
+    height: 0.92rem;
+}
+
 .ingredient-action:hover {
     background: rgba(255, 255, 255, 0.07);
     border-color: rgba(255, 255, 255, 0.14);
@@ -1193,6 +1348,21 @@ body {
     flex-shrink: 0;
 }
 
+.macro-disclosure-svg {
+    width: 0.95rem;
+    height: 0.95rem;
+}
+
+.macro-disclosure-kicker {
+    display: block;
+    color: rgba(0, 240, 255, 0.78);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+}
+
 .macro-disclosure-title,
 .macro-disclosure-sub {
     display: block;
@@ -1217,6 +1387,20 @@ body {
     justify-content: flex-end;
     gap: 0.5rem;
     flex-wrap: wrap;
+}
+
+.macro-disclosure-action {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.34rem 0.62rem;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 240, 255, 0.16);
+    background: rgba(0, 240, 255, 0.08);
+    color: rgba(220, 251, 255, 0.92);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
 }
 
 .macro-disclosure .nutri-chevron {
@@ -1385,6 +1569,33 @@ body {
 .summary-dock-toggle-svg {
     width: 0.95rem;
     height: 0.95rem;
+}
+
+.import-format-stack {
+    display: grid;
+    gap: 0.55rem;
+}
+
+.import-format-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.18rem;
+    padding: 0.78rem 0.85rem;
+    border-radius: 0.95rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.import-format-card strong {
+    color: #fff;
+    font-size: 0.74rem;
+    font-weight: 600;
+}
+
+.import-format-card span {
+    color: rgba(255, 255, 255, 0.52);
+    font-size: 0.72rem;
+    line-height: 1.45;
 }
 
 .summary-dock-toggle-title,
@@ -2516,6 +2727,15 @@ body::after {
 
     .formula-toolbar-secondary {
         justify-content: flex-start;
+    }
+
+    .formula-toolbar-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .formula-primary-action,
+    .formula-secondary-action {
+        width: 100%;
     }
 
     .ingredient-quantity-field,
